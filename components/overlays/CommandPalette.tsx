@@ -130,18 +130,14 @@ export function CommandPalette() {
 
   useEffect(() => {
     if (commandPaletteOpen) {
-      setQuery('')
-      setHighlightedIndex(0)
-      // Focus with a short delay to allow animation
-      setTimeout(() => inputRef.current?.focus(), 50)
+      const timer = setTimeout(() => {
+        setQuery('')
+        setHighlightedIndex(0)
+        inputRef.current?.focus()
+      }, 50)
+      return () => clearTimeout(timer)
     }
   }, [commandPaletteOpen])
-
-  // ─── Reset highlighted index when filter changes ──────────────────────
-
-  useEffect(() => {
-    setHighlightedIndex(0)
-  }, [query])
 
   // ─── Keyboard navigation ──────────────────────────────────────────────
 
@@ -229,7 +225,10 @@ export function CommandPalette() {
                   ref={inputRef}
                   type="text"
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  onChange={(e) => {
+                    setQuery(e.target.value)
+                    setHighlightedIndex(0)
+                  }}
                   placeholder="Type a command or search..."
                   className="flex-1 bg-transparent text-sm text-[var(--nc-text-primary)] placeholder:text-[var(--nc-text-muted)] outline-none"
                   autoComplete="off"
