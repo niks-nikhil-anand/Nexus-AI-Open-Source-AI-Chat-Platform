@@ -56,11 +56,41 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
 
   return (
     <div
-      className={`relative flex flex-col w-full ${isUser ? 'items-end' : 'items-start'}`}
+      className={`relative flex flex-col w-full ${isUser ? 'items-end' : 'items-start'} group`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={isUser ? 'max-w-[80%] md:max-w-[70%]' : 'w-full'}>
+      <div className={`relative ${isUser ? 'max-w-[80%] md:max-w-[70%]' : 'w-full'}`}>
+        {/* Hover toolbar - top right */}
+        {!isStreaming && isHovered && (
+          <motion.div
+            className="absolute -top-3 right-0 flex items-center gap-1 bg-[var(--nc-void)] border border-[var(--nc-border)] rounded-lg shadow-sm p-0.5 z-10"
+            initial={{ opacity: 0, y: 2 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-[var(--nc-surface-3)]"
+              style={{ color: 'var(--nc-text-muted)' }}
+              aria-label="Copy message"
+            >
+              <Copy className="h-3.5 w-3.5" />
+            </button>
+            {!isUser && (
+              <button
+                type="button"
+                className="flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-[var(--nc-surface-3)]"
+                style={{ color: 'var(--nc-text-muted)' }}
+                aria-label="Regenerate response"
+              >
+                <RefreshCw className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </motion.div>
+        )}
+
         {/* Thought Process Accordion */}
         {!isUser && message.timeToFirstTokenMs !== undefined && message.timeToFirstTokenMs > 1000 && !isStreaming && (
           <div className="mb-2">
@@ -128,39 +158,6 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
           <div className="mt-2">
             <StreamingIndicator stage={streamingStage} />
           </div>
-        )}
-
-        {/* Hover toolbar - only show on completed messages and when hovered to avoid dead layout space */}
-        {!isStreaming && isHovered && (
-          <motion.div
-            className="flex items-center gap-1 mt-1"
-            style={{
-              justifyContent: isUser ? 'flex-end' : 'flex-start',
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.15 }}
-          >
-            <button
-              type="button"
-              onClick={handleCopy}
-              className="flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-[var(--nc-surface-3)]"
-              style={{ color: 'var(--nc-text-muted)' }}
-              aria-label="Copy message"
-            >
-              <Copy className="h-3.5 w-3.5" />
-            </button>
-            {!isUser && (
-              <button
-                type="button"
-                className="flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-[var(--nc-surface-3)]"
-                style={{ color: 'var(--nc-text-muted)' }}
-                aria-label="Regenerate response"
-              >
-                <RefreshCw className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </motion.div>
         )}
 
         {/* Subtle, low-contrast metadata footer row */}
