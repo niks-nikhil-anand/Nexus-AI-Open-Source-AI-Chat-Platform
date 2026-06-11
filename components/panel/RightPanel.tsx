@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { X } from 'lucide-react'
 import { useChatStore } from '@/lib/store'
 
 function formatContextWindow(value: number): string {
@@ -59,7 +60,7 @@ function CircularProgress({ value, label }: { value: number; label: string }) {
 }
 
 export function RightPanel() {
-  const { state } = useChatStore()
+  const { state, dispatch } = useChatStore()
   const { selectedModel } = state
 
   const [temperature, setTemperature] = useState(0.7)
@@ -78,10 +79,17 @@ export function RightPanel() {
       style={{ background: 'var(--nc-surface-1)' }}
     >
       {/* Header */}
-      <div>
+      <div className="flex items-center justify-between">
         <h2 className="text-[11px] font-bold uppercase tracking-wider text-[var(--nc-text-muted)]">
           Model Details
         </h2>
+        <button
+          onClick={() => dispatch({ type: 'TOGGLE_RIGHT_PANEL' })}
+          className="rounded p-1 text-[var(--nc-text-muted)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-colors cursor-pointer"
+          aria-label="Close panel"
+        >
+          <X size={15} />
+        </button>
       </div>
 
       {/* Model Card Header */}
