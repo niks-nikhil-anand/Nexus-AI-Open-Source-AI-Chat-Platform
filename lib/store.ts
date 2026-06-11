@@ -31,6 +31,10 @@ function createInitialState(): ChatState {
     theme: getInitialTheme(),
     commandPaletteOpen: false,
     settingsOpen: false,
+    temperature: 1.00,
+    top_p: 0.95,
+    max_tokens: 4096,
+    enable_thinking: false,
   }
 }
 
@@ -145,7 +149,9 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
     }
 
     case 'SET_MODEL': {
-      return { ...state, selectedModel: action.payload }
+      const model = action.payload
+      const max_tokens = state.max_tokens > model.contextWindow ? model.contextWindow : state.max_tokens
+      return { ...state, selectedModel: model, max_tokens }
     }
 
     case 'NEW_CONVERSATION': {
@@ -214,6 +220,22 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
 
     case 'SET_GENERATING': {
       return { ...state, isGenerating: action.payload }
+    }
+
+    case 'SET_TEMPERATURE': {
+      return { ...state, temperature: action.payload }
+    }
+
+    case 'SET_TOP_P': {
+      return { ...state, top_p: action.payload }
+    }
+
+    case 'SET_MAX_TOKENS': {
+      return { ...state, max_tokens: action.payload }
+    }
+
+    case 'SET_THINKING': {
+      return { ...state, enable_thinking: action.payload }
     }
 
     default:
@@ -325,7 +347,13 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           body: JSON.stringify({
             model: state.selectedModel.id,
             messages: apiMessages,
+            max_tokens: state.max_tokens,
+            temperature: state.temperature,
+            top_p: state.top_p,
             stream: true,
+            chat_template_kwargs: {
+              enable_thinking: state.enable_thinking,
+            },
           }),
         })
 

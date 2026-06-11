@@ -76,6 +76,10 @@ export interface ChatState {
   theme: 'dark' | 'light'
   commandPaletteOpen: boolean
   settingsOpen: boolean
+  temperature: number
+  top_p: number
+  max_tokens: number
+  enable_thinking: boolean
 }
 
 export type ChatAction =
@@ -93,3 +97,7 @@ export type ChatAction =
   | { type: 'TOGGLE_COMMAND_PALETTE' }
   | { type: 'TOGGLE_SETTINGS' }
   | { type: 'SET_GENERATING'; payload: boolean }
+  | { type: 'SET_TEMPERATURE'; payload: number }
+  | { type: 'SET_TOP_P'; payload: number }
+  | { type: 'SET_MAX_TOKENS'; payload: number }
+  | { type: 'SET_THINKING'; payload: boolean }

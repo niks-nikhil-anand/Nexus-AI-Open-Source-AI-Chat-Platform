@@ -22,7 +22,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "NeuraChat",
+  title: "NeuralChat",
   description: "Multi-model AI chat platform",
   icons: {
     icon: "/logo2.png",

@@ -110,9 +110,12 @@ export async function POST(request: Request) {
   const payload = body as {
     model?: unknown
     messages?: unknown
+    max_tokens?: unknown
     maxTokens?: unknown
     temperature?: unknown
+    top_p?: unknown
     stream?: unknown
+    chat_template_kwargs?: unknown
   }
 
   if (!Array.isArray(payload.messages) || payload.messages.length === 0) {
@@ -138,12 +141,13 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       model: resolveModel(payload.model),
       messages: payload.messages,
-      max_tokens: typeof payload.maxTokens === 'number' ? payload.maxTokens : 2048,
-      temperature: typeof payload.temperature === 'number' ? payload.temperature : 0.15,
-      top_p: 1,
+      max_tokens: typeof payload.max_tokens === 'number' ? payload.max_tokens : (typeof payload.maxTokens === 'number' ? payload.maxTokens : 4096),
+      temperature: typeof payload.temperature === 'number' ? payload.temperature : 1.00,
+      top_p: typeof payload.top_p === 'number' ? payload.top_p : 0.95,
       frequency_penalty: 0,
       presence_penalty: 0,
       stream: streamRequested,
+      ...(payload.chat_template_kwargs ? { chat_template_kwargs: payload.chat_template_kwargs } : {}),
     }),
   })
 
