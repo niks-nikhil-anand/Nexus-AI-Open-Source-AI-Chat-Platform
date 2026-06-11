@@ -87,6 +87,7 @@ export async function POST(request: Request) {
     messages?: unknown
     maxTokens?: unknown
     temperature?: unknown
+    stream?: unknown
   }
 
   if (!Array.isArray(payload.messages) || payload.messages.length === 0) {
@@ -100,11 +101,13 @@ export async function POST(request: Request) {
     )
   }
 
+  const streamRequested = payload.stream === true
+
   const upstreamResponse = await fetch(NVIDIA_CHAT_COMPLETIONS_URL, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
-      Accept: 'application/json',
+      Accept: streamRequested ? 'text/event-stream' : 'application/json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -115,13 +118,12 @@ export async function POST(request: Request) {
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-      stream: false,
+      stream: streamRequested,
     }),
   })
 
-  const data = (await upstreamResponse.json().catch(() => ({}))) as NvidiaChatResponse
-
   if (!upstreamResponse.ok) {
+    const data = (await upstreamResponse.json().catch(() => ({}))) as NvidiaChatResponse
     return NextResponse.json(
       {
         error:
@@ -132,6 +134,63 @@ export async function POST(request: Request) {
     )
   }
 
+  if (streamRequested) {
+    const responseStream = new ReadableStream({
+      async start(controller) {
+        const reader = upstreamResponse.body?.getReader()
+        if (!reader) {
+          controller.close()
+          return
+        }
+        const decoder = new TextDecoder()
+        let buffer = ''
+
+        try {
+          while (true) {
+            const { value, done } = await reader.read()
+            if (done) break
+
+            buffer += decoder.decode(value, { stream: true })
+            const lines = buffer.split('\n')
+            buffer = lines.pop() || ''
+
+            for (const line of lines) {
+              const trimmed = line.trim()
+              if (!trimmed) continue
+              if (trimmed === 'data: [DONE]') continue
+
+              if (trimmed.startsWith('data: ')) {
+                const dataStr = trimmed.slice(6)
+                try {
+                  const parsed = JSON.parse(dataStr)
+                  const content = parsed.choices?.[0]?.delta?.content
+                  if (content) {
+                    controller.enqueue(new TextEncoder().encode(content))
+                  }
+                } catch (e) {
+                  console.error('Error parsing SSE line:', trimmed, e)
+                }
+              }
+            }
+          }
+        } catch (err) {
+          controller.error(err)
+        } finally {
+          controller.close()
+        }
+      },
+    })
+
+    return new Response(responseStream, {
+      headers: {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        'Connection': 'keep-alive',
+      },
+    })
+  }
+
+  const data = (await upstreamResponse.json().catch(() => ({}))) as NvidiaChatResponse
   const content = data.choices?.[0]?.message?.content
 
   if (!content) {

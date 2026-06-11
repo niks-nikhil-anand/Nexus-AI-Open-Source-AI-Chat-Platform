@@ -309,34 +309,59 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         content: message.content,
       }))
 
+      const abortController = new AbortController()
+      cleanupRef.current = () => {
+        abortController.abort()
+      }
+
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
+          signal: abortController.signal,
           body: JSON.stringify({
             model: state.selectedModel.id,
             messages: apiMessages,
+            stream: true,
           }),
         })
 
-        const data = (await response.json()) as ChatApiResponse
-
         if (!response.ok) {
+          const data = (await response.json().catch(() => ({}))) as ChatApiResponse
           throw new Error(data.error ?? 'The chat request failed.')
         }
 
-        if (!data.content) {
-          throw new Error('The model returned an empty response.')
+        const reader = response.body?.getReader()
+        if (!reader) {
+          throw new Error('Response body is not readable.')
         }
 
-        // Start streaming the response
-        cleanupRef.current = simulateStreaming(dispatch, data.content)
+        const decoder = new TextDecoder()
+
+        // Dispatch an initial empty assistant message with isStreaming: true
+        dispatch({ type: 'APPEND_TOKEN', payload: { token: '' } })
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          const token = decoder.decode(value, { stream: true })
+          dispatch({ type: 'APPEND_TOKEN', payload: { token } })
+        }
+
+        dispatch({ type: 'FINALIZE_RESPONSE' })
       } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          // Stream was cancelled, exit silently
+          return
+        }
         const message = error instanceof Error ? error.message : 'Unable to reach the chat API.'
         dispatch({ type: 'APPEND_TOKEN', payload: { token: message } })
         dispatch({ type: 'FINALIZE_RESPONSE' })
+      } finally {
+        cleanupRef.current = null
       }
     },
     [activeMessages, state.selectedModel.id]
