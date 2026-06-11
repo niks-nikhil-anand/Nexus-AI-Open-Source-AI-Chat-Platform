@@ -64,18 +64,29 @@ export function ChatInput() {
 
   return (
     <div
-      className="relative flex flex-col gap-2.5 px-4 py-3 backdrop-blur-md border border-solid"
+      className="relative flex items-end gap-2 px-3 py-2 backdrop-blur-md border border-solid shadow-xl z-20"
       style={{
         backgroundColor: state.theme === 'dark' ? 'rgba(20, 19, 26, 0.8)' : 'rgba(255, 255, 255, 0.8)',
         borderColor: isFocused 
           ? 'var(--nc-accent)' 
           : state.theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
-        borderRadius: '20px', // rounded-2xl capsule design
-        boxShadow: isFocused ? 'var(--nc-accent-glow)' : '0 4px 20px -2px rgba(0, 0, 0, 0.25)',
+        borderRadius: '24px', // symmetric pill capsule
+        boxShadow: isFocused ? 'var(--nc-accent-glow)' : '0 4px 24px -2px rgba(0, 0, 0, 0.25)',
         transition: 'border-color 200ms ease, box-shadow 200ms ease',
       }}
     >
-      {/* Top: Textarea */}
+      {/* Left items: Attachment Button */}
+      <div className="flex items-center h-9 shrink-0 pl-1">
+        <button
+          type="button"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--nc-surface-3)] text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-2)] hover:text-[var(--nc-text-primary)] active:scale-90 transition-all cursor-pointer"
+          title="Attach files"
+        >
+          <Plus size={16} />
+        </button>
+      </div>
+
+      {/* Textarea: centered and auto-expanding */}
       <textarea
         ref={textareaRef}
         value={value}
@@ -87,75 +98,64 @@ export function ChatInput() {
         placeholder="Ask anything..."
         rows={1}
         aria-label="Message input"
-        className="w-full resize-none bg-transparent outline-none text-[15px] leading-relaxed"
+        className="flex-1 resize-none bg-transparent outline-none text-[14px] leading-relaxed self-center max-h-[200px]"
         style={{
           fontFamily: 'var(--font-sans), Inter, sans-serif',
           color: 'var(--nc-text-primary)',
-          minHeight: `28px`,
-          maxHeight: `${MAX_HEIGHT}px`,
+          minHeight: `24px`,
           overflowY: 'hidden',
-          padding: '2px 0',
+          padding: '6px 4px',
         }}
       />
 
-      {/* Bottom: Action buttons and Model Select */}
-      <div className="flex items-center justify-between mt-1 select-none z-20">
-        {/* Left: Plus attachment button */}
+      {/* Right items: Model Selector, Microphone & Send Button */}
+      <div className="flex items-center gap-1.5 h-9 shrink-0 pr-1 select-none">
+        {/* Model Selector dropdown pill */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setModelDropdownOpen(prev => !prev)}
+            className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold bg-[var(--nc-surface-3)] hover:bg-[var(--nc-surface-2)] text-[var(--nc-text-primary)] border border-[var(--nc-border)] active:scale-90 transition-all cursor-pointer"
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: state.selectedModel.providerColor }}
+            />
+            <span className="max-w-[80px] sm:max-w-none truncate">{state.selectedModel.name}</span>
+            <ChevronDown size={11} className="opacity-60" />
+          </button>
+
+          {/* Upwards floating selector dropdown */}
+          <InputModelSelector
+            isOpen={modelDropdownOpen}
+            onClose={() => setModelDropdownOpen(false)}
+            onSelect={(model) => {
+              dispatch({ type: 'SET_MODEL', payload: model })
+            }}
+            currentModelId={state.selectedModel.id}
+          />
+        </div>
+
         <button
           type="button"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--nc-surface-3)] text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-2)] hover:text-[var(--nc-text-primary)] active:scale-95 transition-all cursor-pointer"
-          title="Attach files"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--nc-surface-3)] text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-2)] hover:text-[var(--nc-text-primary)] active:scale-90 transition-all cursor-pointer"
+          title="Voice input"
         >
-          <Plus size={15} />
+          <Mic size={15} />
         </button>
-
-        {/* Right: Model Select Pill + Action Button */}
-        <div className="flex items-center gap-2">
-          {/* Model Select Pill */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setModelDropdownOpen(prev => !prev)}
-              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold bg-[var(--nc-surface-3)] hover:bg-[var(--nc-surface-2)] text-[var(--nc-text-primary)] border border-[var(--nc-border)] active:scale-95 transition-all cursor-pointer"
-            >
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ backgroundColor: state.selectedModel.providerColor }}
-              />
-              <span>{state.selectedModel.name}</span>
-              <ChevronDown size={12} className="opacity-60" />
-            </button>
-
-            {/* Upwards floating selector dropdown */}
-            <InputModelSelector
-              isOpen={modelDropdownOpen}
-              onClose={() => setModelDropdownOpen(false)}
-              onSelect={(model) => {
-                dispatch({ type: 'SET_MODEL', payload: model })
-              }}
-              currentModelId={state.selectedModel.id}
-            />
-          </div>
-
-          {/* Action button: Send or Microphone */}
-          <motion.button
-            type="button"
-            onClick={value.trim().length > 0 ? handleSend : undefined}
-            whileTap={value.trim().length > 0 ? { scale: 0.95 } : undefined}
-            aria-label={value.trim().length > 0 ? "Send message" : "Voice input"}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black hover:bg-zinc-200 active:scale-95 transition-all shadow-sm cursor-pointer"
-            style={{
-              opacity: isGenerating ? 0.5 : 1,
-              cursor: isGenerating ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {value.trim().length > 0 ? (
-              <ArrowUp size={15} strokeWidth={2.5} />
-            ) : (
-              <Mic size={15} strokeWidth={2} />
-            )}
-          </motion.button>
-        </div>
+        <motion.button
+          type="button"
+          onClick={value.trim().length > 0 && !isGenerating ? handleSend : undefined}
+          whileTap={value.trim().length > 0 && !isGenerating ? { scale: 0.9 } : undefined}
+          aria-label="Send message"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black hover:bg-zinc-200 active:scale-90 transition-all shadow-sm cursor-pointer"
+          style={{
+            opacity: value.trim().length > 0 ? (isGenerating ? 0.5 : 1) : 0.4,
+            cursor: isGenerating ? 'not-allowed' : (value.trim().length > 0 ? 'pointer' : 'default')
+          }}
+        >
+          <ArrowUp size={15} strokeWidth={2.5} />
+        </motion.button>
       </div>
     </div>
   )
