@@ -87,7 +87,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
     }
 
     case 'APPEND_TOKEN': {
-      const { token } = action.payload
+      const { token, timeToFirstTokenMs } = action.payload
       if (!state.activeConversationId) return state
 
       return {
@@ -116,6 +116,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
               isStreaming: true,
               modelId: state.selectedModel.id,
               tokens: Math.max(1, Math.round(token.length / 4.2)),
+              timeToFirstTokenMs,
             })
           }
 
@@ -337,6 +338,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         abortController.abort()
       }
 
+      const startTime = Date.now()
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
@@ -370,7 +372,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         const decoder = new TextDecoder()
 
         // Dispatch an initial empty assistant message with isStreaming: true
-        dispatch({ type: 'APPEND_TOKEN', payload: { token: '' } })
+        const timeToFirstTokenMs = Date.now() - startTime
+        dispatch({ type: 'APPEND_TOKEN', payload: { token: '', timeToFirstTokenMs } })
 
         while (true) {
           const { done, value } = await reader.read()
