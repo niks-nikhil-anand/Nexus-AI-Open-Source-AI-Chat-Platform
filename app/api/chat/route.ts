@@ -17,18 +17,25 @@ type NvidiaChatResponse = {
 }
 
 const NVIDIA_CHAT_COMPLETIONS_URL = 'https://integrate.api.nvidia.com/v1/chat/completions'
-const DEFAULT_MODEL = 'mistralai/mistral-large-3-675b-instruct-2512'
+const DEFAULT_MODEL = 'nvidia/nemotron-3-ultra-550b-a55b'
 
 const MODEL_ALIASES: Record<string, string> = {
-  'gpt-4o': DEFAULT_MODEL,
-  'claude-3-5-sonnet': DEFAULT_MODEL,
-  'claude-4-7-opus': DEFAULT_MODEL,
-  'mistral-large-3': DEFAULT_MODEL,
-  'gemini-2-5-pro': DEFAULT_MODEL,
-  'nemotron-ultra': 'nvidia/nemotron-4-340b-instruct',
-  'qwen3-coder': 'mistralai/codestral-22b-instruct-v0.1',
-  'deepseek-r2': 'deepseek-ai/deepseek-v4-pro',
-  'llama-3-1-405b': 'meta/llama-3.3-70b-instruct',
+  // Map old frontend model IDs to their closest new equivalents
+  'gpt-4o': 'nvidia/nemotron-3-ultra-550b-a55b',
+  'claude-3-5-sonnet': 'deepseek-ai/deepseek-v4-flash',
+  'claude-4-7-opus': 'nvidia/nemotron-3-ultra-550b-a55b',
+  'mistral-large-3': 'mistralai/mistral-small-4-119b-2603',
+  'gemini-2-5-pro': 'google/gemma-4-31b-it',
+  'nemotron-ultra': 'nvidia/nemotron-3-ultra-550b-a55b',
+  'qwen3-coder': 'nvidia/nemotron-3-super-120b-a12b',
+  'deepseek-r2': 'deepseek-ai/deepseek-v4-flash',
+  'llama-3-1-405b': 'nvidia/nemotron-3-super-120b-a12b',
+  // Standard shortcuts mapping to full model IDs
+  'nemotron-3-ultra-550b-a55b': 'nvidia/nemotron-3-ultra-550b-a55b',
+  'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash',
+  'mistral-small-4-119b-2603': 'mistralai/mistral-small-4-119b-2603',
+  'gemma-4-31b-it': 'google/gemma-4-31b-it',
+  'nemotron-3-super-120b-a12b': 'nvidia/nemotron-3-super-120b-a12b',
 }
 
 function resolveModel(model: unknown): string {
@@ -42,11 +49,9 @@ function resolveModel(model: unknown): string {
     return MODEL_ALIASES[normalizedModel]
   }
 
-  if (normalizedModel.includes('/')) {
-    return normalizedModel
-  }
-
-  return DEFAULT_MODEL
+  // To support dynamic models fully, if the input is unrecognized but non-empty,
+  // we return it directly so that any NVIDIA API compatible model can be passed.
+  return normalizedModel
 }
 
 function isChatMessage(value: unknown): value is ChatMessage {
