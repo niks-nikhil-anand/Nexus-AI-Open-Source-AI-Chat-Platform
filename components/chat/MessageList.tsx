@@ -42,7 +42,7 @@ export function MessageList({ messages, isGenerating }: MessageListProps) {
         className="mx-auto flex flex-col px-4 pt-6 pb-32"
         style={{
           maxWidth: 768,
-          gap: 'var(--space-6)',
+          gap: 'var(--space-4)',
         }}
       >
         {messagesToRender.map((message, index) => (
