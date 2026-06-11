@@ -25,9 +25,9 @@ export function MessageList({ messages, isGenerating }: MessageListProps) {
       style={{ backgroundColor: 'var(--nc-void)' }}
     >
       <div
-        className="mx-auto flex flex-col px-4 py-6"
+        className="mx-auto flex flex-col px-4 pt-6 pb-32"
         style={{
-          maxWidth: 720,
+          maxWidth: 768,
           gap: 'var(--space-6)',
         }}
       >

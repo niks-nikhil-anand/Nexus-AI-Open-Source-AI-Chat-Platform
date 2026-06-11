@@ -65,13 +65,14 @@ export function ChatInput() {
 
   return (
     <div
-      className="relative flex items-end gap-2 px-3 py-2"
+      className="relative flex items-end gap-2 px-4 py-2.5 backdrop-blur-md border border-solid"
       style={{
-        backgroundColor: 'var(--nc-surface-2)',
-        border: '1px solid',
-        borderColor: isFocused ? 'var(--nc-accent)' : 'var(--nc-border)',
-        borderRadius: '10px',
-        boxShadow: isFocused ? 'var(--nc-accent-glow)' : 'none',
+        backgroundColor: state.theme === 'dark' ? 'rgba(20, 19, 26, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+        borderColor: isFocused 
+          ? 'var(--nc-accent)' 
+          : state.theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
+        borderRadius: '16px', // rounded-2xl
+        boxShadow: isFocused ? 'var(--nc-accent-glow)' : '0 4px 20px -2px rgba(0, 0, 0, 0.25)',
         transition: 'border-color 200ms ease, box-shadow 200ms ease',
       }}
     >
@@ -92,10 +93,10 @@ export function ChatInput() {
           fontSize: '15px',
           lineHeight: '1.5',
           color: 'var(--nc-text-primary)',
-          minHeight: `${MIN_HEIGHT - 16}px`,
+          minHeight: `${MIN_HEIGHT - 20}px`,
           maxHeight: `${MAX_HEIGHT}px`,
           overflowY: 'hidden',
-          padding: '4px 0',
+          padding: '6px 0',
         }}
       />
 
@@ -105,11 +106,11 @@ export function ChatInput() {
         disabled={!canSend}
         whileTap={canSend ? { scale: 0.9 } : undefined}
         aria-label="Send message"
-        className="flex shrink-0 items-center justify-center"
+        className="flex shrink-0 items-center justify-center mb-0.5"
         style={{
           width: '36px',
           height: '36px',
-          borderRadius: '10px',
+          borderRadius: '12px',
           backgroundColor: 'var(--nc-accent)',
           opacity: canSend ? 1 : 0.5,
           cursor: canSend ? 'pointer' : 'not-allowed',
