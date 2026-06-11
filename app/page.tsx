@@ -6,6 +6,7 @@ import { WelcomeScreen } from '@/components/chat/WelcomeScreen'
 import { ChatHeader } from '@/components/chat/ChatHeader'
 import { MessageList } from '@/components/chat/MessageList'
 import { ChatInput } from '@/components/chat/ChatInput'
+import { WaveformBar } from '@/components/chat/WaveformBar'
 import ModelSelector from '@/components/overlays/ModelSelector'
 import { useChatStore } from '@/lib/store'
 
@@ -33,6 +34,7 @@ export default function Home() {
           <MessageList messages={activeMessages} isGenerating={state.isGenerating} />
           <div className="absolute bottom-0 left-0 right-0 pointer-events-none flex flex-col items-center pb-6 z-10">
             <div className="w-full max-w-2xl px-4 pointer-events-auto flex flex-col gap-2">
+              {state.isGenerating && <WaveformBar />}
               <ChatInput />
             </div>
           </div>

@@ -14,10 +14,24 @@ interface MessageListProps {
 export function MessageList({ messages, isGenerating }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
-  // Auto-scroll to bottom on new messages or streaming updates
+  const showThinking = isGenerating && messages.length > 0 && messages[messages.length - 1].role === 'user'
+
+  const messagesToRender = [...messages]
+  if (showThinking) {
+    messagesToRender.push({
+      id: 'temp-generating-msg',
+      role: 'assistant',
+      content: '',
+      isStreaming: true,
+      timestamp: new Date(),
+      modelId: messages[messages.length - 1].modelId,
+    })
+  }
+
+  // Auto-scroll to bottom on new messages, streaming updates, or thinking state
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, messages.length, messages[messages.length - 1]?.content])
+  }, [messages, messages.length, messages[messages.length - 1]?.content, showThinking])
 
   return (
     <div
@@ -31,7 +45,7 @@ export function MessageList({ messages, isGenerating }: MessageListProps) {
           gap: 'var(--space-6)',
         }}
       >
-        {messages.map((message, index) => (
+        {messagesToRender.map((message, index) => (
           <motion.div
             key={message.id}
             custom={index}
@@ -41,7 +55,7 @@ export function MessageList({ messages, isGenerating }: MessageListProps) {
           >
             <MessageBubble
               message={message}
-              isLatest={index === messages.length - 1}
+              isLatest={index === messagesToRender.length - 1}
             />
           </motion.div>
         ))}
