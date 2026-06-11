@@ -5,6 +5,9 @@ import { motion } from 'framer-motion'
 import { Copy, RefreshCw } from 'lucide-react'
 import { StreamingIndicator } from './StreamingIndicator'
 import type { Message } from '@/lib/types'
+import { useChatStore } from '@/lib/store'
+import { mockModels } from '@/lib/mock-data'
+import { Markdown } from './Markdown'
 
 interface MessageBubbleProps {
   message: Message
@@ -12,6 +15,9 @@ interface MessageBubbleProps {
 }
 
 export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
+  const { state } = useChatStore()
+  const { selectedModel } = state
+
   const [isHovered, setIsHovered] = useState(false)
   const isUser = message.role === 'user'
   const isStreaming = message.isStreaming ?? false
@@ -27,15 +33,27 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
       : 'streaming'
     : 'complete'
 
+  // Look up model metadata for the badge
+  const model = mockModels.find((m) => m.id === message.modelId) || selectedModel
+  const providerEmojis: Record<string, string> = {
+    OpenAI: '⚡',
+    Anthropic: '🎨',
+    NVIDIA: '🟢',
+    Mistral: '🍊',
+    Alibaba: '💜',
+    DeepSeek: '🔵',
+    Google: '✨',
+  }
+  const modelEmoji = providerEmojis[model.provider] || '🤖'
+  const tokenCount = message.tokens ?? Math.max(1, Math.round(message.content.length / 4.2))
+
   return (
     <div
-      className={`relative flex w-full ${isUser ? 'justify-end' : 'justify-start'}`}
+      className={`relative flex flex-col w-full ${isUser ? 'items-end' : 'items-start'}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div
-        className={isUser ? 'max-w-[70%]' : 'w-full'}
-      >
+      <div className={isUser ? 'max-w-[80%] md:max-w-[70%]' : 'w-full'}>
         {/* Message content */}
         <div
           className="whitespace-pre-wrap break-words"
@@ -43,26 +61,23 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
             isUser
               ? {
                   backgroundColor: 'var(--nc-user-bubble)',
-                  color: 'var(--nc-text-primary)',
+                  color: 'rgba(232, 230, 240, 0.82)', // slightly muted user prompt
                   fontSize: 15,
                   padding: '12px 16px',
                   borderRadius: '20px 20px 4px 20px',
                 }
               : {
                   backgroundColor: 'transparent',
-                  color: 'var(--nc-text-primary)',
+                  color: '#E2E8F0', // vibrant slate/zinc tone for AI responses
                   fontSize: 15,
                   padding: '4px 0',
                 }
           }
         >
-          {message.content}
-          {isStreaming && message.content.length > 0 && (
-            <span
-              className="ml-0.5 inline-block h-[18px] w-[2px] animate-pulse"
-              style={{ backgroundColor: 'var(--nc-accent)' }}
-              aria-hidden="true"
-            />
+          {isUser ? (
+            message.content
+          ) : (
+            <Markdown content={message.content} isStreaming={isStreaming && message.content.length > 0} />
           )}
         </div>
 
@@ -105,6 +120,25 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
             )}
           </motion.div>
         )}
+
+        {/* Subtle, low-contrast metadata footer row */}
+        <div 
+          className="mt-2.5 flex items-center gap-2 text-[11px] text-[var(--nc-text-muted)] select-none"
+          style={{ justifyContent: isUser ? 'flex-end' : 'flex-start' }}
+        >
+          <span 
+            className="inline-flex items-center gap-1 font-medium text-[var(--nc-text-secondary)]"
+          >
+            <span>{modelEmoji}</span>
+            <span>{model.name}</span>
+          </span>
+          <span>•</span>
+          <span>Tokens: {tokenCount}</span>
+          <span>•</span>
+          <span>
+            {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </span>
+        </div>
       </div>
     </div>
   )
