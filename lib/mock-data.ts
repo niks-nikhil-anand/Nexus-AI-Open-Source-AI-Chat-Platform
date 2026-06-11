@@ -49,6 +49,19 @@ export const mockModels: AIModel[] = [
     providerColor: PROVIDER_COLORS.Anthropic,
   },
   {
+    id: 'claude-4-7-opus',
+    name: 'Claude 4.7 Opus',
+    provider: 'Anthropic',
+    description:
+      'Next-generation flagship model with state-of-the-art coding, advanced reasoning, and deep analysis capabilities.',
+    contextWindow: 200000,
+    parameters: '500B',
+    reasoningScore: 96,
+    codingScore: 97,
+    strengths: ['Reasoning', 'Code', 'Math', 'Synthesis'],
+    providerColor: PROVIDER_COLORS.Anthropic,
+  },
+  {
     id: 'nemotron-ultra',
     name: 'Nemotron Ultra',
     provider: 'NVIDIA',
