@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Copy, RefreshCw } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Copy, RefreshCw, ChevronDown, Clock } from 'lucide-react'
 import { StreamingIndicator } from './StreamingIndicator'
 import type { Message } from '@/lib/types'
 import { useChatStore } from '@/lib/store'
@@ -19,6 +19,7 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
   const { selectedModel } = state
 
   const [isHovered, setIsHovered] = useState(false)
+  const [isThoughtProcessOpen, setIsThoughtProcessOpen] = useState(false)
   const isUser = message.role === 'user'
   const isStreaming = message.isStreaming ?? false
 
@@ -60,6 +61,41 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className={isUser ? 'max-w-[80%] md:max-w-[70%]' : 'w-full'}>
+        {/* Thought Process Accordion */}
+        {!isUser && message.timeToFirstTokenMs !== undefined && message.timeToFirstTokenMs > 1000 && !isStreaming && (
+          <div className="mb-2">
+            <button
+              type="button"
+              onClick={() => setIsThoughtProcessOpen((prev) => !prev)}
+              className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--nc-text-muted)] hover:text-[var(--nc-text-secondary)] transition-colors"
+            >
+              <Clock size={12} />
+              <span>Thought Process</span>
+              <span className="font-mono bg-[var(--nc-surface-2)] px-1.5 py-0.5 rounded-sm border border-[var(--nc-border)]">
+                {(message.timeToFirstTokenMs / 1000).toFixed(1)}s
+              </span>
+              <ChevronDown
+                size={12}
+                className={`transition-transform duration-200 ${isThoughtProcessOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+            <AnimatePresence>
+              {isThoughtProcessOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-2 text-sm text-[var(--nc-text-secondary)] bg-[var(--nc-surface-2)] p-3 rounded-lg border border-[var(--nc-border)] italic">
+                    The model spent {(message.timeToFirstTokenMs / 1000).toFixed(1)} seconds thinking before generating this response.
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+
         {/* Message content */}
         <div
           className="whitespace-pre-wrap break-words"
