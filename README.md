@@ -1622,6 +1622,15 @@ OPENROUTER_API_KEY=sk-or-...
 OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 ```
 
+The current `/api/chat` route uses `NVIDIA_API_KEY` and forwards requests to NVIDIA's chat completions endpoint. It accepts a JSON body like:
+
+```json
+{
+  "model": "mistralai/mistral-large-3-675b-instruct-2512",
+  "messages": [{ "role": "user", "content": "Hello" }]
+}
+```
+
 > **Tip:** Use [OpenRouter](https://openrouter.ai) as a single API gateway to access all models above through one key. Set `OPENROUTER_API_KEY` and point all providers to the OpenRouter base URL.
 
 ---

@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <AppShell>
       {activeConversation ? (
-        <div className="flex flex-1 flex-col min-h-0">
+        <div className="relative flex flex-1 flex-col min-h-0">
           {/* Header with model selector */}
           <div className="relative">
             <ChatHeader onModelSelectorOpen={() => setModelSelectorOpen(true)} />
@@ -32,9 +32,11 @@ export default function Home() {
             />
           </div>
           <MessageList messages={activeMessages} isGenerating={state.isGenerating} />
-          <div className="shrink-0 px-4 pb-4">
-            <WaveformBar />
-            <ChatInput />
+          <div className="absolute bottom-0 left-0 right-0 pointer-events-none flex flex-col items-center pb-6 z-10">
+            <div className="w-full max-w-2xl px-4 pointer-events-auto flex flex-col gap-2">
+              <WaveformBar />
+              <ChatInput />
+            </div>
           </div>
         </div>
       ) : (
