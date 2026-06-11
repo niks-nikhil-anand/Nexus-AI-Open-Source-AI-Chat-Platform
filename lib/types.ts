@@ -8,6 +8,12 @@ export type ModelProvider =
   | 'DeepSeek'
   | 'Google'
   | 'Anthropic'
+  | 'MiniMax'
+  | 'Microsoft'
+  | 'Meta'
+  | 'StepFun'
+  | 'Moonshot'
+  | 'ByteDance'
 
 export interface AIModel {
   id: string
