@@ -151,6 +151,7 @@
   --nc-accent-dim: rgba(124, 106, 255, 0.13);
   --nc-accent-glow: 0 0 0 1px rgba(124, 106, 255, 0.25), 0 0 20px rgba(124, 106, 255, 0.2);
   --nc-user-bubble: #1E1C2E;
+  --nc-user-bubble-text: rgba(232, 230, 240, 0.82);
   --nc-success: #3ECF8E;
   --nc-warning: #F0A429;
   --nc-error: #F06A6A;
@@ -159,19 +160,20 @@
 
 /* Light theme */
 .light {
-  --nc-void: #F7F6FB;
+  --nc-void: #F8FAFC;
   --nc-surface-1: #FFFFFF;
-  --nc-surface-2: #F1F0F7;
-  --nc-surface-3: #E8E7F2;
-  --nc-border: #DDDBE8;
+  --nc-surface-2: #F1F5F9;
+  --nc-surface-3: #E2E8F0;
+  --nc-border: #CBD5E1;
   --nc-border-glow: rgba(99, 85, 232, 0.3);
-  --nc-text-primary: #1A1830;
-  --nc-text-secondary: #6B6880;
-  --nc-text-muted: #A09DB8;
+  --nc-text-primary: #0F172A;
+  --nc-text-secondary: #475569;
+  --nc-text-muted: #64748B;
   --nc-accent: #6355E8;
   --nc-accent-dim: rgba(99, 85, 232, 0.1);
   --nc-accent-glow: 0 0 0 1px rgba(99, 85, 232, 0.3), 0 0 20px rgba(99, 85, 232, 0.15);
-  --nc-user-bubble: #EEEDF7;
+  --nc-user-bubble: #FFFFFF;
+  --nc-user-bubble-text: #0F172A;
   --nc-success: #3ECF8E;
   --nc-warning: #F0A429;
   --nc-error: #F06A6A;

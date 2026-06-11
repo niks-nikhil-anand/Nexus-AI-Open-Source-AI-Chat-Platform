@@ -133,10 +133,11 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
             isUser
               ? {
                   backgroundColor: 'var(--nc-user-bubble)',
-                  color: 'rgba(232, 230, 240, 0.82)', // slightly muted user prompt
+                  color: 'var(--nc-user-bubble-text)', // properly contrasted text
                   fontSize: 15,
                   padding: '8px 14px',
                   borderRadius: '16px 16px 4px 16px',
+                  boxShadow: state.theme === 'dark' ? 'none' : 'var(--shadow-sm)',
                 }
               : {
                   backgroundColor: 'transparent',
@@ -162,7 +163,7 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
 
         {/* Subtle, low-contrast metadata footer row */}
         <div 
-          className="mt-0.5 flex items-center gap-2 text-[11px] text-[var(--nc-text-muted)] select-none"
+          className="mt-0.5 flex items-center gap-2 text-[11px] text-neutral-600 dark:text-neutral-400 select-none"
           style={{ justifyContent: isUser ? 'flex-end' : 'flex-start' }}
         >
           <span 
