@@ -94,15 +94,15 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
           </div>
         )}
 
-        {/* Hover toolbar - only show on completed messages */}
-        {!isStreaming && (
+        {/* Hover toolbar - only show on completed messages and when hovered to avoid dead layout space */}
+        {!isStreaming && isHovered && (
           <motion.div
             className="flex items-center gap-1 mt-1"
             style={{
               justifyContent: isUser ? 'flex-end' : 'flex-start',
             }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.15 }}
           >
             <button
@@ -129,7 +129,7 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
 
         {/* Subtle, low-contrast metadata footer row */}
         <div 
-          className="mt-1 flex items-center gap-2 text-[11px] text-[var(--nc-text-muted)] select-none"
+          className="mt-0.5 flex items-center gap-2 text-[11px] text-[var(--nc-text-muted)] select-none"
           style={{ justifyContent: isUser ? 'flex-end' : 'flex-start' }}
         >
           <span 
