@@ -8,6 +8,34 @@ interface MarkdownProps {
 }
 
 export function Markdown({ content, isStreaming = false }: MarkdownProps) {
+  // Split by horizontal rules: \n---\n, \n***\n, \n___\n
+  const sections = content.split(/(?:\r?\n\s*(?:---|___|\*\*\*)\s*(?:\r?\n|$))/)
+
+  if (sections.length <= 1) {
+    return <MarkdownSection content={content} isStreaming={isStreaming} />
+  }
+
+  return (
+    <div className="space-y-4 w-full">
+      {sections.map((section, idx) => {
+        if (!section.trim()) return null
+        return (
+          <div
+            key={idx}
+            className="w-full bg-[var(--nc-surface-2)]/30 border border-[var(--nc-border)] rounded-2xl px-5 py-4 shadow-sm hover:border-[var(--nc-accent)]/20 transition-all duration-200"
+          >
+            <MarkdownSection
+              content={section}
+              isStreaming={isStreaming && idx === sections.length - 1}
+            />
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function MarkdownSection({ content, isStreaming = false }: MarkdownProps) {
   const lines = content.split('\n')
   const elements: React.ReactNode[] = []
 
@@ -34,9 +62,9 @@ export function Markdown({ content, isStreaming = false }: MarkdownProps) {
 
     if (type === 'ul') {
       return (
-        <ul key={`ul-${key}`} className="list-disc pl-5 space-y-1.5 my-3 text-[var(--nc-text-primary)]">
+        <ul key={`ul-${key}`} className="list-disc pl-6 space-y-2 my-3 text-[var(--nc-text-primary)]">
           {items.map((item, i) => (
-            <li key={i}>
+            <li key={i} className="leading-relaxed text-[15px]">
               {parseInline(item, isStreaming && key === lastNonEmptyLineIdx && i === items.length - 1)}
             </li>
           ))}
@@ -44,9 +72,9 @@ export function Markdown({ content, isStreaming = false }: MarkdownProps) {
       )
     } else {
       return (
-        <ol key={`ol-${key}`} className="list-decimal pl-5 space-y-1.5 my-3 text-[var(--nc-text-primary)]">
+        <ol key={`ol-${key}`} className="list-decimal pl-6 space-y-2 my-3 text-[var(--nc-text-primary)]">
           {items.map((item, i) => (
-            <li key={i}>
+            <li key={i} className="leading-relaxed text-[15px]">
               {parseInline(item, isStreaming && key === lastNonEmptyLineIdx && i === items.length - 1)}
             </li>
           ))}
@@ -133,7 +161,8 @@ export function Markdown({ content, isStreaming = false }: MarkdownProps) {
     }
 
     // 4. Unordered List check
-    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+    const isPartialUl = trimmed.startsWith('- ') || trimmed.startsWith('* ') || (isStreaming && idx === lastNonEmptyLineIdx && (trimmed === '-' || trimmed === '*'))
+    if (isPartialUl) {
       const pEl = flushParagraph(idx)
       if (pEl) elements.push(pEl)
 
@@ -142,13 +171,14 @@ export function Markdown({ content, isStreaming = false }: MarkdownProps) {
         if (listEl) elements.push(listEl)
         currentListType = 'ul'
       }
-      currentListItems.push(trimmed.slice(2))
+      currentListItems.push(trimmed.startsWith('- ') || trimmed.startsWith('* ') ? trimmed.slice(2) : '')
       continue
     }
 
     // 5. Ordered List check
     const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/)
-    if (olMatch) {
+    const isPartialOl = isStreaming && idx === lastNonEmptyLineIdx && !!trimmed.match(/^\d+\.?$/)
+    if (olMatch || isPartialOl) {
       const pEl = flushParagraph(idx)
       if (pEl) elements.push(pEl)
 
@@ -157,7 +187,7 @@ export function Markdown({ content, isStreaming = false }: MarkdownProps) {
         if (listEl) elements.push(listEl)
         currentListType = 'ol'
       }
-      currentListItems.push(olMatch[2])
+      currentListItems.push(olMatch ? olMatch[2] : '')
       continue
     }
 
@@ -179,7 +209,7 @@ export function Markdown({ content, isStreaming = false }: MarkdownProps) {
 }
 
 function parseInline(text: string, showCursor?: boolean): React.ReactNode[] {
-  const inlineRegex = /(\*\*.*?\*\*|\*.*?\*|`.*?`)/g
+  const inlineRegex = /(\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?\]\(.*?\)|https?:\/\/[^\s\)]+)/g
   const splitParts = text.split(inlineRegex)
 
   const nodes = splitParts.map((part, i) => {
@@ -191,6 +221,36 @@ function parseInline(text: string, showCursor?: boolean): React.ReactNode[] {
     }
     if (part.startsWith('`') && part.endsWith('`')) {
       return <code key={i} className="bg-[var(--nc-surface-3)] px-1.5 py-0.5 rounded text-xs font-mono text-[var(--nc-accent)] border border-[var(--nc-border)]">{part.slice(1, -1)}</code>
+    }
+    if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
+      const match = part.match(/\[(.*?)\]\((.*?)\)/)
+      if (match) {
+        const [, linkText, url] = match
+        return (
+          <a
+            key={i}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--nc-accent)] hover:underline font-medium break-all"
+          >
+            {linkText}
+          </a>
+        )
+      }
+    }
+    if (part.startsWith('http://') || part.startsWith('https://')) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[var(--nc-accent)] hover:underline font-medium break-all"
+        >
+          {part}
+        </a>
+      )
     }
     return part
   })
