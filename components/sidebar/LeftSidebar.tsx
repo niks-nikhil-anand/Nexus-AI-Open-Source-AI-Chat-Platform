@@ -12,7 +12,8 @@ export function LeftSidebar() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    const timer = setTimeout(() => setMounted(true), 0)
+    return () => clearTimeout(timer)
   }, [])
 
   const pinnedConversations = conversations.filter((c) => c.isPinned)
