@@ -64,7 +64,7 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
         {/* Hover toolbar - top right */}
         {!isStreaming && isHovered && (
           <motion.div
-            className="absolute -top-3 right-0 flex items-center gap-1 bg-[var(--nc-void)] border border-[var(--nc-border)] rounded-lg shadow-sm p-0.5 z-10"
+            className="absolute top-0 right-0 flex items-center gap-1 bg-[var(--nc-void)] border border-[var(--nc-border)] rounded-lg shadow-sm p-0.5 z-10"
             initial={{ opacity: 0, y: 2 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.15 }}
