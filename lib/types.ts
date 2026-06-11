@@ -39,6 +39,8 @@ export interface Message {
   content: string
   timestamp: Date
   isStreaming?: boolean
+  modelId?: string
+  tokens?: number
 }
 
 export interface ThemeTokens {

@@ -1,27 +1,21 @@
 'use client'
 
-import React, { createContext, useContext, useReducer, useEffect, useRef, useCallback } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react'
 import type { ChatState, ChatAction, Conversation, Message } from './types'
 import { mockModels, mockConversations } from './mock-data'
 import { applyTheme, saveTheme, getInitialTheme } from './theme'
 
-// ─── Mock Responses ───────────────────────────────────────────────────────────
-
-const mockResponses: string[] = [
-  'That\'s a great question. Let me break this down step by step so we can understand the core mechanics at play here and find the most effective approach for your use case.',
-  'I\'d recommend starting with a simpler approach first. You can always iterate and add complexity later once the foundation is solid and well-tested across different scenarios.',
-  'Here\'s how I would think about this problem: first identify the constraints, then explore the solution space within those boundaries. This keeps the scope manageable and the results predictable.',
-  'The key insight here is that these systems are fundamentally compositional. Each piece works independently, but the real power comes from how they interact and build on each other.',
-  'Based on the patterns I\'ve seen, the most maintainable solution involves separating the concerns clearly. This makes each part testable in isolation and easier to reason about as the system grows.',
-  'Good instinct on that approach. One thing to watch out for is the interaction between these layers — making sure the abstractions don\'t leak and each boundary is well-defined will save time later.',
-]
-
-let responseIndex = 0
-
-function getNextMockResponse(): string {
-  const response = mockResponses[responseIndex % mockResponses.length]
-  responseIndex++
-  return response
+type ChatApiResponse = {
+  content?: string
+  error?: string
 }
 
 // ─── Initial State ────────────────────────────────────────────────────────────
@@ -51,6 +45,8 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         role: 'user',
         content,
         timestamp: new Date(),
+        modelId: state.selectedModel.id,
+        tokens: Math.max(1, Math.round(content.length / 4.2)),
       }
 
       if (state.activeConversationId) {
@@ -100,9 +96,11 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
 
           if (lastMessage && lastMessage.role === 'assistant' && lastMessage.isStreaming) {
             // Append token to existing streaming message
+            const updatedContent = lastMessage.content + token
             messages[messages.length - 1] = {
               ...lastMessage,
-              content: lastMessage.content + token,
+              content: updatedContent,
+              tokens: Math.max(1, Math.round(updatedContent.length / 4.2)),
             }
           } else {
             // Create a new assistant message with streaming flag
@@ -112,6 +110,8 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
               content: token,
               timestamp: new Date(),
               isStreaming: true,
+              modelId: state.selectedModel.id,
+              tokens: Math.max(1, Math.round(token.length / 4.2)),
             })
           }
 
@@ -282,8 +282,16 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const activeConversation =
+    state.conversations.find((c) => c.id === state.activeConversationId) ?? null
+
+  const activeMessages = useMemo(
+    () => activeConversation?.messages ?? [],
+    [activeConversation?.messages]
+  )
+
   const sendMessage = useCallback(
-    (content: string) => {
+    async (content: string) => {
       // Cancel any in-progress streaming
       if (cleanupRef.current) {
         cleanupRef.current()
@@ -296,13 +304,42 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       // Mark as generating
       dispatch({ type: 'SET_GENERATING', payload: true })
 
-      // Pick a mock response
-      const response = getNextMockResponse()
+      const apiMessages = [...activeMessages, { role: 'user' as const, content }].map((message) => ({
+        role: message.role,
+        content: message.content,
+      }))
 
-      // Start streaming the response
-      cleanupRef.current = simulateStreaming(dispatch, response)
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: state.selectedModel.id,
+            messages: apiMessages,
+          }),
+        })
+
+        const data = (await response.json()) as ChatApiResponse
+
+        if (!response.ok) {
+          throw new Error(data.error ?? 'The chat request failed.')
+        }
+
+        if (!data.content) {
+          throw new Error('The model returned an empty response.')
+        }
+
+        // Start streaming the response
+        cleanupRef.current = simulateStreaming(dispatch, data.content)
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unable to reach the chat API.'
+        dispatch({ type: 'APPEND_TOKEN', payload: { token: message } })
+        dispatch({ type: 'FINALIZE_RESPONSE' })
+      }
     },
-    []
+    [activeMessages, state.selectedModel.id]
   )
 
   // Cleanup on unmount
@@ -313,11 +350,6 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       }
     }
   }, [])
-
-  const activeConversation =
-    state.conversations.find((c) => c.id === state.activeConversationId) ?? null
-
-  const activeMessages = activeConversation?.messages ?? []
 
   const value: ChatContextValue = {
     state,
