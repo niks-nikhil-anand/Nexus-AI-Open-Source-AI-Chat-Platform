@@ -61,7 +61,7 @@ export function MessageList({ messages, isGenerating }: MessageListProps) {
         ))}
 
         {/* Bottom sentinel for auto-scroll */}
-        <div ref={bottomRef} aria-hidden="true" />
+        <div ref={bottomRef} className="h-32 shrink-0 pointer-events-none" aria-hidden="true" />
       </div>
     </div>
   )

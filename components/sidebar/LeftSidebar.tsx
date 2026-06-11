@@ -47,23 +47,24 @@ export function LeftSidebar() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col gap-1 px-3 pb-2">
+      <div className="flex flex-col gap-2 px-3 pb-3">
         <button
           onClick={() => dispatch({ type: 'NEW_CONVERSATION' })}
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-[var(--nc-text-primary)] hover:bg-[var(--nc-accent)] hover:text-white transition-colors"
+          className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white bg-[var(--nc-accent)] hover:opacity-90 transition-all shadow-md active:scale-98 cursor-pointer"
+          style={{ boxShadow: 'var(--nc-accent-glow)' }}
         >
-          <Plus size={16} />
+          <Plus size={16} strokeWidth={2.5} />
           <span>New Chat</span>
         </button>
         <button
           onClick={() => dispatch({ type: 'TOGGLE_COMMAND_PALETTE' })}
-          className="flex items-center justify-between rounded-md px-3 py-2 text-sm text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-colors"
+          className="flex items-center justify-between rounded-xl px-4 py-2 text-sm text-[var(--nc-text-secondary)] bg-[var(--nc-surface-2)] border border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-all cursor-pointer"
         >
           <span className="flex items-center gap-2">
-            <Search size={16} />
-            <span>Search</span>
+            <Search size={15} />
+            <span>Search...</span>
           </span>
-          <kbd className="text-[10px] text-[var(--nc-text-muted)] bg-[var(--nc-surface-3)] rounded px-1.5 py-0.5">
+          <kbd className="text-[10px] text-[var(--nc-text-muted)] bg-[var(--nc-surface-3)] rounded px-1.5 py-0.5 border border-[var(--nc-border)]">
             ⌘K
           </kbd>
         </button>
@@ -126,37 +127,40 @@ export function LeftSidebar() {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-[var(--nc-border)] mt-auto flex flex-col">
-        {/* Settings & Theme toggles split row */}
-        <div className="flex items-center justify-between px-3 py-2 gap-1 border-b border-[var(--nc-border)] bg-[var(--nc-surface-1)]">
+      <div className="mt-auto p-4 flex flex-col gap-3 border-t border-[var(--nc-border)] bg-[var(--nc-surface-1)]">
+        {/* User profile card widget */}
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--nc-surface-2)] border border-[var(--nc-border)] shadow-sm hover:border-[var(--nc-accent)]/30 transition-all">
+          <div className="relative flex-shrink-0">
+            <div className="h-9 w-9 rounded-full bg-[var(--nc-accent)] flex items-center justify-center text-xs text-white font-bold select-none">
+              U
+            </div>
+            {/* Active status indicator dot */}
+            <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-[var(--nc-success)] border-2 border-[var(--nc-surface-2)] animate-pulse" />
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs font-bold text-[var(--nc-text-primary)] leading-none truncate">User Account</span>
+            <span className="text-[10px] text-[var(--nc-text-secondary)] leading-none mt-1.5 truncate">user@neurachat.ai</span>
+          </div>
+        </div>
+
+        {/* Settings & Theme toggles row */}
+        <div className="flex items-center justify-between gap-2">
           <button
             onClick={() => dispatch({ type: 'TOGGLE_SETTINGS' })}
-            className="flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-[var(--nc-text-secondary)] bg-[var(--nc-surface-2)] border border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-all cursor-pointer"
           >
-            <Settings size={14} />
+            <Settings size={13} />
             <span>Settings</span>
           </button>
-          <div className="h-4 w-px bg-[var(--nc-border)]" />
           <button
             onClick={() =>
               dispatch({ type: 'SET_THEME', payload: theme === 'dark' ? 'light' : 'dark' })
             }
-            className="flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-[var(--nc-text-secondary)] bg-[var(--nc-surface-2)] border border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-all cursor-pointer"
           >
-            {!mounted || theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+            {!mounted || theme === 'dark' ? <Sun size={13} /> : <Moon size={13} />}
             <span>Theme</span>
           </button>
-        </div>
-
-        {/* User info section */}
-        <div className="flex items-center gap-2.5 px-4 py-3.5 bg-[var(--nc-surface-2)]/30">
-          <div className="h-7 w-7 rounded-full bg-[var(--nc-accent)] flex items-center justify-center text-[11px] text-white font-bold select-none">
-            U
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-xs font-semibold text-[var(--nc-text-primary)] leading-none truncate">User Account</span>
-            <span className="text-[10px] text-[var(--nc-text-secondary)] leading-none mt-1 truncate">user@neurachat.ai</span>
-          </div>
         </div>
       </div>
     </div>
