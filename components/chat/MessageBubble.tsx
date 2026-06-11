@@ -69,14 +69,14 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
                   backgroundColor: 'var(--nc-user-bubble)',
                   color: 'rgba(232, 230, 240, 0.82)', // slightly muted user prompt
                   fontSize: 15,
-                  padding: '12px 16px',
-                  borderRadius: '20px 20px 4px 20px',
+                  padding: '8px 14px',
+                  borderRadius: '16px 16px 4px 16px',
                 }
               : {
                   backgroundColor: 'transparent',
                   color: '#E2E8F0', // vibrant slate/zinc tone for AI responses
                   fontSize: 15,
-                  padding: '4px 0',
+                  padding: '2px 0',
                 }
           }
         >
@@ -129,7 +129,7 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
 
         {/* Subtle, low-contrast metadata footer row */}
         <div 
-          className="mt-2.5 flex items-center gap-2 text-[11px] text-[var(--nc-text-muted)] select-none"
+          className="mt-1 flex items-center gap-2 text-[11px] text-[var(--nc-text-muted)] select-none"
           style={{ justifyContent: isUser ? 'flex-end' : 'flex-start' }}
         >
           <span 
