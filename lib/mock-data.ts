@@ -15,20 +15,6 @@ export const PROVIDER_COLORS = {
 
 export const mockModels: AIModel[] = [
   {
-    id: 'nvidia/nemotron-3-ultra-550b-a55b',
-    name: 'Nemotron-3 Ultra 550B',
-    provider: 'NVIDIA',
-    description:
-      'A massive 550B parameter hybrid Mamba-Transformer Mixture of Experts (MoE) model. It boasts a 1M context window and is specifically optimized for frontier agentic reasoning, planning, and advanced coding tasks.',
-    contextWindow: 1000000,
-    parameters: '550B',
-    reasoningScore: 96,
-    codingScore: 95,
-    strengths: ['Reasoning', 'Planning', 'Agentic Workflows', 'Coding'],
-    providerColor: PROVIDER_COLORS.NVIDIA,
-    isNew: true,
-  },
-  {
     id: 'deepseek-ai/deepseek-v4-flash',
     name: 'DeepSeek V4 Flash',
     provider: 'DeepSeek',
@@ -57,6 +43,20 @@ export const mockModels: AIModel[] = [
     isNew: true,
   },
   {
+    id: 'nvidia/nemotron-3-super-120b-a12b',
+    name: 'Nemotron-3 Super 120B',
+    provider: 'NVIDIA',
+    description:
+      'A 120B MoE hybrid model that balances speed and deep intelligence, excelling at code generation, tool calling, and structured logical planning.',
+    contextWindow: 131072,
+    parameters: '120B',
+    reasoningScore: 92,
+    codingScore: 93,
+    strengths: ['Coding', 'Tool Calling', 'Planning', 'Speed'],
+    providerColor: PROVIDER_COLORS.NVIDIA,
+    isNew: true,
+  },
+  {
     id: 'google/gemma-4-31b-it',
     name: 'Gemma 4 31B IT',
     provider: 'Google',
@@ -71,16 +71,16 @@ export const mockModels: AIModel[] = [
     isNew: true,
   },
   {
-    id: 'nvidia/nemotron-3-super-120b-a12b',
-    name: 'Nemotron-3 Super 120B',
+    id: 'nvidia/nemotron-3-ultra-550b-a55b',
+    name: 'Nemotron-3 Ultra 550B',
     provider: 'NVIDIA',
     description:
-      'A 120B MoE hybrid model that balances speed and deep intelligence, excelling at code generation, tool calling, and structured logical planning.',
-    contextWindow: 131072,
-    parameters: '120B',
-    reasoningScore: 92,
-    codingScore: 93,
-    strengths: ['Coding', 'Tool Calling', 'Planning', 'Speed'],
+      'A massive 550B parameter hybrid Mamba-Transformer Mixture of Experts (MoE) model. It boasts a 1M context window and is specifically optimized for frontier agentic reasoning, planning, and advanced coding tasks.',
+    contextWindow: 1000000,
+    parameters: '550B',
+    reasoningScore: 96,
+    codingScore: 95,
+    strengths: ['Reasoning', 'Planning', 'Agentic Workflows', 'Coding'],
     providerColor: PROVIDER_COLORS.NVIDIA,
     isNew: true,
   },

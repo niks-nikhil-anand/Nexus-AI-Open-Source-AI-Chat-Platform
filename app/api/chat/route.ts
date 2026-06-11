@@ -17,7 +17,7 @@ type NvidiaChatResponse = {
 }
 
 const NVIDIA_CHAT_COMPLETIONS_URL = 'https://integrate.api.nvidia.com/v1/chat/completions'
-const DEFAULT_MODEL = 'nvidia/nemotron-3-ultra-550b-a55b'
+const DEFAULT_MODEL = 'deepseek-ai/deepseek-v4-flash'
 
 const MODEL_ALIASES: Record<string, string> = {
   // Map old frontend model IDs to their closest new equivalents
