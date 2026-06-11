@@ -264,6 +264,7 @@ interface ChatContextValue {
   state: ChatState
   dispatch: React.Dispatch<ChatAction>
   sendMessage: (content: string) => void
+  stopGeneration: () => void
   activeConversation: Conversation | null
   activeMessages: Message[]
 }
@@ -354,7 +355,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: 'FINALIZE_RESPONSE' })
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
-          // Stream was cancelled, exit silently
+          // Stream was cancelled, finalize the response to keep whatever we have received so far
+          dispatch({ type: 'FINALIZE_RESPONSE' })
           return
         }
         const message = error instanceof Error ? error.message : 'Unable to reach the chat API.'
@@ -376,10 +378,18 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  const stopGeneration = useCallback(() => {
+    if (cleanupRef.current) {
+      cleanupRef.current()
+      cleanupRef.current = null
+    }
+  }, [])
+
   const value: ChatContextValue = {
     state,
     dispatch,
     sendMessage,
+    stopGeneration,
     activeConversation,
     activeMessages,
   }

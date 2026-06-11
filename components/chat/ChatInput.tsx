@@ -1,15 +1,14 @@
 'use client'
 
 import { useRef, useEffect, useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
-import { Plus, ChevronDown, Mic, ArrowUp } from 'lucide-react'
+import { Plus, ChevronDown, Mic, ArrowUp, Square } from 'lucide-react'
 import { useChatStore } from '@/lib/store'
 import { InputModelSelector } from './InputModelSelector'
 
 const MAX_HEIGHT = 200
 
 export function ChatInput() {
-  const { state, dispatch, sendMessage } = useChatStore()
+  const { state, dispatch, sendMessage, stopGeneration } = useChatStore()
   const { isGenerating } = state
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -62,101 +61,117 @@ export function ChatInput() {
     }
   }
 
+  const hasText = value.trim().length > 0
+
   return (
     <div
-      className="relative flex items-end gap-2 px-3 py-2 backdrop-blur-md border border-solid shadow-xl z-20"
+      className="relative flex flex-col justify-between w-full shadow-2xl transition-all duration-200 z-20 border border-solid"
       style={{
-        backgroundColor: state.theme === 'dark' ? 'rgba(20, 19, 26, 0.8)' : 'rgba(255, 255, 255, 0.8)',
-        borderColor: isFocused 
-          ? 'var(--nc-accent)' 
-          : state.theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
-        borderRadius: '24px', // symmetric pill capsule
-        boxShadow: isFocused ? 'var(--nc-accent-glow)' : '0 4px 24px -2px rgba(0, 0, 0, 0.25)',
-        transition: 'border-color 200ms ease, box-shadow 200ms ease',
+        backgroundColor: state.theme === 'dark' ? '#141414' : '#FFFFFF',
+        borderColor: isFocused
+          ? 'var(--nc-accent)'
+          : state.theme === 'dark' ? '#262626' : '#DDDBE8',
+        borderRadius: '24px',
+        padding: '16px 16px 12px 16px',
+        boxShadow: isFocused ? 'var(--nc-accent-glow)' : '0 10px 30px -10px rgba(0, 0, 0, 0.3)',
       }}
     >
-      {/* Left items: Attachment Button */}
-      <div className="flex items-center h-9 shrink-0 pl-1">
-        <button
-          type="button"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--nc-surface-3)] text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-2)] hover:text-[var(--nc-text-primary)] active:scale-90 transition-all cursor-pointer"
-          title="Attach files"
-        >
-          <Plus size={16} />
-        </button>
+      {/* Top Row: Auto-growing Textarea */}
+      <div className="w-full">
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={handleInput}
+          onKeyDown={handleKeyDown}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          placeholder="What's on your mind?"
+          rows={1}
+          aria-label="Message input"
+          className="w-full resize-none bg-transparent outline-none text-[15px] leading-relaxed placeholder-[#8E8E93]"
+          style={{
+            fontFamily: 'var(--font-sans), Inter, sans-serif',
+            color: state.theme === 'dark' ? '#FFFFFF' : 'var(--nc-text-primary)',
+            caretColor: state.theme === 'dark' ? '#FFFFFF' : 'var(--nc-accent)',
+            minHeight: '28px',
+            overflowY: 'hidden',
+          }}
+        />
       </div>
 
-      {/* Textarea: centered and auto-expanding */}
-      <textarea
-        ref={textareaRef}
-        value={value}
-        onChange={handleInput}
-        onKeyDown={handleKeyDown}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        disabled={isGenerating}
-        placeholder="Ask anything..."
-        rows={1}
-        aria-label="Message input"
-        className="flex-1 resize-none bg-transparent outline-none text-[14px] leading-relaxed self-center max-h-[200px]"
-        style={{
-          fontFamily: 'var(--font-sans), Inter, sans-serif',
-          color: 'var(--nc-text-primary)',
-          minHeight: `24px`,
-          overflowY: 'hidden',
-          padding: '6px 4px',
-        }}
-      />
-
-      {/* Right items: Model Selector, Microphone & Send Button */}
-      <div className="flex items-center gap-1.5 h-9 shrink-0 pr-1 select-none">
-        {/* Model Selector dropdown pill */}
-        <div className="relative">
+      {/* Bottom Row: Controls */}
+      <div className="flex items-center justify-between mt-3 w-full">
+        {/* Left Side: Attachment Button */}
+        <div>
           <button
             type="button"
-            onClick={() => setModelDropdownOpen(prev => !prev)}
-            className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold bg-[var(--nc-surface-3)] hover:bg-[var(--nc-surface-2)] text-[var(--nc-text-primary)] border border-[var(--nc-border)] active:scale-90 transition-all cursor-pointer"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] active:scale-90 transition-all cursor-pointer border border-[var(--nc-border)]"
+            title="Attach files"
           >
-            <span
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: state.selectedModel.providerColor }}
-            />
-            <span className="max-w-[80px] sm:max-w-none truncate">{state.selectedModel.name}</span>
-            <ChevronDown size={11} className="opacity-60" />
+            <Plus size={16} />
           </button>
-
-          {/* Upwards floating selector dropdown */}
-          <InputModelSelector
-            isOpen={modelDropdownOpen}
-            onClose={() => setModelDropdownOpen(false)}
-            onSelect={(model) => {
-              dispatch({ type: 'SET_MODEL', payload: model })
-            }}
-            currentModelId={state.selectedModel.id}
-          />
         </div>
 
-        <button
-          type="button"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--nc-surface-3)] text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-2)] hover:text-[var(--nc-text-primary)] active:scale-90 transition-all cursor-pointer"
-          title="Voice input"
-        >
-          <Mic size={15} />
-        </button>
-        <motion.button
-          type="button"
-          onClick={value.trim().length > 0 && !isGenerating ? handleSend : undefined}
-          whileTap={value.trim().length > 0 && !isGenerating ? { scale: 0.9 } : undefined}
-          aria-label="Send message"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black hover:bg-zinc-200 active:scale-90 transition-all shadow-sm cursor-pointer"
-          style={{
-            opacity: value.trim().length > 0 ? (isGenerating ? 0.5 : 1) : 0.4,
-            cursor: isGenerating ? 'not-allowed' : (value.trim().length > 0 ? 'pointer' : 'default')
-          }}
-        >
-          <ArrowUp size={15} strokeWidth={2.5} />
-        </motion.button>
+        {/* Right Side: Model Dropdown & Action Button */}
+        <div className="flex items-center gap-2">
+          {/* Model Selector dropdown pill */}
+          <div className="relative flex items-center">
+            <button
+              type="button"
+              onClick={() => setModelDropdownOpen(prev => !prev)}
+              className="flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold bg-[var(--nc-surface-2)] hover:bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] border border-[var(--nc-border)] active:scale-95 transition-all cursor-pointer h-[34px]"
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ backgroundColor: state.selectedModel.providerColor }}
+              />
+              <span className="max-w-[100px] sm:max-w-none truncate">{state.selectedModel.name}</span>
+              <ChevronDown size={11} className="opacity-60" />
+            </button>
+
+            {/* Upwards floating selector dropdown */}
+            <InputModelSelector
+              isOpen={modelDropdownOpen}
+              onClose={() => setModelDropdownOpen(false)}
+              onSelect={(model) => {
+                dispatch({ type: 'SET_MODEL', payload: model })
+              }}
+              currentModelId={state.selectedModel.id}
+            />
+          </div>
+
+          {/* Dynamic Action Button */}
+          {isGenerating ? (
+            <button
+              type="button"
+              onClick={stopGeneration}
+              className="flex h-[34px] w-[34px] items-center justify-center rounded-full transition-all duration-200 shadow-md cursor-pointer bg-red-500 text-white hover:bg-red-600 active:scale-90"
+              title="Stop generating"
+            >
+              <Square size={13} fill="currentColor" />
+            </button>
+          ) : hasText ? (
+            <button
+              type="button"
+              onClick={handleSend}
+              className="flex h-[34px] w-[34px] items-center justify-center rounded-full transition-all duration-200 shadow-md cursor-pointer bg-[var(--nc-text-primary)] text-[var(--nc-void)] hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black active:scale-90"
+              title="Send message"
+            >
+              <ArrowUp size={15} strokeWidth={2.5} />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="flex h-[34px] w-[34px] items-center justify-center rounded-full transition-all duration-200 shadow-sm cursor-pointer bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black active:scale-90 border border-[var(--nc-border)]"
+              title="Voice input"
+            >
+              <Mic size={15} />
+            </button>
+          )}
+        </div>
       </div>
     </div>
+  )
+}
   )
 }
