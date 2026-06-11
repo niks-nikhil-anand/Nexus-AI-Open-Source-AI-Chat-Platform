@@ -63,7 +63,7 @@ function ThinkingTimer({
     const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 
     return (
-      <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border h-[34px] bg-zinc-900/80 border-zinc-800 animate-in fade-in duration-300 shadow-md">
+      <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border h-[32px] bg-zinc-900/80 border-zinc-800 animate-in fade-in duration-300 shadow-md">
         <Loader2 size={13} className="text-zinc-400 animate-spin" />
         <span className="text-zinc-400 font-sans hidden sm:inline">Thinking</span>
         <span className="font-mono text-purple-400 bg-purple-950/40 border border-purple-900/30 px-1.5 py-0.5 rounded ml-1">
@@ -78,7 +78,7 @@ function ThinkingTimer({
     <button
       type="button"
       onClick={onToggleThinking}
-      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer border h-[34px] ${
+      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer border h-[32px] ${
         isThinkingModeEnabled
           ? 'bg-[var(--nc-accent-dim)] text-[var(--nc-accent)] border-[var(--nc-accent)]/30 shadow-[0_0_12px_rgba(124,106,255,0.2)]'
           : 'bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)]'
@@ -198,7 +198,7 @@ export function ChatInput() {
         <div>
           <button
             type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] active:scale-90 transition-all cursor-pointer border border-[var(--nc-border)]"
+            className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] active:scale-90 transition-all cursor-pointer border border-[var(--nc-border)]"
             title="Attach files"
           >
             <Plus size={16} />
@@ -213,7 +213,7 @@ export function ChatInput() {
             <button
               type="button"
               onClick={() => setModelDropdownOpen(prev => !prev)}
-              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold bg-[var(--nc-surface-2)] hover:bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] border border-[var(--nc-border)] active:scale-95 transition-all cursor-pointer h-[34px]"
+              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold bg-[var(--nc-surface-2)] hover:bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] border border-[var(--nc-border)] active:scale-95 transition-all cursor-pointer h-[32px]"
             >
               <span className="text-xs leading-none">
                 {providerEmojis[state.selectedModel.provider] || '🤖'}
@@ -245,7 +245,7 @@ export function ChatInput() {
             <button
               type="button"
               onClick={() => setParameterPopoverOpen(prev => !prev)}
-              className={`flex h-[34px] w-[34px] items-center justify-center rounded-full transition-all cursor-pointer border ${
+              className={`flex h-[32px] w-[32px] items-center justify-center rounded-full transition-all cursor-pointer border ${
                 parameterPopoverOpen 
                   ? 'bg-[var(--nc-accent-dim)] text-[var(--nc-accent)] border-[var(--nc-accent)]/30' 
                   : 'bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)]'
@@ -265,7 +265,7 @@ export function ChatInput() {
             <button
               type="button"
               onClick={stopGeneration}
-              className="flex h-[34px] w-[34px] items-center justify-center rounded-full transition-all duration-200 shadow-md cursor-pointer bg-red-500 text-white hover:bg-red-600 active:scale-90"
+              className="flex h-[32px] w-[32px] items-center justify-center rounded-full transition-all duration-200 shadow-md cursor-pointer bg-red-500 text-white hover:bg-red-600 active:scale-90"
               title="Stop generating"
             >
               <Square size={13} fill="currentColor" />
@@ -274,7 +274,7 @@ export function ChatInput() {
             <button
               type="button"
               onClick={handleSend}
-              className="flex h-[34px] w-[34px] items-center justify-center rounded-full transition-all duration-200 shadow-md cursor-pointer bg-[var(--nc-text-primary)] text-[var(--nc-void)] hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black active:scale-90"
+              className="flex h-[32px] w-[32px] items-center justify-center rounded-full transition-all duration-200 shadow-md cursor-pointer bg-[var(--nc-text-primary)] text-[var(--nc-void)] hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black active:scale-90"
               title="Send message"
             >
               <ArrowUp size={15} strokeWidth={2.5} />
@@ -282,7 +282,7 @@ export function ChatInput() {
           ) : (
             <button
               type="button"
-              className="flex h-[34px] w-[34px] items-center justify-center rounded-full transition-all duration-200 shadow-sm cursor-pointer bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black active:scale-90 border border-[var(--nc-border)]"
+              className="flex h-[32px] w-[32px] items-center justify-center rounded-full transition-all duration-200 shadow-sm cursor-pointer bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black active:scale-90 border border-[var(--nc-border)]"
               title="Voice input"
             >
               <Mic size={15} />

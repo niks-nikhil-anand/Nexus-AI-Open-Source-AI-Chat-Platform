@@ -40,7 +40,7 @@ export function LeftSidebar() {
           {/* New Chat */}
           <button
             onClick={() => dispatch({ type: 'NEW_CONVERSATION' })}
-            className="group relative flex h-10 w-10 items-center justify-center rounded-full text-white bg-[var(--nc-accent)] hover:opacity-90 transition-all shadow-md active:scale-95 cursor-pointer animate-none"
+            className="group relative flex h-9 w-9 items-center justify-center rounded-full text-white bg-[var(--nc-accent)] hover:opacity-90 transition-all shadow-md active:scale-95 cursor-pointer animate-none"
             style={{ boxShadow: 'var(--nc-accent-glow)' }}
             aria-label="New Chat"
           >
@@ -53,7 +53,7 @@ export function LeftSidebar() {
           {/* Search */}
           <button
             onClick={() => dispatch({ type: 'TOGGLE_COMMAND_PALETTE' })}
-            className="group relative flex h-10 w-10 items-center justify-center rounded-xl text-[var(--nc-text-secondary)] bg-[var(--nc-surface-2)] border border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-all active:scale-95 cursor-pointer"
+            className="group relative flex h-9 w-9 items-center justify-center rounded-xl text-[var(--nc-text-secondary)] bg-[var(--nc-surface-2)] border border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-all active:scale-95 cursor-pointer"
             aria-label="Search"
           >
             <Search size={18} />
@@ -135,7 +135,7 @@ export function LeftSidebar() {
       <div className="flex flex-col gap-[18px] px-3 pt-4 pb-3">
         <button
           onClick={() => dispatch({ type: 'NEW_CONVERSATION' })}
-          className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white bg-[var(--nc-accent)] hover:opacity-90 transition-all shadow-md active:scale-98 cursor-pointer"
+          className="flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white bg-[var(--nc-accent)] hover:opacity-90 transition-all shadow-md active:scale-98 cursor-pointer"
           style={{ boxShadow: 'var(--nc-accent-glow)' }}
         >
           <Plus size={16} strokeWidth={2.5} />
@@ -214,7 +214,7 @@ export function LeftSidebar() {
       {/* Footer */}
       <div className="mt-auto p-4 flex flex-col gap-3 border-t border-[var(--nc-border)] bg-[var(--nc-surface-1)]">
         {/* User profile card widget */}
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--nc-surface-2)] border border-[var(--nc-border)] shadow-sm hover:border-[var(--nc-accent)]/30 transition-all">
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--nc-surface-1)] border border-[var(--nc-border)] shadow-sm hover:border-[var(--nc-accent)]/30 transition-all">
           <div className="relative flex-shrink-0">
             <div className="h-9 w-9 rounded-full bg-[var(--nc-accent)] flex items-center justify-center text-xs text-white font-bold select-none">
               U
@@ -232,7 +232,7 @@ export function LeftSidebar() {
         <div className="flex items-center justify-between gap-2">
           <button
             onClick={() => dispatch({ type: 'TOGGLE_SETTINGS' })}
-            className="flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-[var(--nc-text-secondary)] bg-[var(--nc-surface-2)] border border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-all cursor-pointer"
+            className="flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-[var(--nc-text-secondary)] bg-[var(--nc-surface-1)] shadow-sm border border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-all cursor-pointer"
           >
             <Settings size={13} />
             <span>Settings</span>
@@ -241,7 +241,7 @@ export function LeftSidebar() {
             onClick={() =>
               dispatch({ type: 'SET_THEME', payload: theme === 'dark' ? 'light' : 'dark' })
             }
-            className="flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-[var(--nc-text-secondary)] bg-[var(--nc-surface-2)] border border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-all cursor-pointer"
+            className="flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-[var(--nc-text-secondary)] bg-[var(--nc-surface-1)] shadow-sm border border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-all cursor-pointer"
           >
             {!mounted || theme === 'dark' ? <Sun size={13} /> : <Moon size={13} />}
             <span>Theme</span>
