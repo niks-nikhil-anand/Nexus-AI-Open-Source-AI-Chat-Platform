@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Plus, Search, Pin, Settings, Sun, Moon, PanelLeft } from 'lucide-react'
 import { useChatStore } from '@/lib/store'
 import { groupConversationsByDate } from '@/lib/group-conversations'
@@ -24,9 +25,18 @@ export function LeftSidebar() {
     <div className="flex h-full w-[260px] flex-col bg-[var(--nc-surface-1)]">
       {/* Header: Logo + Collapse Toggle */}
       <div className="flex items-center justify-between px-4 py-3">
-        <span className="text-sm font-semibold text-[var(--nc-text-primary)]">
-          ◈ NeuraChat
-        </span>
+        <div className="flex items-center gap-2">
+          <Image
+            src="/logo2.png"
+            alt="NeuraChat Logo"
+            width={30}
+            height={30}
+            className="object-contain"
+          />
+          <span className="text-sm font-semibold text-[var(--nc-text-primary)]">
+            NeuraChat
+          </span>
+        </div>
         <button
           onClick={() => dispatch({ type: 'TOGGLE_LEFT_SIDEBAR' })}
           className="rounded p-1 text-[var(--nc-text-muted)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-colors"
@@ -116,28 +126,37 @@ export function LeftSidebar() {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-[var(--nc-border)] px-3 py-3 flex flex-col gap-1">
-        <button
-          onClick={() => dispatch({ type: 'TOGGLE_SETTINGS' })}
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-colors"
-        >
-          <Settings size={16} />
-          <span>Settings</span>
-        </button>
-        <button
-          onClick={() =>
-            dispatch({ type: 'SET_THEME', payload: theme === 'dark' ? 'light' : 'dark' })
-          }
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-colors"
-        >
-          {!mounted || theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-          <span>Toggle theme</span>
-        </button>
-        <div className="flex items-center gap-2 px-3 py-2">
-          <div className="h-6 w-6 rounded-full bg-[var(--nc-accent)] flex items-center justify-center text-[10px] text-white font-medium">
+      <div className="border-t border-[var(--nc-border)] mt-auto flex flex-col">
+        {/* Settings & Theme toggles split row */}
+        <div className="flex items-center justify-between px-3 py-2 gap-1 border-b border-[var(--nc-border)] bg-[var(--nc-surface-1)]">
+          <button
+            onClick={() => dispatch({ type: 'TOGGLE_SETTINGS' })}
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-colors"
+          >
+            <Settings size={14} />
+            <span>Settings</span>
+          </button>
+          <div className="h-4 w-px bg-[var(--nc-border)]" />
+          <button
+            onClick={() =>
+              dispatch({ type: 'SET_THEME', payload: theme === 'dark' ? 'light' : 'dark' })
+            }
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-colors"
+          >
+            {!mounted || theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+            <span>Theme</span>
+          </button>
+        </div>
+
+        {/* User info section */}
+        <div className="flex items-center gap-2.5 px-4 py-3.5 bg-[var(--nc-surface-2)]/30">
+          <div className="h-7 w-7 rounded-full bg-[var(--nc-accent)] flex items-center justify-center text-[11px] text-white font-bold select-none">
             U
           </div>
-          <span className="text-sm text-[var(--nc-text-primary)]">User</span>
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs font-semibold text-[var(--nc-text-primary)] leading-none truncate">User Account</span>
+            <span className="text-[10px] text-[var(--nc-text-secondary)] leading-none mt-1 truncate">user@neurachat.ai</span>
+          </div>
         </div>
       </div>
     </div>

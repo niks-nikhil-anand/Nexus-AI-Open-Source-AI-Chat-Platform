@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { useChatStore } from '@/lib/store'
 import { mockModels } from '@/lib/mock-data'
 import { springs } from '@/lib/animations'
@@ -46,13 +47,31 @@ export function WelcomeScreen() {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-6">
+      <div className="relative z-10 flex flex-col items-center gap-4">
+        {/* Logo */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ ...springs.message, delay: 0 }}
+          className="relative flex items-center justify-center"
+        >
+          <div className="absolute inset-0 bg-[var(--nc-accent)] opacity-20 blur-2xl rounded-full scale-75" />
+          <Image
+            src="/logo2.png"
+            alt="NeuraChat Logo"
+            width={108}
+            height={108}
+            className="relative rounded-2xl object-contain shadow-2xl"
+            priority
+          />
+        </motion.div>
+
         {/* Heading */}
         <motion.h1
           className="font-[var(--font-dm-sans)] text-[2.5rem] font-semibold text-[var(--nc-text-primary)]"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ ...springs.message, delay: 0 }}
+          transition={{ ...springs.message, delay: 0.05 }}
         >
           NeuraChat
         </motion.h1>
