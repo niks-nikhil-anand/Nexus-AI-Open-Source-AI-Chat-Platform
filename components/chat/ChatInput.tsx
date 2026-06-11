@@ -2,21 +2,20 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowUp } from 'lucide-react'
+import { Plus, ChevronDown, Mic, ArrowUp } from 'lucide-react'
 import { useChatStore } from '@/lib/store'
+import { InputModelSelector } from './InputModelSelector'
 
 const MAX_HEIGHT = 200
-const MIN_HEIGHT = 52
 
 export function ChatInput() {
-  const { state, sendMessage } = useChatStore()
+  const { state, dispatch, sendMessage } = useChatStore()
   const { isGenerating } = state
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [value, setValue] = useState('')
   const [isFocused, setIsFocused] = useState(false)
-
-  const canSend = value.trim().length > 0 && !isGenerating
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false)
 
   // Auto-focus on mount
   useEffect(() => {
@@ -65,17 +64,18 @@ export function ChatInput() {
 
   return (
     <div
-      className="relative flex items-end gap-2 px-4 py-2.5 backdrop-blur-md border border-solid"
+      className="relative flex flex-col gap-2.5 px-4 py-3 backdrop-blur-md border border-solid"
       style={{
         backgroundColor: state.theme === 'dark' ? 'rgba(20, 19, 26, 0.8)' : 'rgba(255, 255, 255, 0.8)',
         borderColor: isFocused 
           ? 'var(--nc-accent)' 
           : state.theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
-        borderRadius: '16px', // rounded-2xl
+        borderRadius: '20px', // rounded-2xl capsule design
         boxShadow: isFocused ? 'var(--nc-accent-glow)' : '0 4px 20px -2px rgba(0, 0, 0, 0.25)',
         transition: 'border-color 200ms ease, box-shadow 200ms ease',
       }}
     >
+      {/* Top: Textarea */}
       <textarea
         ref={textareaRef}
         value={value}
@@ -87,38 +87,76 @@ export function ChatInput() {
         placeholder="Ask anything..."
         rows={1}
         aria-label="Message input"
-        className="flex-1 resize-none bg-transparent outline-none"
+        className="w-full resize-none bg-transparent outline-none text-[15px] leading-relaxed"
         style={{
           fontFamily: 'var(--font-sans), Inter, sans-serif',
-          fontSize: '15px',
-          lineHeight: '1.5',
           color: 'var(--nc-text-primary)',
-          minHeight: `${MIN_HEIGHT - 20}px`,
+          minHeight: `28px`,
           maxHeight: `${MAX_HEIGHT}px`,
           overflowY: 'hidden',
-          padding: '6px 0',
+          padding: '2px 0',
         }}
       />
 
-      <motion.button
-        type="button"
-        onClick={handleSend}
-        disabled={!canSend}
-        whileTap={canSend ? { scale: 0.9 } : undefined}
-        aria-label="Send message"
-        className="flex shrink-0 items-center justify-center mb-0.5"
-        style={{
-          width: '36px',
-          height: '36px',
-          borderRadius: '12px',
-          backgroundColor: 'var(--nc-accent)',
-          opacity: canSend ? 1 : 0.5,
-          cursor: canSend ? 'pointer' : 'not-allowed',
-          transition: 'opacity 150ms ease',
-        }}
-      >
-        <ArrowUp className="h-5 w-5 text-white" aria-hidden="true" />
-      </motion.button>
+      {/* Bottom: Action buttons and Model Select */}
+      <div className="flex items-center justify-between mt-1 select-none z-20">
+        {/* Left: Plus attachment button */}
+        <button
+          type="button"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--nc-surface-3)] text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-2)] hover:text-[var(--nc-text-primary)] active:scale-95 transition-all cursor-pointer"
+          title="Attach files"
+        >
+          <Plus size={15} />
+        </button>
+
+        {/* Right: Model Select Pill + Action Button */}
+        <div className="flex items-center gap-2">
+          {/* Model Select Pill */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setModelDropdownOpen(prev => !prev)}
+              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold bg-[var(--nc-surface-3)] hover:bg-[var(--nc-surface-2)] text-[var(--nc-text-primary)] border border-[var(--nc-border)] active:scale-95 transition-all cursor-pointer"
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ backgroundColor: state.selectedModel.providerColor }}
+              />
+              <span>{state.selectedModel.name}</span>
+              <ChevronDown size={12} className="opacity-60" />
+            </button>
+
+            {/* Upwards floating selector dropdown */}
+            <InputModelSelector
+              isOpen={modelDropdownOpen}
+              onClose={() => setModelDropdownOpen(false)}
+              onSelect={(model) => {
+                dispatch({ type: 'SET_MODEL', payload: model })
+              }}
+              currentModelId={state.selectedModel.id}
+            />
+          </div>
+
+          {/* Action button: Send or Microphone */}
+          <motion.button
+            type="button"
+            onClick={value.trim().length > 0 ? handleSend : undefined}
+            whileTap={value.trim().length > 0 ? { scale: 0.95 } : undefined}
+            aria-label={value.trim().length > 0 ? "Send message" : "Voice input"}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black hover:bg-zinc-200 active:scale-95 transition-all shadow-sm cursor-pointer"
+            style={{
+              opacity: isGenerating ? 0.5 : 1,
+              cursor: isGenerating ? 'not-allowed' : 'pointer'
+            }}
+          >
+            {value.trim().length > 0 ? (
+              <ArrowUp size={15} strokeWidth={2.5} />
+            ) : (
+              <Mic size={15} strokeWidth={2} />
+            )}
+          </motion.button>
+        </div>
+      </div>
     </div>
   )
 }
