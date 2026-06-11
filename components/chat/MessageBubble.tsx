@@ -43,6 +43,12 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
     Alibaba: '💜',
     DeepSeek: '🔵',
     Google: '✨',
+    MiniMax: '👾',
+    Microsoft: '🟦',
+    Meta: '♾️',
+    StepFun: '⚡',
+    Moonshot: '🌙',
+    ByteDance: '🎵',
   }
   const modelEmoji = providerEmojis[model.provider] || '🤖'
   const tokenCount = message.tokens ?? Math.max(1, Math.round(message.content.length / 4.2))
