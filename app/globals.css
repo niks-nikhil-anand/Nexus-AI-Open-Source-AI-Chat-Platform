@@ -2,14 +2,16 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Fonts are loaded via next/font/google in layout.tsx */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-heading: var(--font-dm-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -127,4 +129,204 @@
   html {
     @apply font-sans;
   }
+}
+
+/* ===========================
+   NeuraChat Design System
+   =========================== */
+
+/* Dark theme (default) */
+:root,
+.dark {
+  --nc-void: #0D0C0F;
+  --nc-surface-1: #131217;
+  --nc-surface-2: #1A1920;
+  --nc-surface-3: #242230;
+  --nc-border: #2A2835;
+  --nc-border-glow: rgba(124, 106, 255, 0.25);
+  --nc-text-primary: #E8E6F0;
+  --nc-text-secondary: #8B88A0;
+  --nc-text-muted: #52506A;
+  --nc-accent: #7C6AFF;
+  --nc-accent-dim: rgba(124, 106, 255, 0.13);
+  --nc-accent-glow: 0 0 0 1px rgba(124, 106, 255, 0.25), 0 0 20px rgba(124, 106, 255, 0.2);
+  --nc-user-bubble: #1E1C2E;
+  --nc-success: #3ECF8E;
+  --nc-warning: #F0A429;
+  --nc-error: #F06A6A;
+  --nc-info: #5BA4F5;
+}
+
+/* Light theme */
+.light {
+  --nc-void: #F7F6FB;
+  --nc-surface-1: #FFFFFF;
+  --nc-surface-2: #F1F0F7;
+  --nc-surface-3: #E8E7F2;
+  --nc-border: #DDDBE8;
+  --nc-border-glow: rgba(99, 85, 232, 0.3);
+  --nc-text-primary: #1A1830;
+  --nc-text-secondary: #6B6880;
+  --nc-text-muted: #A09DB8;
+  --nc-accent: #6355E8;
+  --nc-accent-dim: rgba(99, 85, 232, 0.1);
+  --nc-accent-glow: 0 0 0 1px rgba(99, 85, 232, 0.3), 0 0 20px rgba(99, 85, 232, 0.15);
+  --nc-user-bubble: #EEEDF7;
+  --nc-success: #3ECF8E;
+  --nc-warning: #F0A429;
+  --nc-error: #F06A6A;
+  --nc-info: #5BA4F5;
+}
+
+/* Type scale */
+:root {
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-display: 2.5rem;
+}
+
+/* Spacing scale */
+:root {
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+}
+
+/* Border radius scale */
+:root {
+  --nc-radius-sm: 0.25rem;
+  --nc-radius-md: 0.5rem;
+  --nc-radius-lg: 0.75rem;
+  --nc-radius-xl: 1rem;
+  --nc-radius-2xl: 1.5rem;
+  --nc-radius-full: 9999px;
+}
+
+/* Shadow system */
+:root {
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.25);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.3);
+}
+
+/* Glow effects */
+:root {
+  --glow-accent: 0 0 20px rgba(124, 106, 255, 0.2);
+  --glow-strong: 0 0 40px rgba(124, 106, 255, 0.35);
+}
+
+.light {
+  --glow-accent: 0 0 20px rgba(99, 85, 232, 0.15);
+  --glow-strong: 0 0 40px rgba(99, 85, 232, 0.25);
+}
+
+/* Custom scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--nc-border) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--nc-border);
+  border-radius: var(--nc-radius-full);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--nc-text-muted);
+}
+
+/* Theme transitions */
+html {
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    color 150ms ease;
+}
+
+html *,
+html *::before,
+html *::after {
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    color 150ms ease;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html *,
+  html *::before,
+  html *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* ─── Range Slider (nc-slider) ─────────────────────────────────────────────── */
+.nc-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--nc-surface-3);
+  outline: none;
+  cursor: pointer;
+}
+
+.nc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--nc-accent);
+  border: 2px solid var(--nc-surface-1);
+  box-shadow: 0 0 6px rgba(124, 106, 255, 0.35);
+  cursor: pointer;
+  transition: transform 150ms ease;
+}
+
+.nc-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.nc-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--nc-accent);
+  border: 2px solid var(--nc-surface-1);
+  box-shadow: 0 0 6px rgba(124, 106, 255, 0.35);
+  cursor: pointer;
+}
+
+.nc-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--nc-surface-3);
 }
