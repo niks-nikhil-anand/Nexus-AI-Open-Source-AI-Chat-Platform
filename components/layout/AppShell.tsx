@@ -25,7 +25,7 @@ export function AppShell({ children }: AppShellProps) {
       {/* Left Sidebar */}
       <motion.aside
         className="h-full overflow-hidden bg-[var(--nc-surface-1)] border-r border-[var(--nc-border)]"
-        animate={{ width: leftSidebarOpen ? 260 : 0 }}
+        animate={{ width: leftSidebarOpen ? 260 : 68 }}
         initial={false}
         transition={springs.panel}
       >
