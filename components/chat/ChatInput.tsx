@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useEffect, useState, useCallback } from 'react'
-import { Plus, ChevronDown, Mic, ArrowUp, Square, Settings2, Brain } from 'lucide-react'
+import { Plus, ChevronDown, Mic, ArrowUp, Square, Settings2, Brain, Loader2 } from 'lucide-react'
 import { useChatStore } from '@/lib/store'
 import { InputModelSelector } from './InputModelSelector'
 import { ParameterPopover } from './ParameterPopover'
@@ -24,6 +24,73 @@ const providerEmojis: Record<string, string> = {
   ByteDance: '🎵',
 }
 
+function ThinkingTimer({
+  isWaiting,
+  isThinkingModeEnabled,
+  onToggleThinking,
+}: {
+  isWaiting: boolean
+  isThinkingModeEnabled: boolean
+  onToggleThinking: () => void
+}) {
+  const [elapsedMs, setElapsedMs] = useState(0)
+  const [showTimer, setShowTimer] = useState(false)
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (isWaiting) {
+      const startTime = Date.now()
+      interval = setInterval(() => {
+        const diff = Date.now() - startTime
+        setElapsedMs(diff)
+        if (diff > 1000 && !showTimer) {
+          setShowTimer(true)
+        }
+      }, 100)
+    } else {
+      setShowTimer(false)
+      setElapsedMs(0)
+    }
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [isWaiting, showTimer])
+
+  if (isWaiting && showTimer) {
+    const totalSeconds = Math.floor(elapsedMs / 1000)
+    const minutes = Math.floor(totalSeconds / 60)
+    const seconds = totalSeconds % 60
+    const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+
+    return (
+      <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border h-[34px] bg-zinc-900/80 border-zinc-800 animate-in fade-in duration-300 shadow-md">
+        <Loader2 size={13} className="text-zinc-400 animate-spin" />
+        <span className="text-zinc-400 font-sans hidden sm:inline">Thinking</span>
+        <span className="font-mono text-purple-400 bg-purple-950/40 border border-purple-900/30 px-1.5 py-0.5 rounded ml-1">
+          {formattedTime}
+        </span>
+      </div>
+    )
+  }
+
+  // Fallback to the original toggle
+  return (
+    <button
+      type="button"
+      onClick={onToggleThinking}
+      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer border h-[34px] ${
+        isThinkingModeEnabled
+          ? 'bg-[var(--nc-accent-dim)] text-[var(--nc-accent)] border-[var(--nc-accent)]/30 shadow-[0_0_12px_rgba(124,106,255,0.2)]'
+          : 'bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)]'
+      }`}
+      title="Toggle Deep Thinking Mode"
+    >
+      <Brain size={13} className={isThinkingModeEnabled ? "text-[var(--nc-accent)]" : "opacity-70"} />
+      <span className="hidden sm:inline">Thinking</span>
+    </button>
+  )
+}
+
 export function ChatInput() {
   const { state, dispatch, sendMessage, stopGeneration } = useChatStore()
   const { isGenerating } = state
@@ -33,6 +100,14 @@ export function ChatInput() {
   const [isFocused, setIsFocused] = useState(false)
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false)
   const [parameterPopoverOpen, setParameterPopoverOpen] = useState(false)
+
+  // Compute if we are waiting for the first token
+  const activeConversationId = state.activeConversationId
+  const activeMessages = activeConversationId
+    ? state.conversations.find((c) => c.id === activeConversationId)?.messages || []
+    : []
+  const lastMessage = activeMessages[activeMessages.length - 1]
+  const isWaitingForFirstToken = isGenerating && lastMessage?.role === 'user'
 
   // Auto-focus on mount
   useEffect(() => {
@@ -158,20 +233,12 @@ export function ChatInput() {
             />
           </div>
 
-          {/* Thinking Mode Toggle */}
-          <button
-            type="button"
-            onClick={() => dispatch({ type: 'SET_THINKING', payload: !state.enable_thinking })}
-            className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer border h-[34px] ${
-              state.enable_thinking
-                ? 'bg-[var(--nc-accent-dim)] text-[var(--nc-accent)] border-[var(--nc-accent)]/30 shadow-[0_0_12px_rgba(124,106,255,0.2)]'
-                : 'bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)]'
-            }`}
-            title="Toggle Deep Thinking Mode"
-          >
-            <Brain size={13} className={state.enable_thinking ? "text-[var(--nc-accent)]" : "opacity-70"} />
-            <span className="hidden sm:inline">Thinking</span>
-          </button>
+          {/* Thinking Timer / Toggle */}
+          <ThinkingTimer
+            isWaiting={isWaitingForFirstToken}
+            isThinkingModeEnabled={state.enable_thinking}
+            onToggleThinking={() => dispatch({ type: 'SET_THINKING', payload: !state.enable_thinking })}
+          />
 
           {/* Inference Settings Gear & Popover */}
           <div className="relative flex items-center">
