@@ -47,6 +47,7 @@ export interface Message {
   isStreaming?: boolean
   modelId?: string
   tokens?: number
+  timeToFirstTokenMs?: number
 }
 
 export interface ThemeTokens {
@@ -84,7 +85,7 @@ export interface ChatState {
 
 export type ChatAction =
   | { type: 'SEND_MESSAGE'; payload: { content: string } }
-  | { type: 'APPEND_TOKEN'; payload: { token: string } }
+  | { type: 'APPEND_TOKEN'; payload: { token: string; timeToFirstTokenMs?: number } }
   | { type: 'FINALIZE_RESPONSE' }
   | { type: 'SET_MODEL'; payload: AIModel }
   | { type: 'NEW_CONVERSATION' }
