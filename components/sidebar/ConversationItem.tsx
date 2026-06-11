@@ -31,7 +31,15 @@ export function ConversationItem({
         }
       `}
     >
-      <span className="truncate flex-1">{conversation.title}</span>
+      <span
+        className="whitespace-nowrap overflow-hidden flex-1 pr-2"
+        style={{
+          maskImage: 'linear-gradient(to right, black 80%, transparent 98%)',
+          WebkitMaskImage: 'linear-gradient(to right, black 80%, transparent 98%)',
+        }}
+      >
+        {conversation.title}
+      </span>
 
       {/* Action icons: visible on hover */}
       <span className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ml-2 shrink-0">

@@ -146,7 +146,7 @@ function createMessage(
 
 // ─── Mock Conversations ───────────────────────────────────────────────────────
 
-export const mockConversations: Conversation[] = [
+const rawConversations: Conversation[] = [
   {
     id: 'conv-1',
     title: 'React Server Components Architecture',
@@ -364,3 +364,13 @@ export const mockConversations: Conversation[] = [
     ],
   },
 ]
+
+export const mockConversations: Conversation[] = rawConversations.map(conv => ({
+  ...conv,
+  messages: conv.messages.map(msg => ({
+    ...msg,
+    modelId: conv.modelId,
+    tokens: msg.tokens ?? Math.max(1, Math.round(msg.content.length / 4.2))
+  }))
+}))
+
