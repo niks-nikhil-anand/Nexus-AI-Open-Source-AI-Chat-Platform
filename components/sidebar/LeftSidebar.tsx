@@ -23,9 +23,9 @@ export function LeftSidebar() {
 
   if (!leftSidebarOpen) {
     return (
-      <div className="flex h-full w-full flex-col items-center py-4 bg-[var(--nc-surface-1)] border-r border-[var(--nc-border)]">
+      <div className="flex h-full w-full flex-col items-center pt-8 pb-4 bg-[var(--nc-surface-1)] border-r border-[var(--nc-border)]">
         {/* Top: Toggle Sidebar */}
-        <div className="mb-6">
+        <div className="mb-8">
           <button
             onClick={() => dispatch({ type: 'TOGGLE_LEFT_SIDEBAR' })}
             className="rounded-lg p-2 text-[var(--nc-text-muted)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] transition-colors cursor-pointer"
@@ -107,7 +107,7 @@ export function LeftSidebar() {
   }
 
   return (
-    <div className="flex h-full w-full flex-col bg-[var(--nc-surface-1)]">
+    <div className="flex h-full w-full flex-col bg-[var(--nc-surface-1)] pt-6">
       {/* Header: Logo + Collapse Toggle */}
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2">
@@ -132,7 +132,7 @@ export function LeftSidebar() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col gap-2 px-3 pb-3">
+      <div className="flex flex-col gap-[18px] px-3 pt-4 pb-3">
         <button
           onClick={() => dispatch({ type: 'NEW_CONVERSATION' })}
           className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white bg-[var(--nc-accent)] hover:opacity-90 transition-all shadow-md active:scale-98 cursor-pointer"
