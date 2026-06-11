@@ -22,6 +22,7 @@ const DEFAULT_MODEL = 'mistralai/mistral-large-3-675b-instruct-2512'
 const MODEL_ALIASES: Record<string, string> = {
   'gpt-4o': DEFAULT_MODEL,
   'claude-3-5-sonnet': DEFAULT_MODEL,
+  'claude-4-7-opus': DEFAULT_MODEL,
   'mistral-large-3': DEFAULT_MODEL,
   'gemini-2-5-pro': DEFAULT_MODEL,
   'nemotron-ultra': 'nvidia/nemotron-4-340b-instruct',
