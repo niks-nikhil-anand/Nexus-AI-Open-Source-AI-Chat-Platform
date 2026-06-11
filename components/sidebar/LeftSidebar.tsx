@@ -107,7 +107,7 @@ export function LeftSidebar() {
   }
 
   return (
-    <div className="flex h-full w-full flex-col bg-[var(--nc-surface-1)] pt-6">
+    <div className="flex h-full w-full flex-col bg-[var(--nc-surface-1)] ">
       {/* Header: Logo + Collapse Toggle */}
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2">
