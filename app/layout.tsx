@@ -24,6 +24,9 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "NeuraChat",
   description: "Multi-model AI chat platform",
+  icons: {
+    icon: "/logo2.png",
+  },
 };
 
 export default function RootLayout({
