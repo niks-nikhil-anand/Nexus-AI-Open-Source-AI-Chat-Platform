@@ -1,232 +1,176 @@
 <div align="center">
-  <h1>Nexus AI – Open Source AI Chat Platform</h1>
+  <img src="public/logo.png" alt="Nexus AI - Open Source AI Chat Platform" width="120" />
+  
+  <h1>Nexus AI – Open Source AI Chat Platform & ChatGPT Clone</h1>
+  
   <p>
-    <strong>Nexus AI is an open-source AI chat platform built with Next.js, TypeScript, and modern AI APIs. It supports multiple LLM providers including OpenAI, Claude, Gemini, and NVIDIA APIs with streaming responses, markdown rendering, and a beautiful ChatGPT-like interface.</strong>
+    <a href="https://github.com/niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform/stargazers"><img src="https://img.shields.io/github/stars/niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform?style=for-the-badge&color=yellow" alt="Stars"></a>
+    <a href="https://github.com/niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform/network/members"><img src="https://img.shields.io/github/forks/niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform?style=for-the-badge&color=blue" alt="Forks"></a>
+    <a href="https://github.com/niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform/issues"><img src="https://img.shields.io/github/issues/niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform?style=for-the-badge&color=red" alt="Issues"></a>
+    <a href="https://github.com/niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform/blob/main/LICENSE"><img src="https://img.shields.io/github/license/niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform?style=for-the-badge&color=green" alt="License"></a>
+    <img src="https://img.shields.io/github/last-commit/niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform?style=for-the-badge&color=purple" alt="Last Commit">
   </p>
+
   <p>
-    <a href="https://nexus-ai-one-tawny.vercel.app">Live Demo</a> •
-    <a href="#features">Features</a> •
-    <a href="#installation">Installation</a> •
-    <a href="#tech-stack">Tech Stack</a>
+    <strong>Nexus AI is a self-hosted ChatGPT alternative and open-source AI chat platform built with Next.js 15. It serves as a multi-model generative AI platform supporting OpenAI, Claude, Gemini, and NVIDIA APIs.</strong>
+  </p>
+
+  <p>
+    <a href="https://nexus-ai-one-tawny.vercel.app"><strong>Live Demo</strong></a> ·
+    <a href="#-quick-start-one-command-setup"><strong>Quick Start</strong></a> ·
+    <a href="#-why-nexus-ai"><strong>Why Nexus AI?</strong></a> ·
+    <a href="#-features"><strong>Features</strong></a>
   </p>
 </div>
 
 ---
 
-## 🚀 Live Preview
-Experience the **Next.js AI Chat App** live:
-🔗 **[Nexus AI Live Demo](https://nexus-ai-one-tawny.vercel.app)**
-
-![Nexus AI Chat Interface built with Next.js](public/screenshot.png) *(Note: Add actual screenshot to public/screenshot.png)*
+> **⭐️ Support the Project:** If you find Nexus AI useful, please consider giving it a star! It helps visibility and motivates us to release the upcoming RAG and Voice features faster.
 
 ---
 
-## ✨ Features
+## 📸 See it in Action
 
-Nexus AI serves as a powerful **Generative AI Platform** and **AI Workspace**. Here are the core capabilities:
-- **AI Chat**: Engage in seamless conversations with top-tier language models.
-- **Multi-Model Support**: Easily switch between OpenAI, Claude, Gemini, and NVIDIA API integrations.
-- **Streaming Responses**: Enjoy real-time, streaming AI responses for a fluid chat experience.
-- **Markdown Rendering & Code Highlighting**: Beautifully formatted responses with syntax highlighting for developers.
-- **Authentication**: Secure user login and session management.
-- **Responsive Web UI**: A sleek, fully responsive AI Web UI designed for desktop and mobile.
-- **File Upload**: (Coming Soon) Support for document analysis and RAG Chat Application capabilities.
+*(Add your high-quality GIFs or screenshots here!)*
+
+`![Nexus AI Chat Interface](public/demo-streaming.gif)`
+<br/>
+`![Model Switching and Markdown](public/demo-model-switch.gif)`
 
 ---
 
-## 🛠 Tech Stack
+## ✨ Core Features
 
-Our **Self Hosted ChatGPT** alternative is built with a modern and scalable tech stack:
-- **Framework**: Next.js 15 (App Router)
-- **Frontend**: React, TypeScript, Tailwind CSS, Shadcn/UI, Framer Motion
-- **Database**: PostgreSQL, Prisma ORM
-- **State Management**: Zustand, React Query
-- **AI Integrations**: Vercel AI SDK, OpenAI API, NVIDIA API
+Nexus AI is packed with features that make it the ultimate **Generative AI Platform** and **LLM Chat Interface**.
 
----
-
-## 📸 Screenshots
-*(Add screenshots here to showcase your LLM Chat Interface)*
-- **Chat View**: `![AI Chat Application Interface](public/chat-view.png)`
-- **Model Selection**: `![Multi Model AI Platform Selection](public/model-selection.png)`
-- **Mobile View**: `![Mobile AI Assistant](public/mobile-view.png)`
+- **Multi-Model AI Playground:** Instantly switch between OpenAI (GPT-4o), Anthropic (Claude 3.5 Sonnet), Google (Gemini 1.5 Pro), and NVIDIA enterprise models.
+- **Real-Time Streaming AI Responses:** Fast, native-feeling text generation directly to your UI.
+- **Self Hosted AI Assistant:** Full control over your data privacy and API keys. No vendor lock-in.
+- **Beautiful Modern UI:** Built with Tailwind CSS and Framer Motion for a premium, ChatGPT-like experience.
+- **Developer Ready:** Markdown rendering, code highlighting with copy-to-clipboard, and extensible API routes.
+- **Secure Authentication:** Built-in session management using NextAuth.
 
 ---
 
-## ⚙️ Installation
+## ⚖️ Alternative Comparison Table
 
-To set up your own **Open Source AI Chat** environment locally, follow these steps:
+Searching for the best **ChatGPT Alternative**? See how Nexus AI compares:
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/Nexus-AI.git
-   cd Nexus-AI
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+| Feature | Nexus AI | ChatGPT (Free/Plus) | LibreChat | Open-WebUI |
+|---------|:---:|:---:|:---:|:---:|
+| **Multi-model Support** | ✅ (Multiple APIs) | ❌ (OpenAI only) | ✅ | ✅ |
+| **Self-hosted & Private** | ✅ | ❌ | ✅ | ✅ |
+| **Open Source** | ✅ | ❌ | ✅ | ✅ |
+| **Next.js 15 App Router** | ✅ | ❌ | ❌ | ❌ |
+| **Premium Framer Motion UI** | ✅ | ❌ | ❌ | ❌ |
 
 ---
 
-## 🔐 Environment Variables (.env)
+## 💼 Use Cases
 
-Create a `.env` file in the root directory and configure the following variables. This setup is crucial for your **OpenAI Compatible API** and database connections.
+**Private Corporate AI Workspace**  
+Deploy Nexus AI within your company’s internal network to provide employees with access to cutting-edge LLMs without exposing sensitive company data to public AI services. Protect your API keys centrally.
 
-```env
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/nexus_db"
+**Developer AI Playground**  
+Test out different system prompts and compare the output quality of Claude vs. GPT-4o vs. Gemini simultaneously. Ideal for prompt engineering and model evaluation.
 
-# NextAuth / Authentication
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your_nextauth_secret"
+**Self Hosted ChatGPT Alternative for Personal Use**  
+Run your own AI chat interface locally or on a cheap VPS. Pay only for the API tokens you use instead of an expensive monthly subscription.
 
-# AI Provider APIs
-OPENAI_API_KEY="your_openai_api_key"
-NVIDIA_API_KEY="your_nvidia_api_key"
-GEMINI_API_KEY="your_gemini_api_key"
-ANTHROPIC_API_KEY="your_anthropic_api_key"
+---
+
+## 🏗️ Architecture Overview
+
+Nexus AI utilizes a clean, modern, and highly scalable architecture.
+
+```mermaid
+graph TD
+    User([User]) -->|Interacts| UI[Next.js App Router UI]
+    UI -->|API Requests| API[Next.js API Route Layer]
+    
+    API -->|Vercel AI SDK| ProviderAbstraction[Provider Abstraction Layer]
+    
+    ProviderAbstraction --> OpenAI[OpenAI API]
+    ProviderAbstraction --> Claude[Anthropic API]
+    ProviderAbstraction --> Gemini[Google Gemini API]
+    ProviderAbstraction --> NVIDIA[NVIDIA AI API]
+    ProviderAbstraction --> Local[Local LLMs / Ollama]
+    
+    API <--> DB[(PostgreSQL + Prisma)]
 ```
 
 ---
 
-## 🚀 Running Locally
+## 🛠️ Tech Stack & Installation
 
-Start the development server for your **AI Playground**:
+- **Frontend:** React, Next.js 15, TypeScript, Tailwind CSS, Shadcn UI
+- **Backend/API:** Next.js Server Actions, Vercel AI SDK
+- **Database:** PostgreSQL with Prisma ORM
+- **Authentication:** NextAuth.js
+
+### ⚡ Quick Start: One Command Setup
 
 ```bash
+git clone https://github.com/niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform.git
+cd Nexus-AI-Open-Source-AI-Chat-Platform
+npm install
+cp .env.example .env
 npm run dev
 ```
+*Your instance will be running at [http://localhost:3000](http://localhost:3000).*
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to interact with the **Chat Interface**.
-
----
-
-## 🐳 Docker Setup (Optional)
-Deploying your **AI Agent Platform** via Docker:
-```bash
-docker build -t nexus-ai .
-docker run -p 3000:3000 --env-file .env nexus-ai
+### Environment Configuration
+Make sure your `.env` contains:
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/nexus_db"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your_secret_key"
+OPENAI_API_KEY="your_api_key"
+# Add other keys as needed...
 ```
 
 ---
 
-## 🌍 Deployment Guide
+## 🗺️ Roadmap & Future Plans
 
-**Vercel Deployment:**
-The easiest way to deploy this **Next.js AI Chat App** is using Vercel.
-1. Push your code to GitHub.
-2. Import the repository into Vercel.
-3. Add the necessary Environment Variables.
-4. Deploy!
-
-**Self-Hosted:**
-You can easily self-host this **ChatGPT Clone** on your own VPS using Docker or PM2.
+- [x] Multi-provider integration (OpenAI, Anthropic, Google, NVIDIA)
+- [x] Streaming chat UI with markdown rendering
+- [x] Database persistence with Prisma
+- [ ] **File Upload & Document parsing (RAG Chat Application)** 
+- [ ] **Voice Input & Output**
+- [ ] Vision Capabilities (Image input)
+- [ ] Custom plugin ecosystem
 
 ---
 
-## 📁 Project Structure
+## 🤝 Contributing
 
-```
-nexus-ai/
-├── prisma/             # Database schema
-├── src/
-│   ├── app/            # Next.js App Router pages and API routes
-│   ├── components/     # Reusable UI components
-│   ├── lib/            # Utilities and configurations
-│   ├── store/          # Zustand state management
-│   └── types/          # TypeScript definitions
-├── public/             # Static assets
-└── tailwind.config.ts  # Tailwind CSS configuration
-```
-
----
-
-## 🤖 Supported AI Models
-
-Nexus AI is a true **Multi Model AI Platform**, supporting:
-- **OpenAI**: GPT-4o, GPT-4 Turbo, GPT-3.5
-- **Anthropic**: Claude 3 Opus, Sonnet, Haiku
-- **Google**: Gemini 1.5 Pro, Gemini 1.5 Flash
-- **NVIDIA**: Nemotron, Mixtral, and more
-
----
-
-## 💡 Use Cases
-
-- **AI Playground**: Test different prompts across various models simultaneously.
-- **Self Hosted ChatGPT**: Run a private, secure AI chat instance for your organization.
-- **RAG Chat Application**: Extend the platform to query internal documents securely.
-- **Coding Assistant**: Utilize code highlighting and markdown for software development.
-
----
-
-## ⚡ Performance Optimizations
-- Edge Runtime for API routes to minimize latency.
-- Streaming UI updates for immediate feedback.
-- Optimized database queries using Prisma.
-
----
-
-## 🛡 Security Features
-- Secure NextAuth session handling.
-- Environment variable protection for API keys.
-- Input sanitization and rate limiting on API endpoints.
-
----
-
-## 🗺 Roadmap
-- [x] Basic Chat Interface
-- [x] Multi-Model Support
-- [x] Streaming AI Responses
-- [x] Database Integration (Prisma + PostgreSQL)
-- [ ] File Upload & Document parsing (RAG)
-- [ ] Voice Input & Output
-- [ ] Image Generation Support
-- [ ] Plugin System
-
----
-
-## 🤝 Contributing Guide
-We welcome contributions to make Nexus AI the best **Open Source AI Chat** platform!
-1. Fork the repository.
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4. Push to the branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
-
----
-
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## ❓ FAQ
-
-**Q: Can I use this for commercial purposes?**
-A: Yes, Nexus AI is open-source under the MIT license.
-
-**Q: How do I add a new AI provider?**
-A: You can extend the provider abstraction layer in `src/services/providers` and add the respective API keys.
-
----
-
-## 🙏 Acknowledgements
-- [Next.js](https://nextjs.org/)
-- [Vercel AI SDK](https://sdk.vercel.ai/docs)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Shadcn UI](https://ui.shadcn.com/)
+We welcome contributions! Please see our contribution files:
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [SECURITY.md](SECURITY.md)
 
 ---
 
 ## ⭐ Star History
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/Nexus-AI&type=Date)](https://star-history.com/#yourusername/Nexus-AI&Date)
 
-*(Don't forget to update the GitHub URL in the Star History link!)*
+Watch our **Open Source AI Chat** community grow!
+
+[![Star History Chart](https://api.star-history.com/svg?repos=niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform&type=Date)](https://star-history.com/#niks-nikhil-anand/Nexus-AI-Open-Source-AI-Chat-Platform&Date)
 
 ---
 
-## 🔍 Keywords
-AI Chat Application, Open Source AI Chat, ChatGPT Clone, AI Assistant, Multi Model AI Platform, LLM Chat Interface, OpenAI Compatible API, AI Playground, Generative AI Platform, Next.js AI Chat App, Self Hosted ChatGPT, AI Workspace, AI Web UI, RAG Chat Application, AI Agent Platform, Chat Interface, Streaming AI Responses, OpenAI API Integration, Claude Integration, Gemini Integration, NVIDIA API Integration.
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🔍 GitHub Topics & SEO Keywords
+<details>
+<summary>View Keywords & Topics</summary>
+
+**Topics:** `chatgpt-clone`, `nextjs`, `vercel-ai-sdk`, `self-hosted`, `llm-ui`, `openai`, `claude-3`, `gemini`, `ai`, `chatbot`, `llm`, `generative-ai`, `open-source`, `developer-tools`
+
+**Keywords:** Open Source AI Chat Platform, ChatGPT Alternative, Multi-Model AI Playground, Self Hosted AI Assistant, Next.js AI Chat Application, OpenAI Compatible API, AI Workspace, LLM Chat Interface, RAG Chat Application, Chat Interface, Streaming AI Responses, Generative AI Platform.
+</details>
