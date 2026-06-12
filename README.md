@@ -52,6 +52,47 @@ Nexus AI is packed with features that make it the ultimate **Generative AI Platf
 
 ---
 
+## 🤖 Available AI Models & Details
+
+| Model Name | Provider | Context | Description & Strengths |
+| :--- | :--- | :--- | :--- |
+| **DeepSeek V4 Flash** | DeepSeek | 1M | A highly efficient 284B MoE model built for fast coding and agentic workflows. (Strengths: Coding, Speed, Agentic Workflows) |
+| **DeepSeek V4 Pro** | DeepSeek | 1M | 1.6T MoE optimized for complex software engineering and multi-step tasks. (Strengths: Complex Coding, Large Context, MoE) |
+| **Mistral Small 4 119B** | Mistral | 256K | A hybrid MoE model unifying instruction-following, reasoning, and coding. (Strengths: Multimodal, Reasoning, Coding) |
+| **Ministral 14B Instruct** | Mistral | 262K | An edge-optimized multimodal Small Language Model (SLM). (Strengths: Vision, Edge Deployment, Efficiency) |
+| **Mixtral 8x7B Instruct** | Mistral | 32K | Landmark sparse MoE model offering high efficiency for general text generation. (Strengths: MoE Architecture, Text Generation) |
+| **Nemotron-3 Super 120B** | NVIDIA | 131K | A 120B MoE hybrid balancing speed and intelligence for tool calling and planning. (Strengths: Tool Calling, Planning) |
+| **Nemotron-3 Ultra 550B** | NVIDIA | 1M | Massive 550B model optimized for frontier agentic reasoning and advanced coding. (Strengths: Reasoning, Agentic Workflows) |
+| **Gemma 4 31B IT** | Google | 131K | A highly dense model delivering frontier-level reasoning relative to its compact size. (Strengths: Reasoning, Speed, Efficiency) |
+| **Qwen 3.5 122B** | Alibaba | 262K | A native multimodal MoE agent model processing text, images, and video. (Strengths: Visual Understanding, Tool Use) |
+| **MiniMax M2.7** | MiniMax | 128K | Designed for autonomous software engineering with recursive self-optimization. (Strengths: Agentic LLM, Self-Optimizing) |
+| **Phi-4 Mini Instruct** | Microsoft | 128K | A lightweight SLM relying on synthetic data for logic, math, and coding. (Strengths: Local Execution, Logic & Math) |
+| **Llama 3.3 70B Instruct** | Meta | 128K | Popular open frontier model with state-of-the-art multilingual and conversational abilities. (Strengths: Conversational, Enterprise) |
+| **Step-3.7 Flash** | StepFun | 128K | High-speed, high-concurrency model tailored for real-time customer service. (Strengths: High Throughput, Low Latency) |
+| **Kimi K2.6** | Moonshot | 262K | Specializes in high-speed synthesis of lengthy documents and agile chat. (Strengths: Long Context, Fast Retrieval) |
+| **GPT-OSS 20B** | OpenAI | 131K | A lightweight, developer-friendly edge model for open-source ecosystems. (Strengths: Open Source, Edge Execution) |
+| **GPT-OSS 120B** | OpenAI | 131K | Larger open-source offering to tackle massive reasoning without closed API lock-in. (Strengths: Domain Knowledge, Complex Reasoning) |
+| **Seed-OSS 36B Instruct** | ByteDance | 128K | Agentic intelligence model with native thinking budget capabilities. (Strengths: Agentic Intelligence, Thinking Budget) |
+
+*(Note: These model descriptions, metadata, and scores are defined locally in your codebase under `lib/mock-data.ts`)*
+
+---
+
+## 🔌 API Architecture: How Nexus AI uses the NVIDIA API
+
+Nexus AI uses a highly efficient architectural trick to achieve multi-model support: **It uses the NVIDIA API as a unified model gateway.** 
+
+Here is exactly how it works under the hood (in `app/api/chat/route.ts`):
+
+1. **Local Model Metadata:** The list of models, their stats, and their UI colors are completely hardcoded in `lib/mock-data.ts`—it doesn't waste time fetching the catalogue from NVIDIA on every load.
+2. **Unified NVIDIA Inference Microservices (NIM):** Instead of writing custom API integration code for OpenAI, Google, Anthropic, and Mistral separately (which would require 4 different API keys and 4 different SDK setups), Nexus AI forwards **all** chat requests to a single endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`.
+3. **Model Mapping / Aliasing:** Because NVIDIA hosts many open-weight and frontier models (like Llama, Gemma, Mistral, and DeepSeek) on their own cloud infrastructure, Nexus AI uses a `MODEL_ALIASES` dictionary to translate the user's selected UI model into the exact model string the NVIDIA API expects. For example, if a user clicks `gemini-2-5-pro` on the frontend, the backend maps it to `google/gemma-4-31b-it` and sends it to NVIDIA.
+4. **Single API Key Execution:** The app attaches a single `NVIDIA_API_KEY` as a Bearer token. NVIDIA executes the inference on their GPUs and streams the chunks back to the Next.js API route using the standard OpenAI-compatible SSE (Server-Sent Events) format.
+
+This allows the application to provide a massive catalogue of models without the headache of managing multiple provider SDKs or API keys!
+
+---
+
 ## ⚖️ Alternative Comparison Table
 
 Searching for the best **ChatGPT Alternative**? See how Nexus AI compares:
