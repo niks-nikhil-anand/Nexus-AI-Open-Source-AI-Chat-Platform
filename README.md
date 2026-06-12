@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/logo.png" alt="Nexus AI - Open Source AI Chat Platform" width="120" />
+  <img src="public/logo2.png" alt="Nexus AI - Open Source AI Chat Platform" width="120" />
   
   <h1>Nexus AI – Open Source AI Chat Platform & ChatGPT Clone</h1>
   
