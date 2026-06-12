@@ -8,7 +8,7 @@ import type { Message } from '@/lib/types'
 import { useChatStore } from '@/lib/store'
 import { mockModels } from '@/lib/mock-data'
 import { Markdown } from './Markdown'
-
+import { Skeleton } from '@/components/ui/skeleton'
 interface MessageBubbleProps {
   message: Message
   isLatest: boolean
@@ -149,13 +149,19 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
         >
           {isUser ? (
             message.content
+          ) : isStreaming && message.content.length === 0 ? (
+            <div className="space-y-3 py-2 w-[280px] sm:w-[450px]">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-[90%]" />
+              <Skeleton className="h-4 w-[65%]" />
+            </div>
           ) : (
             <Markdown content={message.content} isStreaming={isStreaming && message.content.length > 0} />
           )}
         </div>
 
         {/* Streaming indicator for latest assistant message */}
-        {!isUser && isLatest && streamingStage !== 'complete' && (
+        {!isUser && isLatest && streamingStage === 'streaming' && (
           <div className="mt-2">
             <StreamingIndicator stage={streamingStage} />
           </div>
