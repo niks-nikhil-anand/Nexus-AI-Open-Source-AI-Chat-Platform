@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
+import Link from "next/link";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,15 +23,20 @@ export default function LoginPage() {
     }
 
     try {
-      // Mocking a network request for authentication
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      if (email === "demo@example.com" && password === "password") {
-        // Set a dummy cookie to simulate authentication state
-        document.cookie = "authToken=mock_token_123; path=/";
-        router.push("/dashboard");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Login failed.");
       } else {
-        setError("Invalid email or password. Try demo@example.com / password");
+        router.push("/dashboard");
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
@@ -119,6 +124,13 @@ export default function LoginPage() {
                 "Sign In"
               )}
             </button>
+          </div>
+          
+          <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
+            Don't have an account?{" "}
+            <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
+              Sign up
+            </Link>
           </div>
         </form>
       </div>
