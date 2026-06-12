@@ -352,12 +352,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
       let currentChatId = state.activeConversationId
       
-      if (!currentChatId) {
+      if (!currentChatId || currentChatId.startsWith('conv-')) {
         try {
           const res = await fetch('/api/chats', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: content.slice(0, 40) || 'New Chat' })
+            body: JSON.stringify({ 
+              title: content.slice(0, 40) || 'New Chat',
+              id: currentChatId || undefined
+            })
           });
           const data = await res.json();
           if (data.chat) {

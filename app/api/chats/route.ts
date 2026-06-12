@@ -46,7 +46,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { title } = body;
+    const { title, id } = body;
     
     if (!title) {
       return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -54,6 +54,7 @@ export async function POST(request: Request) {
 
     const chat = await prisma.chat.create({
       data: {
+        id,
         title,
         userId,
       },
