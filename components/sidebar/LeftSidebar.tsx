@@ -11,9 +11,20 @@ export function LeftSidebar() {
   const { state, dispatch } = useChatStore()
   const { conversations, activeConversationId, theme, leftSidebarOpen } = state
   const [mounted, setMounted] = useState(false)
+  const [user, setUser] = useState<{name: string, email: string} | null>(null)
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0)
+    
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) {
+          setUser(data.user)
+        }
+      })
+      .catch(console.error)
+      
     return () => clearTimeout(timer)
   }, [])
 
@@ -67,12 +78,12 @@ export function LeftSidebar() {
         <div className="mt-auto flex flex-col items-center">
           {/* User Profile Avatar */}
           <div className="relative group/avatar cursor-pointer mb-5">
-            <div className="h-9 w-9 rounded-full bg-[var(--nc-accent)] flex items-center justify-center text-xs text-white font-bold select-none">
-              U
+            <div className="h-9 w-9 rounded-full bg-[var(--nc-accent)] flex items-center justify-center text-xs text-white font-bold select-none uppercase">
+              {user?.name?.charAt(0) || 'U'}
             </div>
             <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-[var(--nc-success)] border-2 border-[var(--nc-surface-1)] animate-pulse" />
             <div className="absolute left-12 top-1/2 -translate-y-1/2 opacity-0 pointer-events-none group-hover/avatar:opacity-100 transition-opacity bg-[var(--nc-surface-3)] text-[10px] text-[var(--nc-text-primary)] px-2 py-1 rounded border border-[var(--nc-border)] whitespace-nowrap shadow-lg z-50">
-              user@neurachat.ai
+              {user?.email || 'user@neurachat.ai'}
             </div>
           </div>
 
@@ -216,15 +227,15 @@ export function LeftSidebar() {
         {/* User profile card widget */}
         <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--nc-surface-1)] border border-[var(--nc-border)] shadow-sm hover:border-[var(--nc-accent)]/30 transition-all">
           <div className="relative flex-shrink-0">
-            <div className="h-9 w-9 rounded-full bg-[var(--nc-accent)] flex items-center justify-center text-xs text-white font-bold select-none">
-              U
+            <div className="h-9 w-9 rounded-full bg-[var(--nc-accent)] flex items-center justify-center text-xs text-white font-bold select-none uppercase">
+              {user?.name?.charAt(0) || 'U'}
             </div>
             {/* Active status indicator dot */}
             <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-[var(--nc-success)] border-2 border-[var(--nc-surface-2)] animate-pulse" />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-xs font-bold text-[var(--nc-text-primary)] leading-none truncate">User Account</span>
-            <span className="text-[10px] text-[var(--nc-text-secondary)] leading-none mt-1.5 truncate">user@neurachat.ai</span>
+            <span className="text-xs font-bold text-[var(--nc-text-primary)] leading-none truncate">{user?.name || 'User Account'}</span>
+            <span className="text-[10px] text-[var(--nc-text-secondary)] leading-none mt-1.5 truncate">{user?.email || 'user@neurachat.ai'}</span>
           </div>
         </div>
 
