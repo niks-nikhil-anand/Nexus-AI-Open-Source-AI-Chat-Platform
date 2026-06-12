@@ -99,8 +99,28 @@ export async function POST(request: Request) {
     )
   }
 
-  let body: unknown
+  // Verify auth token
+  const cookieStore = await import('next/headers').then(m => m.cookies())
+  const token = cookieStore.get('authToken')?.value
+  let userId: string | null = null
+  if (token) {
+    try {
+      const { jwtVerify } = await import('jose')
+      const secret = new TextEncoder().encode(
+        process.env.JWT_SECRET || "fallback_secret_key_for_development_only"
+      )
+      const { payload } = await jwtVerify(token, secret)
+      userId = payload.userId as string
+    } catch {
+      // Ignored
+    }
+  }
 
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  let body: unknown
   try {
     body = await request.json()
   } catch {
@@ -108,6 +128,7 @@ export async function POST(request: Request) {
   }
 
   const payload = body as {
+    chatId?: string
     model?: unknown
     messages?: unknown
     max_tokens?: unknown
@@ -116,6 +137,10 @@ export async function POST(request: Request) {
     top_p?: unknown
     stream?: unknown
     chat_template_kwargs?: unknown
+  }
+
+  if (!payload.chatId) {
+    return NextResponse.json({ error: 'chatId is required.' }, { status: 400 })
   }
 
   if (!Array.isArray(payload.messages) || payload.messages.length === 0) {
@@ -128,6 +153,27 @@ export async function POST(request: Request) {
       { status: 400 }
     )
   }
+
+  const userMessageContent = payload.messages[payload.messages.length - 1].content
+
+  // Check if chat belongs to user and exists
+  const { prisma } = await import('@/lib/prisma')
+  const chat = await prisma.chat.findUnique({
+    where: { id: payload.chatId, userId }
+  })
+
+  if (!chat) {
+    return NextResponse.json({ error: "Chat not found or unauthorized" }, { status: 404 })
+  }
+
+  // Save the user message to the DB
+  await prisma.message.create({
+    data: {
+      content: userMessageContent,
+      role: 'user',
+      chatId: payload.chatId
+    }
+  })
 
   const streamRequested = payload.stream === true
 
@@ -164,6 +210,7 @@ export async function POST(request: Request) {
   }
 
   if (streamRequested) {
+    let assistantResponse = ''
     const responseStream = new ReadableStream({
       async start(controller) {
         const reader = upstreamResponse.body?.getReader()
@@ -194,6 +241,7 @@ export async function POST(request: Request) {
                   const parsed = JSON.parse(dataStr)
                   const content = parsed.choices?.[0]?.delta?.content
                   if (content) {
+                    assistantResponse += content
                     controller.enqueue(new TextEncoder().encode(content))
                   }
                 } catch (e) {
@@ -205,6 +253,25 @@ export async function POST(request: Request) {
         } catch (err) {
           controller.error(err)
         } finally {
+          // Stream is done, save assistant message
+          if (assistantResponse) {
+            try {
+              await prisma.message.create({
+                data: {
+                  content: assistantResponse,
+                  role: 'assistant',
+                  chatId: payload.chatId as string
+                }
+              })
+              // Update chat updated at
+              await prisma.chat.update({
+                where: { id: payload.chatId as string },
+                data: { updatedAt: new Date() }
+              })
+            } catch (dbErr) {
+              console.error("Failed to save assistant message", dbErr)
+            }
+          }
           controller.close()
         }
       },
@@ -227,6 +294,23 @@ export async function POST(request: Request) {
       { error: 'NVIDIA returned an empty chat completion.' },
       { status: 502 }
     )
+  }
+
+  // Save the assistant message to the DB for non-streaming response
+  try {
+    await prisma.message.create({
+      data: {
+        content: content,
+        role: 'assistant',
+        chatId: payload.chatId
+      }
+    })
+    await prisma.chat.update({
+      where: { id: payload.chatId },
+      data: { updatedAt: new Date() }
+    })
+  } catch (dbErr) {
+    console.error("Failed to save non-streaming assistant message", dbErr)
   }
 
   return NextResponse.json({ content })
