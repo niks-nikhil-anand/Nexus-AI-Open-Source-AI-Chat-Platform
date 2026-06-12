@@ -22,8 +22,8 @@ type ChatApiResponse = {
 
 function createInitialState(): ChatState {
   return {
-    conversations: mockConversations,
-    activeConversationId: mockConversations.length > 0 ? mockConversations[0].id : null,
+    conversations: [],
+    activeConversationId: null,
     selectedModel: mockModels[0],
     isGenerating: false,
     leftSidebarOpen: true,
@@ -43,7 +43,7 @@ function createInitialState(): ChatState {
 export function chatReducer(state: ChatState, action: ChatAction): ChatState {
   switch (action.type) {
     case 'SEND_MESSAGE': {
-      const { content } = action.payload
+      const { content, chatId } = action.payload
       const userMessage: Message = {
         id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         role: 'user',
@@ -68,9 +68,9 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         }
       }
 
-      // No active conversation — create a new one
+      // No active conversation locally but we received a real chatId from API creation
       const newConv: Conversation = {
-        id: `conv-${Date.now()}`,
+        id: chatId || `conv-${Date.now()}`,
         title: content.slice(0, 40) + (content.length > 40 ? '...' : ''),
         messages: [userMessage],
         modelId: state.selectedModel.id,
@@ -239,6 +239,10 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
       return { ...state, enable_thinking: action.payload }
     }
 
+    case 'SET_CONVERSATIONS': {
+      return { ...state, conversations: action.payload, activeConversationId: action.payload.length > 0 && !state.activeConversationId ? action.payload[0].id : state.activeConversationId }
+    }
+
     default:
       return state
   }
@@ -300,9 +304,33 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(chatReducer, undefined, createInitialState)
   const cleanupRef = useRef<(() => void) | null>(null)
 
-  // Apply theme on mount
+  // Apply theme and fetch chats on mount
   useEffect(() => {
     applyTheme(state.theme)
+    fetch('/api/chats')
+      .then(res => res.json())
+      .then(data => {
+        if (data.chats) {
+          const loadedChats = data.chats.map((c: any) => ({
+            id: c.id,
+            title: c.title,
+            messages: c.messages?.map((m: any) => ({
+              id: m.id,
+              role: m.role,
+              content: m.content,
+              timestamp: new Date(m.createdAt),
+              modelId: state.selectedModel.id,
+              tokens: Math.max(1, Math.round(m.content.length / 4.2))
+            })) || [],
+            modelId: state.selectedModel.id,
+            createdAt: new Date(c.createdAt),
+            updatedAt: new Date(c.updatedAt),
+            isPinned: false
+          }))
+          dispatch({ type: 'SET_CONVERSATIONS', payload: loadedChats })
+        }
+      })
+      .catch(console.error)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -322,8 +350,26 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         cleanupRef.current = null
       }
 
+      let currentChatId = state.activeConversationId
+      
+      if (!currentChatId) {
+        try {
+          const res = await fetch('/api/chats', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: content.slice(0, 40) || 'New Chat' })
+          });
+          const data = await res.json();
+          if (data.chat) {
+            currentChatId = data.chat.id;
+          }
+        } catch (e) {
+          console.error("Failed to create chat", e);
+        }
+      }
+
       // Dispatch the user message
-      dispatch({ type: 'SEND_MESSAGE', payload: { content } })
+      dispatch({ type: 'SEND_MESSAGE', payload: { content, chatId: currentChatId || undefined } })
 
       // Mark as generating
       dispatch({ type: 'SET_GENERATING', payload: true })
@@ -347,6 +393,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           },
           signal: abortController.signal,
           body: JSON.stringify({
+            chatId: currentChatId,
             model: state.selectedModel.id,
             messages: apiMessages,
             max_tokens: state.max_tokens,
