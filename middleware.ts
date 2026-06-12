@@ -12,8 +12,8 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Define which paths require authentication
-  const protectedPaths = ['/dashboard', '/admin', '/me'];
-  const isProtectedPath = protectedPaths.some((path) => pathname.startsWith(path));
+  const protectedPaths = ['/', '/dashboard', '/admin', '/me'];
+  const isProtectedPath = protectedPaths.some((path) => pathname === path || (pathname.startsWith(path) && path !== '/'));
 
   let isValidToken = false;
 
