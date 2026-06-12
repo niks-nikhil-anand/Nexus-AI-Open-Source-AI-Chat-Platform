@@ -84,7 +84,7 @@ export interface ChatState {
 }
 
 export type ChatAction =
-  | { type: 'SEND_MESSAGE'; payload: { content: string } }
+  | { type: 'SEND_MESSAGE'; payload: { content: string; chatId?: string } }
   | { type: 'APPEND_TOKEN'; payload: { token: string; timeToFirstTokenMs?: number } }
   | { type: 'FINALIZE_RESPONSE' }
   | { type: 'SET_MODEL'; payload: AIModel }
@@ -102,3 +102,4 @@ export type ChatAction =
   | { type: 'SET_TOP_P'; payload: number }
   | { type: 'SET_MAX_TOKENS'; payload: number }
   | { type: 'SET_THINKING'; payload: boolean }
+  | { type: 'SET_CONVERSATIONS'; payload: Conversation[] }
