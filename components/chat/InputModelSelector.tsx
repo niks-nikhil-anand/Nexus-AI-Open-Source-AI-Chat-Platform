@@ -211,41 +211,45 @@ export function InputModelSelector({
                             : "bg-transparent border-transparent hover:bg-[var(--nc-surface-2)] hover:border-[var(--nc-border)]"
                         }`}
                       >
-                        {/* Provider color dot */}
-                        <div className="mt-1.5 flex-shrink-0">
-                          <span
-                            className="w-2.5 h-2.5 rounded-full block"
-                            style={{
-                              backgroundColor: model.providerColor || "var(--nc-text-muted)",
-                              boxShadow: `0 0 8px ${model.providerColor}40`
-                            }}
-                          />
-                        </div>
+                              {/* Provider origin badge */}
+                              <div className="mt-1.5 flex-shrink-0">
+                                <span
+                                  className={`px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wider border ${
+                                    model.provider === 'nvidia'
+                                      ? 'bg-green-500/10 text-green-500 border-green-500/20'
+                                      : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                                  }`}
+                                >
+                                  {model.provider === 'nvidia' ? 'NV' : 'OR'}
+                                </span>
+                              </div>
 
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-sm font-semibold text-[var(--nc-text-primary)] truncate">
-                              {model.name}
-                            </span>
-                            {isSelected && (
-                              <Check className="w-3.5 h-3.5 text-[var(--nc-accent)] flex-shrink-0 ml-auto" />
-                            )}
-                          </div>
-                          <div className="flex flex-wrap items-center gap-2">
-                            {model.strengths && model.strengths.length > 0 && (
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-[var(--nc-surface-3)] text-[var(--nc-text-secondary)]">
-                                <Sparkles className="w-3 h-3 text-[var(--nc-accent)]" />
-                                {model.strengths[0]}
-                              </span>
-                            )}
-                            {model.status && (
-                              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-zinc-800/50 text-zinc-400 border border-zinc-700/50 uppercase tracking-wider">
-                                {model.status}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </button>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="text-sm font-semibold text-[var(--nc-text-primary)] truncate">
+                                    {model.name}
+                                  </span>
+                                  <span className="text-xs text-[var(--nc-text-muted)] truncate">
+                                    {model.size}
+                                  </span>
+                                  {isSelected && (
+                                    <Check className="w-3.5 h-3.5 text-[var(--nc-accent)] flex-shrink-0 ml-auto" />
+                                  )}
+                                </div>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  {model.badge && (
+                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-[var(--nc-surface-3)] text-[var(--nc-text-secondary)]">
+                                      <Sparkles className="w-3 h-3 text-[var(--nc-accent)]" />
+                                      {model.badge}
+                                    </span>
+                                  )}
+                                  {model.status && (
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-zinc-800/50 text-zinc-400 border border-zinc-700/50 uppercase tracking-wider">
+                                      {model.status}
+                                    </span>
+                                  )}
+                                </div>
+                              </div></button>
                     )
                   })}
                 </div>
