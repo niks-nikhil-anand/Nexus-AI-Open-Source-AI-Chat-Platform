@@ -20,10 +20,10 @@ export function Markdown({ content, isStreaming = false }: MarkdownProps) {
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
         components={{
-          p: ({ node, ...props }) => <p className="mb-1 last:mb-0" {...props} />,
-          ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-3 last:mb-0 space-y-1.5" {...props} />,
-          ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-3 last:mb-0 space-y-1.5" {...props} />,
-          li: ({ node, ...props }) => <li className="leading-relaxed marker:text-[var(--nc-text-secondary)] [&>p]:inline [&>p]:m-0" {...props} />,
+          p: ({ node, ...props }) => <p className="mb-3 last:mb-0" {...props} />,
+          ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-3 last:mb-0 space-y-1" {...props} />,
+          ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-3 last:mb-0 space-y-1" {...props} />,
+          li: ({ node, ...props }) => <li className="leading-relaxed marker:text-[var(--nc-text-secondary)]" {...props} />,
           h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
           h2: ({ node, ...props }) => <h2 className="text-xl font-bold mt-4 mb-2" {...props} />,
           h3: ({ node, ...props }) => <h3 className="text-lg font-bold mt-4 mb-2" {...props} />,
