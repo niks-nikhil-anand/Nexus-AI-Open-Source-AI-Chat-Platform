@@ -198,7 +198,7 @@ export function RightPanel() {
           Strengths
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {selectedModel.strengths.map((strength) => (
+          {(selectedModel.strengths || (selectedModel.badge ? [selectedModel.badge] : [])).map((strength) => (
             <span
               key={strength}
               className="rounded-full px-2.5 py-0.5 text-[10px] font-medium text-[var(--nc-accent)] bg-[var(--nc-accent-dim)] border border-[var(--nc-accent)]/20 shadow-[0_0_8px_rgba(124,106,255,0.08)]"
