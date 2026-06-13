@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Check, Search, Sparkles } from "lucide-react"
-import { mockModels } from "@/lib/mock-data"
+import { aiModels } from "@/lib/ai-models"
 import { dropdownVariants, springs } from "@/lib/animations"
 import { AIModel } from "@/lib/types"
 
@@ -29,7 +29,7 @@ export default function ModelSelector({
   const listRef = useRef<HTMLDivElement>(null)
 
   const filteredModels = useMemo(() => {
-    let result = mockModels
+    let result = aiModels
     if (activeCategory !== 'all') {
       result = result.filter(m => m.provider === activeCategory)
     }

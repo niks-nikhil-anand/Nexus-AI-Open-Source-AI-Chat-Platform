@@ -7,7 +7,7 @@ export const PROVIDER_COLORS = {
 
 // ─── Mock AI Models ───────────────────────────────────────────────────────────
 
-export const mockModels: AIModel[] = [
+export const aiModels: AIModel[] = [
   // ==========================================
   // NVIDIA PLATFORM MODELS (provider: 'nvidia')
   // ==========================================

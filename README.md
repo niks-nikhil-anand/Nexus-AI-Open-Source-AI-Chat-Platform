@@ -74,7 +74,7 @@ Nexus AI is packed with features that make it the ultimate **Generative AI Platf
 | **GPT-OSS 120B** | OpenAI | 131K | Larger open-source offering to tackle massive reasoning without closed API lock-in. (Strengths: Domain Knowledge, Complex Reasoning) |
 | **Seed-OSS 36B Instruct** | ByteDance | 128K | Agentic intelligence model with native thinking budget capabilities. (Strengths: Agentic Intelligence, Thinking Budget) |
 
-*(Note: These model descriptions, metadata, and scores are defined locally in your codebase under `lib/mock-data.ts`)*
+*(Note: These model descriptions, metadata, and scores are defined locally in your codebase under `lib/ai-models.ts`)*
 
 ---
 
@@ -84,7 +84,7 @@ Nexus AI uses a highly efficient architectural trick to achieve multi-model supp
 
 Here is exactly how it works under the hood (in `app/api/chat/route.ts`):
 
-1. **Local Model Metadata:** The list of models, their stats, and their UI colors are completely hardcoded in `lib/mock-data.ts`—it doesn't waste time fetching the catalogue from NVIDIA on every load.
+1. **Local Model Metadata:** The list of models, their stats, and their UI colors are completely hardcoded in `lib/ai-models.ts`—it doesn't waste time fetching the catalogue from NVIDIA on every load.
 2. **Unified NVIDIA Inference Microservices (NIM):** Instead of writing custom API integration code for OpenAI, Google, Anthropic, and Mistral separately (which would require 4 different API keys and 4 different SDK setups), Nexus AI forwards **all** chat requests to a single endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`.
 3. **Model Mapping / Aliasing:** Because NVIDIA hosts many open-weight and frontier models (like Llama, Gemma, Mistral, and DeepSeek) on their own cloud infrastructure, Nexus AI uses a `MODEL_ALIASES` dictionary to translate the user's selected UI model into the exact model string the NVIDIA API expects. For example, if a user clicks `gemini-2-5-pro` on the frontend, the backend maps it to `google/gemma-4-31b-it` and sends it to NVIDIA.
 4. **Single API Key Execution:** The app attaches a single `NVIDIA_API_KEY` as a Bearer token. NVIDIA executes the inference on their GPUs and streams the chunks back to the Next.js API route using the standard OpenAI-compatible SSE (Server-Sent Events) format.

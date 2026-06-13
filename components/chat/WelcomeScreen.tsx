@@ -3,10 +3,10 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useChatStore } from '@/lib/store'
-import { mockModels } from '@/lib/mock-data'
+import { aiModels } from '@/lib/ai-models'
 import { springs } from '@/lib/animations'
 
-const chipModels = mockModels.slice(0, 4)
+const chipModels = aiModels.slice(0, 4)
 
 const containerVariants = {
   hidden: {},
@@ -24,7 +24,7 @@ export function WelcomeScreen() {
   const { dispatch } = useChatStore()
 
   function handleModelClick(modelId: string) {
-    const model = mockModels.find((m) => m.id === modelId)
+    const model = aiModels.find((m) => m.id === modelId)
     if (model) {
       dispatch({ type: 'SET_MODEL', payload: model })
       dispatch({ type: 'NEW_CONVERSATION' })

@@ -10,7 +10,7 @@ import React, {
   useMemo,
 } from 'react'
 import type { ChatState, ChatAction, Conversation, Message } from './types'
-import { mockModels, mockConversations } from './mock-data'
+import { aiModels, mockConversations } from './ai-models'
 import { applyTheme, saveTheme, getInitialTheme } from './theme'
 
 type ChatApiResponse = {
@@ -24,7 +24,7 @@ function createInitialState(): ChatState {
   return {
     conversations: [],
     activeConversationId: null,
-    selectedModel: mockModels[0],
+    selectedModel: aiModels[0],
     isGenerating: false,
     leftSidebarOpen: true,
     rightPanelOpen: false,

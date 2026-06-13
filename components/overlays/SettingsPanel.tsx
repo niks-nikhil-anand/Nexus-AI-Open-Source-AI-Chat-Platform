@@ -4,7 +4,7 @@ import { useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Sun, Moon, Download, Trash2, Keyboard } from 'lucide-react'
 import { useChatStore } from '@/lib/store'
-import { mockModels } from '@/lib/mock-data'
+import { aiModels } from '@/lib/ai-models'
 import { springs } from '@/lib/animations'
 
 const SHORTCUTS = [
@@ -184,7 +184,7 @@ export function SettingsPanel() {
                     Default Model
                   </label>
                   <div className="space-y-1">
-                    {mockModels.map((model) => (
+                    {aiModels.map((model) => (
                       <button
                         key={model.id}
                         type="button"

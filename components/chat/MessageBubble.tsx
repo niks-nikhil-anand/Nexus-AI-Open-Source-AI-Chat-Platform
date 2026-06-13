@@ -6,7 +6,7 @@ import { Copy, RefreshCw, ChevronDown, Clock } from 'lucide-react'
 import { StreamingIndicator } from './StreamingIndicator'
 import type { Message } from '@/lib/types'
 import { useChatStore } from '@/lib/store'
-import { mockModels } from '@/lib/mock-data'
+import { aiModels } from '@/lib/ai-models'
 import { Markdown } from './Markdown'
 import { Skeleton } from '@/components/ui/skeleton'
 interface MessageBubbleProps {
@@ -35,7 +35,7 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
     : 'complete'
 
   // Look up model metadata for the badge
-  const model = mockModels.find((m) => m.id === message.modelId) || selectedModel
+  const model = aiModels.find((m) => m.id === message.modelId) || selectedModel
   const providerEmojis: Record<string, string> = {
     OpenAI: '⚡',
     Anthropic: '🎨',

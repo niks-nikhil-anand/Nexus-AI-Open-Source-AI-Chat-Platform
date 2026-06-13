@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Plus, Sun, Moon, Settings, MessageSquare, Cpu } from 'lucide-react'
 import { useChatStore } from '@/lib/store'
-import { mockModels } from '@/lib/mock-data'
+import { aiModels } from '@/lib/ai-models'
 import { paletteVariants, springs } from '@/lib/animations'
 import type { AIModel } from '@/lib/types'
 
@@ -90,7 +90,7 @@ export function CommandPalette() {
     })
 
     // Models
-    mockModels.forEach((model: AIModel) => {
+    aiModels.forEach((model: AIModel) => {
       items.push({
         id: `model-${model.id}`,
         label: `Switch to ${model.name}`,
