@@ -19,49 +19,7 @@ type NvidiaChatResponse = {
 const NVIDIA_CHAT_COMPLETIONS_URL = 'https://integrate.api.nvidia.com/v1/chat/completions'
 const DEFAULT_MODEL = 'deepseek-ai/deepseek-v4-flash'
 
-const MODEL_ALIASES: Record<string, string> = {
-  // Map old frontend model IDs to their closest new equivalents
-  'gpt-4o': 'nvidia/nemotron-3-ultra-550b-a55b',
-  'claude-3-5-sonnet': 'deepseek-ai/deepseek-v4-flash',
-  'claude-4-7-opus': 'nvidia/nemotron-3-ultra-550b-a55b',
-  'mistral-large-3': 'mistralai/mistral-small-4-119b-2603',
-  'gemini-2-5-pro': 'google/gemma-4-31b-it',
-  'nemotron-ultra': 'nvidia/nemotron-3-ultra-550b-a55b',
-  'qwen3-coder': 'nvidia/nemotron-3-super-120b-a12b',
-  'deepseek-r2': 'deepseek-ai/deepseek-v4-flash',
-  'llama-3-1-405b': 'nvidia/nemotron-3-super-120b-a12b',
-  // Standard shortcuts mapping to full model IDs
-  'nemotron-3-ultra-550b-a55b': 'nvidia/nemotron-3-ultra-550b-a55b',
-  'deepseek-v4-flash': 'deepseek-ai/deepseek-v4-flash',
-  'mistral-small-4-119b-2603': 'mistralai/mistral-small-4-119b-2603',
-  'gemma-4-31b-it': 'google/gemma-4-31b-it',
-  'nemotron-3-super-120b-a12b': 'nvidia/nemotron-3-super-120b-a12b',
-  // New model mappings
-  'deepseek-v4-pro': 'deepseek-ai/deepseek-v4-pro',
-  'deepseek-ai/deepseek-v4-pro': 'deepseek-ai/deepseek-v4-pro',
-  'ministral-14b-instruct-2512': 'mistralai/ministral-14b-instruct-2512',
-  'mistralai/ministral-14b-instruct-2512': 'mistralai/ministral-14b-instruct-2512',
-  'mixtral-8x7b-instruct-v0.1': 'mistralai/mixtral-8x7b-instruct-v0.1',
-  'mistralai/mixtral-8x7b-instruct-v0.1': 'mistralai/mixtral-8x7b-instruct-v0.1',
-  'qwen3.5-122b-a10b': 'qwen/qwen3.5-122b-a10b',
-  'qwen/qwen3.5-122b-a10b': 'qwen/qwen3.5-122b-a10b',
-  'minimax-m2.7': 'minimaxai/minimax-m2.7',
-  'minimaxai/minimax-m2.7': 'minimaxai/minimax-m2.7',
-  'phi-4-mini-instruct': 'microsoft/phi-4-mini-instruct',
-  'microsoft/phi-4-mini-instruct': 'microsoft/phi-4-mini-instruct',
-  'llama-3.3-70b-instruct': 'meta/llama-3.3-70b-instruct',
-  'meta/llama-3.3-70b-instruct': 'meta/llama-3.3-70b-instruct',
-  'step-3.7-flash': 'stepfun-ai/step-3.7-flash',
-  'stepfun-ai/step-3.7-flash': 'stepfun-ai/step-3.7-flash',
-  'kimi-k2.6': 'moonshotai/kimi-k2.6',
-  'moonshotai/kimi-k2.6': 'moonshotai/kimi-k2.6',
-  'gpt-oss-20b': 'openai/gpt-oss-20b',
-  'openai/gpt-oss-20b': 'openai/gpt-oss-20b',
-  'gpt-oss-120b': 'openai/gpt-oss-120b',
-  'openai/gpt-oss-120b': 'openai/gpt-oss-120b',
-  'seed-oss-36b-instruct': 'bytedance/seed-oss-36b-instruct',
-  'bytedance/seed-oss-36b-instruct': 'bytedance/seed-oss-36b-instruct',
-}
+import { aiModels } from '@/lib/ai-models'
 
 function resolveModel(model: unknown): string {
   if (typeof model !== 'string' || model.trim().length === 0) {
@@ -70,8 +28,14 @@ function resolveModel(model: unknown): string {
 
   const normalizedModel = model.trim()
   
-  if (normalizedModel in MODEL_ALIASES) {
-    return MODEL_ALIASES[normalizedModel]
+  // Use the alias from the constant aiModels if it matches
+  const foundModel = aiModels.find(m => m.id === normalizedModel || m.endpoint === normalizedModel || m.alias === normalizedModel)
+  
+  if (foundModel && foundModel.alias) {
+    return foundModel.alias
+  }
+  if (foundModel && foundModel.endpoint) {
+    return foundModel.endpoint
   }
 
   // To support dynamic models fully, if the input is unrecognized but non-empty,

@@ -9,6 +9,7 @@ export interface AIModel {
   size: string
   provider: ModelProvider
   endpoint: string
+  alias?: string
   status: 'free' | 'paid' | string
   badge: string
   description?: string

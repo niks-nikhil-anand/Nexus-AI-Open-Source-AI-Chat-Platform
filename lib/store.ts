@@ -398,7 +398,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           signal: abortController.signal,
           body: JSON.stringify({
             chatId: currentChatId,
-            model: state.selectedModel.endpoint,
+            model: state.selectedModel.alias || state.selectedModel.endpoint,
             messages: apiMessages,
             max_tokens: state.max_tokens,
             temperature: state.temperature,
