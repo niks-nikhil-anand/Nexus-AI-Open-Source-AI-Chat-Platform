@@ -31,13 +31,7 @@ export function ConversationItem({
         }
       `}
     >
-      <span
-        className="whitespace-nowrap overflow-hidden flex-1 pr-2"
-        style={{
-          maskImage: 'linear-gradient(to right, black 80%, transparent 98%)',
-          WebkitMaskImage: 'linear-gradient(to right, black 80%, transparent 98%)',
-        }}
-      >
+      <span className="truncate flex-1 pr-2">
         {conversation.title}
       </span>
 

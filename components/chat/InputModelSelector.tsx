@@ -122,8 +122,9 @@ export function InputModelSelector({
             transition={springs.popup}
             className="absolute bottom-full right-0 z-50 mb-3 w-[440px] max-h-[450px] h-[450px] overflow-hidden rounded-2xl border shadow-2xl flex flex-col pointer-events-auto"
             style={{
-              backgroundColor: theme === 'dark' ? 'rgba(20, 19, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-              borderColor: 'var(--nc-border)',
+              backgroundColor: theme === 'dark' ? 'rgba(20, 19, 26, 0.95)' : 'rgba(255, 255, 255, 0.98)',
+              borderColor: theme === 'dark' ? 'var(--nc-border)' : '#e2e8f0',
+              boxShadow: theme === 'dark' ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05)',
               backdropFilter: 'blur(16px)',
               WebkitBackdropFilter: 'blur(16px)',
             }}
@@ -216,8 +217,8 @@ export function InputModelSelector({
                                 <span
                                   className={`px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wider border ${
                                     model.provider === 'nvidia'
-                                      ? 'bg-green-500/10 text-green-500 border-green-500/20'
-                                      : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                                      ? 'bg-green-500/10 text-green-700 dark:text-green-500 border-green-500/20'
+                                      : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-500 border-emerald-500/20'
                                   }`}
                                 >
                                   {model.provider === 'nvidia' ? 'NV' : 'OR'}
@@ -226,7 +227,7 @@ export function InputModelSelector({
 
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 mb-1">
-                                  <span className="text-sm font-semibold text-[var(--nc-text-primary)] truncate">
+                                  <span className={`text-sm font-semibold truncate ${isSelected ? 'text-[var(--nc-accent)] dark:text-[var(--nc-text-primary)]' : 'text-[var(--nc-text-primary)] group-hover:text-black dark:group-hover:text-[var(--nc-text-primary)]'}`}>
                                     {model.name}
                                   </span>
                                   <span className="text-xs text-[var(--nc-text-muted)] truncate">
@@ -238,13 +239,13 @@ export function InputModelSelector({
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2">
                                   {model.badge && (
-                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-[var(--nc-surface-3)] text-[var(--nc-text-secondary)]">
+                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-[var(--nc-surface-3)] text-[var(--nc-accent)]">
                                       <Sparkles className="w-3 h-3 text-[var(--nc-accent)]" />
                                       {model.badge}
                                     </span>
                                   )}
                                   {model.status && (
-                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-zinc-800/50 text-zinc-400 border border-zinc-700/50 uppercase tracking-wider">
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-zinc-200 text-zinc-700 dark:bg-zinc-800/50 dark:text-zinc-400 border border-zinc-300 dark:border-zinc-700/50 uppercase tracking-wider">
                                       {model.status}
                                     </span>
                                   )}
