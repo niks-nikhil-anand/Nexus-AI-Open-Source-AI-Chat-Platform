@@ -139,42 +139,9 @@ export default function ModelSelector({
             className="absolute top-full left-4 z-50 mt-2 w-[480px] max-h-[550px] h-[550px] overflow-hidden rounded-2xl bg-[var(--nc-surface-1)]/95 backdrop-blur-xl border border-[var(--nc-border)] shadow-[0_12px_40px_-10px_rgba(0,0,0,0.5)] flex flex-col"
             onKeyDown={handleKeyDown}
           >
-            {/* Horizontal Tabs */}
-            <div className="flex items-center gap-2 p-3 pb-2 overflow-x-auto scrollbar-hide shrink-0">
-              <button
-                onClick={() => { setActiveCategory('all'); setHighlightIndex(0); }}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                  activeCategory === 'all'
-                    ? 'bg-[var(--nc-text-primary)] text-[var(--nc-surface-1)]'
-                    : 'bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-3)]'
-                }`}
-              >
-                All Models
-              </button>
-              <button
-                onClick={() => { setActiveCategory('nvidia'); setHighlightIndex(0); }}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                  activeCategory === 'nvidia'
-                    ? 'bg-green-500/20 text-green-700 dark:text-green-400'
-                    : 'bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-3)]'
-                }`}
-              >
-                Nvidia API
-              </button>
-              <button
-                onClick={() => { setActiveCategory('openrouter'); setHighlightIndex(0); }}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
-                  activeCategory === 'openrouter'
-                    ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400'
-                    : 'bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-3)]'
-                }`}
-              >
-                OpenRouter API
-              </button>
-            </div>
 
             {/* Search input */}
-            <div className="px-3 pb-3 border-b border-[var(--nc-border)] shrink-0">
+            <div className="p-3 border-b border-[var(--nc-border)] shrink-0">
               <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[var(--nc-surface-2)] border border-[var(--nc-border)] focus-within:border-[var(--nc-accent)] transition-colors">
                 <Search className="w-4 h-4 text-[var(--nc-text-muted)]" />
                 <input
@@ -192,6 +159,40 @@ export default function ModelSelector({
             </div>
 
             <div className="flex flex-1 overflow-hidden">
+              {/* Sidebar Tabs */}
+              <div className="w-[140px] bg-[var(--nc-surface-2)]/30 border-r border-[var(--nc-border)] flex flex-col p-2 gap-1 overflow-y-auto shrink-0">
+                <button
+                  onClick={() => { setActiveCategory('all'); setHighlightIndex(0); }}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                    activeCategory === 'all'
+                      ? 'bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] shadow-sm'
+                      : 'text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-2)]'
+                  }`}
+                >
+                  All Models
+                </button>
+                <button
+                  onClick={() => { setActiveCategory('nvidia'); setHighlightIndex(0); }}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-colors flex items-center justify-between ${
+                    activeCategory === 'nvidia'
+                      ? 'bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] shadow-sm'
+                      : 'text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-2)]'
+                  }`}
+                >
+                  Nvidia API
+                </button>
+                <button
+                  onClick={() => { setActiveCategory('openrouter'); setHighlightIndex(0); }}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                    activeCategory === 'openrouter'
+                      ? 'bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] shadow-sm'
+                      : 'text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-2)]'
+                  }`}
+                >
+                  OpenRouter API
+                </button>
+              </div>
+
               {/* Model list grouped by company */}
               <div ref={listRef} className="overflow-y-auto flex-1 p-3 bg-[var(--nc-surface-1)] relative scroll-smooth">
                 {flatModels.length === 0 && (
