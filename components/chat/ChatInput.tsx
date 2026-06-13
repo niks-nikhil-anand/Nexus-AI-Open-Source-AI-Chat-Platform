@@ -152,10 +152,14 @@ export function ChatInput() {
         backgroundColor: state.theme === 'dark' ? '#121212' : '#FFFFFF',
         borderColor: isFocused
           ? 'var(--nc-accent)'
-          : state.theme === 'dark' ? '#262626' : '#DDDBE8',
+          : state.theme === 'dark' ? '#262626' : '#E5E7EB',
         borderRadius: '24px',
         padding: '16px 16px 12px 16px',
-        boxShadow: isFocused ? 'var(--nc-accent-glow)' : '0 10px 30px -10px rgba(0, 0, 0, 0.3)',
+        boxShadow: isFocused 
+          ? 'var(--nc-accent-glow)' 
+          : state.theme === 'dark' 
+            ? '0 10px 30px -10px rgba(0, 0, 0, 0.3)' 
+            : '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02)',
       }}
     >
       {/* Top Row: Auto-growing Textarea */}

@@ -63,7 +63,7 @@ export function Markdown({ content, isStreaming = false }: MarkdownProps) {
             )
           },
           pre: ({ node, ...props }) => (
-            <pre className="mt-1.5 mb-3 last:mb-0 overflow-x-auto rounded-xl border border-[var(--nc-border)] bg-[#0d1117] text-[13px] py-3" {...props} />
+            <pre className="mt-1.5 mb-3 last:mb-0 overflow-x-auto rounded-xl border border-[var(--nc-border)] bg-[#0f172a] dark:bg-[#0d1117] text-[13px] py-3" {...props} />
           ),
           hr: ({ node, ...props }) => <hr className="my-4 border-[var(--nc-border)]" {...props} />
         }}
