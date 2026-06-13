@@ -9,19 +9,8 @@ import { ParameterPopover } from './ParameterPopover'
 const MAX_HEIGHT = 200
 
 const providerEmojis: Record<string, string> = {
-  OpenAI: '⚡',
-  Anthropic: '🎨',
-  NVIDIA: '🟢',
-  Mistral: '🍊',
-  Alibaba: '💜',
-  DeepSeek: '🔵',
-  Google: '✨',
-  MiniMax: '👾',
-  Microsoft: '🟦',
-  Meta: '♾️',
-  StepFun: '⚡',
-  Moonshot: '🌙',
-  ByteDance: '🎵',
+  nvidia: '🟢',
+  openrouter: '⚡',
 }
 
 function ThinkingTimer({
