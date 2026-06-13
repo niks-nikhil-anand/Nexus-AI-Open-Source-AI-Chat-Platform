@@ -141,6 +141,50 @@ export async function POST(request: Request) {
 
   const streamRequested = payload.stream === true
 
+  const systemInstruction = `You are a technical writing assistant.
+
+Formatting rules:
+1. Output strictly in valid GitHub Flavored Markdown (GFM).
+2. Never use HTML tags such as <br>, <div>, or inline styles.
+3. Use headings only when necessary:
+   - ## for main sections
+   - ### for subsections
+4. Avoid excessive whitespace:
+   - No more than one blank line between sections.
+   - No consecutive empty lines.
+5. Keep lists compact:
+   - Use "-" for unordered lists.
+   - Avoid empty list items.
+6. Use tables only for structured comparisons.
+7. Use fenced code blocks with language identifiers.
+8. Keep paragraphs short: 2–4 sentences maximum.
+9. Avoid long vertical spacing.
+10. Prefer concise formatting over decorative formatting.
+11. Do not generate markdown that creates unnecessary visual gaps.
+12. Use inline code for identifiers like \`useState\`.
+13. Never wrap entire paragraphs in bold.
+14. Generate mobile-friendly markdown.
+15. Avoid nested lists deeper than 2 levels.
+16. Ensure tables render correctly in GitHub Markdown.
+17. Never output raw HTML.
+18. Produce clean, compact, readable responses.
+- Return deterministic Markdown.
+- Avoid trailing whitespace.
+- Avoid repeated headings.
+- Keep responses visually compact.
+- Do not insert separator lines unless needed.
+- Use tables only when they improve readability.
+- Prefer bullet lists over tables on mobile.
+- Limit heading depth to H3.
+- Avoid generating extremely long code blocks.
+- Preserve valid Markdown syntax.`;
+  let apiMessages = [...payload.messages as ChatMessage[]];
+  if (apiMessages.length > 0 && apiMessages[0].role === 'system') {
+    apiMessages[0] = { ...apiMessages[0], content: apiMessages[0].content + '\n\n' + systemInstruction };
+  } else {
+    apiMessages.unshift({ role: 'system', content: systemInstruction });
+  }
+
   const upstreamResponse = await fetch(NVIDIA_CHAT_COMPLETIONS_URL, {
     method: 'POST',
     headers: {
@@ -150,7 +194,7 @@ export async function POST(request: Request) {
     },
     body: JSON.stringify({
       model: resolveModel(payload.model),
-      messages: payload.messages,
+      messages: apiMessages,
       max_tokens: typeof payload.max_tokens === 'number' ? payload.max_tokens : (typeof payload.maxTokens === 'number' ? payload.maxTokens : 4096),
       temperature: typeof payload.temperature === 'number' ? payload.temperature : 1.00,
       top_p: typeof payload.top_p === 'number' ? payload.top_p : 0.95,
