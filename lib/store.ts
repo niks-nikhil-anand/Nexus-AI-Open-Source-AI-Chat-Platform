@@ -151,7 +151,8 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
 
     case 'SET_MODEL': {
       const model = action.payload
-      const max_tokens = state.max_tokens > model.contextWindow ? model.contextWindow : state.max_tokens
+      const contextWindow = model.contextWindow ?? 4096
+      const max_tokens = state.max_tokens > contextWindow ? contextWindow : state.max_tokens
       return { ...state, selectedModel: model, max_tokens }
     }
 

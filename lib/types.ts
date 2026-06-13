@@ -1,31 +1,19 @@
 // NeuraChat type definitions
 
-export type ModelProvider =
-  | 'OpenAI'
-  | 'NVIDIA'
-  | 'Mistral'
-  | 'Alibaba'
-  | 'DeepSeek'
-  | 'Google'
-  | 'Anthropic'
-  | 'MiniMax'
-  | 'Microsoft'
-  | 'Meta'
-  | 'StepFun'
-  | 'Moonshot'
-  | 'ByteDance'
+export type ModelProvider = 'nvidia' | 'openrouter'
 
 export interface AIModel {
   id: string
   name: string
   provider: ModelProvider
   description: string
-  contextWindow: number
-  parameters: string
-  reasoningScore: number
-  codingScore: number
-  strengths: string[]
-  providerColor: string
+  status: 'free' | 'paid'
+  contextWindow?: number
+  parameters?: string
+  reasoningScore?: number
+  codingScore?: number
+  strengths?: string[]
+  providerColor?: string
   isNew?: boolean
 }
 
