@@ -52,13 +52,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Title is required" }, { status: 400 });
     }
 
-    const chat = await prisma.chat.create({
-      data: {
-        id,
-        title,
-        userId,
-      },
-    });
+    let chat;
+    if (id) {
+      chat = await prisma.chat.upsert({
+        where: { id },
+        update: {},
+        create: {
+          id,
+          title,
+          userId,
+        },
+      });
+      
+      if (chat.userId !== userId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+    } else {
+      chat = await prisma.chat.create({
+        data: {
+          title,
+          userId,
+        },
+      });
+    }
 
     return NextResponse.json({ chat });
   } catch (error) {
