@@ -2,261 +2,266 @@ import { AIModel, Conversation } from './types'
 
 // Provider colors
 export const PROVIDER_COLORS = {
-  OpenAI: '#10A37F',
-  NVIDIA: '#76B900',
-  Mistral: '#FF7000',
-  DeepSeek: '#4D6EF5',
-  Alibaba: '#9B59B6',
-  Google: '#EA4335',
-  Anthropic: '#D4A574',
-  MiniMax: '#E01E5A',
-  Microsoft: '#00A4EF',
-  Meta: '#0668E1',
-  StepFun: '#00C2FF',
-  Moonshot: '#FF5C00',
-  ByteDance: '#25F4EE',
+  nvidia: '#76B900',
+  openrouter: '#10A37F',
 } as const
 
 // ─── Mock AI Models ───────────────────────────────────────────────────────────
 
 export const mockModels: AIModel[] = [
   {
-    id: 'deepseek-ai/deepseek-v4-flash',
-    name: 'DeepSeek V4 Flash',
-    provider: 'DeepSeek',
-    description:
-      'A highly efficient 284B MoE model featuring a 1M-token context window. It is purpose-built for lightning-fast coding assistance and complex agentic workflows.',
-    contextWindow: 1000000,
-    parameters: '284B',
-    reasoningScore: 91,
-    codingScore: 94,
-    strengths: ['Coding', 'Speed', 'Agentic Workflows'],
-    providerColor: PROVIDER_COLORS.DeepSeek,
-    isNew: true,
+    "id": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "name": "NVIDIA: Nemotron 3 Ultra",
+    "provider": "nvidia",
+    "description": "A 550B total parameter hybrid MoE architecture built for complex agentic workflows and multi-step orchestration (1M context).",
+    "status": "free",
+    "strengths": [
+      "Agentic"
+    ],
+    "providerColor": "#76B900"
   },
   {
-    id: 'deepseek-ai/deepseek-v4-pro',
-    name: 'DeepSeek V4 Pro',
-    provider: 'DeepSeek',
-    description:
-      'Features an advanced hybrid attention mechanism (Compressed Sparse Attention) that natively supports a massive 1 Million token context window. It runs multiple reasoning intensities and is highly optimized for complex software engineering and multi-step autonomous tasks.',
-    contextWindow: 1000000,
-    parameters: '1.6T MoE',
-    reasoningScore: 97,
-    codingScore: 96,
-    strengths: ['Complex Coding', 'Large Context', 'Reasoning Intensities', 'MoE'],
-    providerColor: PROVIDER_COLORS.DeepSeek,
-    isNew: true,
+    "id": "nvidia/nemotron-3-super-120b-a12b:free",
+    "name": "NVIDIA: Nemotron 3 Super",
+    "provider": "nvidia",
+    "description": "A 120B parameter hybrid Mamba-Transformer MoE optimized for cross-document reasoning and multi-agent systems (1M context).",
+    "status": "free",
+    "strengths": [
+      "Reasoning"
+    ],
+    "providerColor": "#76B900"
   },
   {
-    id: 'mistralai/mistral-small-4-119b-2603',
-    name: 'Mistral Small 4 119B',
-    provider: 'Mistral',
-    description:
-      'A hybrid MoE model that unifies instruction-following, reasoning, and coding with a generous 256k context window and multimodal support.',
-    contextWindow: 262144,
-    parameters: '119B',
-    reasoningScore: 88,
-    codingScore: 89,
-    strengths: ['Multimodal', 'Reasoning', 'Coding', 'Instruction Following'],
-    providerColor: PROVIDER_COLORS.Mistral,
-    isNew: true,
+    "id": "nvidia/nemotron-3.5-content-safety:free",
+    "name": "NVIDIA: Nemotron 3.5 Content Safety",
+    "provider": "nvidia",
+    "description": "A compact 4B parameter multimodal guardrail model fine-tuned from Gemma-3 for prompt/response filtering.",
+    "status": "free",
+    "strengths": [
+      "Multimodal"
+    ],
+    "providerColor": "#76B900"
   },
   {
-    id: 'mistralai/ministral-14b-instruct-2512',
-    name: 'Ministral 14B Instruct',
-    provider: 'Mistral',
-    description:
-      'A multimodal Small Language Model (SLM) that supports vision processing and features a large 262K context window. It is fully capable of running efficiently on edge equipment or single enterprise GPUs.',
-    contextWindow: 262144,
-    parameters: '14B',
-    reasoningScore: 86,
-    codingScore: 84,
-    strengths: ['Multimodal Vision', 'Edge Deployment', 'Low Latency', 'Efficiency'],
-    providerColor: PROVIDER_COLORS.Mistral,
-    isNew: true,
+    "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "name": "NVIDIA: Nemotron 3 Nano Omni",
+    "provider": "nvidia",
+    "description": "A 30B open multimodal perception sub-agent accepting text, image, video, and audio inputs.",
+    "status": "free",
+    "strengths": [
+      "Agentic"
+    ],
+    "providerColor": "#76B900"
   },
   {
-    id: 'mistralai/mixtral-8x7b-instruct-v0.1',
-    name: 'Mixtral 8x7B Instruct',
-    provider: 'Mistral',
-    description:
-      'The landmark sparse Mixture-of-Experts (MoE) model from Mistral AI. It acts like a much larger dense model while keeping computing requirements low, offering high efficiency for general text generation and coding.',
-    contextWindow: 32768,
-    parameters: '47B MoE',
-    reasoningScore: 84,
-    codingScore: 82,
-    strengths: ['MoE Architecture', 'Efficiency', 'Text Generation', 'Coding'],
-    providerColor: PROVIDER_COLORS.Mistral,
+    "id": "nvidia/nemotron-3-nano-30b-a3b:free",
+    "name": "NVIDIA: Nemotron 3 Nano 30B A3B",
+    "provider": "nvidia",
+    "description": "A privacy-focused open-weight MoE designed for specialized local agent architecture.",
+    "status": "free",
+    "strengths": [
+      "Agentic"
+    ],
+    "providerColor": "#76B900"
   },
   {
-    id: 'nvidia/nemotron-3-super-120b-a12b',
-    name: 'Nemotron-3 Super 120B',
-    provider: 'NVIDIA',
-    description:
-      'A 120B MoE hybrid model that balances speed and deep intelligence, excelling at code generation, tool calling, and structured logical planning.',
-    contextWindow: 131072,
-    parameters: '120B',
-    reasoningScore: 92,
-    codingScore: 93,
-    strengths: ['Coding', 'Tool Calling', 'Planning', 'Speed'],
-    providerColor: PROVIDER_COLORS.NVIDIA,
-    isNew: true,
+    "id": "nvidia/nemotron-nano-12b-v2-vl:free",
+    "name": "NVIDIA: Nemotron Nano 12B 2 VL",
+    "provider": "nvidia",
+    "description": "A 12B parameter multimodal reasoning model optimized for document intelligence and video understanding.",
+    "status": "free",
+    "strengths": [
+      "Reasoning"
+    ],
+    "providerColor": "#76B900"
   },
   {
-    id: 'nvidia/nemotron-3-ultra-550b-a55b',
-    name: 'Nemotron-3 Ultra 550B',
-    provider: 'NVIDIA',
-    description:
-      'A massive 550B parameter hybrid Mamba-Transformer Mixture of Experts (MoE) model. It boasts a 1M context window and is specifically optimized for frontier agentic reasoning, planning, and advanced coding tasks.',
-    contextWindow: 1000000,
-    parameters: '550B',
-    reasoningScore: 96,
-    codingScore: 95,
-    strengths: ['Reasoning', 'Planning', 'Agentic Workflows', 'Coding'],
-    providerColor: PROVIDER_COLORS.NVIDIA,
-    isNew: true,
+    "id": "nvidia/nemotron-nano-9b-v2:free",
+    "name": "NVIDIA: Nemotron Nano 9B V2",
+    "provider": "nvidia",
+    "description": "A unified 9B model that defaults to structured reasoning traces before providing final answers.",
+    "status": "free",
+    "strengths": [
+      "Reasoning"
+    ],
+    "providerColor": "#76B900"
   },
   {
-    id: 'google/gemma-4-31b-it',
-    name: 'Gemma 4 31B IT',
-    provider: 'Google',
-    description:
-      'A highly dense 31B model that delivers frontier-level reasoning and coding capabilities relative to its compact size, making it incredibly fast and efficient.',
-    contextWindow: 131072,
-    parameters: '31B',
-    reasoningScore: 90,
-    codingScore: 91,
-    strengths: ['Reasoning', 'Coding', 'Speed', 'Efficiency'],
-    providerColor: PROVIDER_COLORS.Google,
-    isNew: true,
+    "id": "openai/gpt-oss-120b:free",
+    "name": "OpenAI: gpt-oss-120b",
+    "provider": "openrouter",
+    "description": "An open-weight 117B parameter MoE built for high-reasoning tasks and structured output generation.",
+    "status": "free",
+    "strengths": [
+      "Reasoning"
+    ],
+    "providerColor": "#10A37F"
   },
   {
-    id: 'qwen/qwen3.5-122b-a10b',
-    name: 'Qwen 3.5 122B (a10b)',
-    provider: 'Alibaba',
-    description:
-      'A native multimodal Mixture-of-Experts (MoE) agent model. It processes text, images, and video natively while sporting a massive context window and excelling at visual understanding alongside complex tool use.',
-    contextWindow: 262144,
-    parameters: '122B',
-    reasoningScore: 92,
-    codingScore: 91,
-    strengths: ['Multimodal', 'Visual Understanding', 'Tool Use', 'Agentic Workflows'],
-    providerColor: PROVIDER_COLORS.Alibaba,
-    isNew: true,
+    "id": "openai/gpt-oss-20b:free",
+    "name": "OpenAI: gpt-oss-20b",
+    "provider": "openrouter",
+    "description": "A low-latency 21B MoE model optimized for single-GPU enterprise or local deployments.",
+    "status": "free",
+    "strengths": [
+      "General"
+    ],
+    "providerColor": "#10A37F"
   },
   {
-    id: 'minimaxai/minimax-m2.7',
-    name: 'MiniMax M2.7',
-    provider: 'MiniMax',
-    description:
-      'Designed specifically for autonomous office productivity and software engineering. It utilizes a recursive self-optimization feedback loop during training to improve its execution gaps and generate synthetic data.',
-    contextWindow: 128000,
-    parameters: 'M2.7',
-    reasoningScore: 91,
-    codingScore: 93,
-    strengths: ['Agentic LLM', 'Productivity', 'Self-Optimizing', 'Software Engineering'],
-    providerColor: PROVIDER_COLORS.MiniMax,
-    isNew: true,
+    "id": "meta-llama/llama-3.3-70b-instruct:free",
+    "name": "Meta: Llama 3.3 70B Instruct",
+    "provider": "openrouter",
+    "description": "Multilingual dialogue model optimized for reasoning, code assistance, and general instruction following.",
+    "status": "free",
+    "strengths": [
+      "Reasoning"
+    ],
+    "providerColor": "#10A37F"
   },
   {
-    id: 'microsoft/phi-4-mini-instruct',
-    name: 'Phi-4 Mini Instruct',
-    provider: 'Microsoft',
-    description:
-      'A lightweight Small Language Model (SLM) relying on high-quality synthetic data to deliver outsized performance in logic, math, and coding tasks while remaining light enough to run locally.',
-    contextWindow: 128000,
-    parameters: '3.8B',
-    reasoningScore: 85,
-    codingScore: 83,
-    strengths: ['Local Execution', 'Logic & Math', 'Synthetic Data', 'Efficiency'],
-    providerColor: PROVIDER_COLORS.Microsoft,
-    isNew: true,
+    "id": "meta-llama/llama-3.2-3b-instruct:free",
+    "name": "Meta: Llama 3.2 3B Instruct",
+    "provider": "openrouter",
+    "description": "Highly efficient, lightweight multilingual edge model optimized for summarization and fast tasks.",
+    "status": "free",
+    "strengths": [
+      "General"
+    ],
+    "providerColor": "#10A37F"
   },
   {
-    id: 'meta/llama-3.3-70b-instruct',
-    name: 'Llama 3.3 70B Instruct',
-    provider: 'Meta',
-    description:
-      'Meta\'s popular open frontier model. It stands out for state-of-the-art multilingual conversational abilities, advanced reasoning, coding, and excellent structural safety compliance.',
-    contextWindow: 128000,
-    parameters: '70B',
-    reasoningScore: 93,
-    codingScore: 90,
-    strengths: ['Multilingual', 'Reasoning', 'Conversational', 'Enterprise Ready'],
-    providerColor: PROVIDER_COLORS.Meta,
-    isNew: true,
+    "id": "google/gemma-4-26b-a4b-it:free",
+    "name": "Google: Gemma 4 26B A4B",
+    "provider": "openrouter",
+    "description": "Google DeepMind's efficient MoE instruction-tuned model for text, images, and video.",
+    "status": "free",
+    "strengths": [
+      "General"
+    ],
+    "providerColor": "#10A37F"
   },
   {
-    id: 'stepfun-ai/step-3.7-flash',
-    name: 'Step-3.7 Flash',
-    provider: 'StepFun',
-    description:
-      'A high-speed, high-concurrency model tailored for real-time customer service agents, streaming UI tasks, and high-frequency tool-calling environments where speed is prioritized.',
-    contextWindow: 128000,
-    parameters: 'Flash',
-    reasoningScore: 82,
-    codingScore: 80,
-    strengths: ['High Throughput', 'Low Latency', 'Tool Calling', 'Streaming'],
-    providerColor: PROVIDER_COLORS.StepFun,
-    isNew: true,
+    "id": "google/gemma-4-31b-it:free",
+    "name": "Google: Gemma 4 31B",
+    "provider": "openrouter",
+    "description": "A dense 30.7B parameter multimodal model featuring a togglable thinking mode.",
+    "status": "free",
+    "strengths": [
+      "Multimodal"
+    ],
+    "providerColor": "#10A37F"
   },
   {
-    id: 'moonshotai/kimi-k2.6',
-    name: 'Kimi K2.6',
-    provider: 'Moonshot',
-    description:
-      'Tuning across dense inputs, enabling high-speed synthesis of lengthy documents and agile chat interfaces. Built by Moonshot AI, the pioneers of massive context windows.',
-    contextWindow: 262144,
-    parameters: 'K2.6',
-    reasoningScore: 89,
-    codingScore: 85,
-    strengths: ['Long Context', 'Document Synthesis', 'Agile Chat', 'Fast Retrieval'],
-    providerColor: PROVIDER_COLORS.Moonshot,
-    isNew: true,
+    "id": "qwen/qwen3-next-80b-a3b-instruct:free",
+    "name": "Qwen: Qwen3 Next 80B A3B Instruct",
+    "provider": "openrouter",
+    "description": "Optimized for production throughput, tool calls, and steady RAG pipelines without exposing visible CoT.",
+    "status": "free",
+    "strengths": [
+      "General"
+    ],
+    "providerColor": "#10A37F"
   },
   {
-    id: 'openai/gpt-oss-20b',
-    name: 'GPT-OSS 20B',
-    provider: 'OpenAI',
-    description:
-      'OpenAI\'s push into structured open-source ecosystems. Designed as a lightweight, developer-friendly edge model.',
-    contextWindow: 131072,
-    parameters: '20B',
-    reasoningScore: 83,
-    codingScore: 81,
-    strengths: ['Open Source', 'Edge Execution', 'Developer Friendly', 'Efficiency'],
-    providerColor: PROVIDER_COLORS.OpenAI,
-    isNew: true,
+    "id": "qwen/qwen3-coder:free",
+    "name": "Qwen: Qwen3 Coder 480B A35B",
+    "provider": "openrouter",
+    "description": "Massive open MoE fine-tuned explicitly for codebase reasoning and multi-file software engineering.",
+    "status": "free",
+    "strengths": [
+      "Reasoning"
+    ],
+    "providerColor": "#10A37F"
   },
   {
-    id: 'openai/gpt-oss-120b',
-    name: 'GPT-OSS 120B',
-    provider: 'OpenAI',
-    description:
-      'OpenAI\'s larger open-source offering, designed to tackle massive reasoning and broader domain knowledge without requiring closed-source API architecture.',
-    contextWindow: 131072,
-    parameters: '120B',
-    reasoningScore: 94,
-    codingScore: 92,
-    strengths: ['Open Source', 'Domain Knowledge', 'Complex Reasoning', 'No API Lock-in'],
-    providerColor: PROVIDER_COLORS.OpenAI,
-    isNew: true,
+    "id": "poolside/laguna-xs.2:free",
+    "name": "Poolside: Laguna XS.2",
+    "provider": "openrouter",
+    "description": "Second-generation lightweight developer companion optimized for fast syntax corrections and reasoning.",
+    "status": "free",
+    "strengths": [
+      "Reasoning"
+    ],
+    "providerColor": "#10A37F"
   },
   {
-    id: 'bytedance/seed-oss-36b-instruct',
-    name: 'Seed-OSS 36B Instruct',
-    provider: 'ByteDance',
-    description:
-      'ByteDance\'s core open-source contender designed around agentic intelligence, robust long-context reasoning, and native thinking budget capabilities.',
-    contextWindow: 128000,
-    parameters: '36B',
-    reasoningScore: 88,
-    codingScore: 87,
-    strengths: ['Agentic Intelligence', 'Thinking Budget', 'Long Context', 'Logical Reasoning'],
-    providerColor: PROVIDER_COLORS.ByteDance,
-    isNew: true,
+    "id": "poolside/laguna-m.1:free",
+    "name": "Poolside: Laguna M.1",
+    "provider": "openrouter",
+    "description": "Flagship coding agent designed to parse complex logic and interact cleanly with programming tools.",
+    "status": "free",
+    "strengths": [
+      "Coding"
+    ],
+    "providerColor": "#10A37F"
   },
+  {
+    "id": "liquid/lfm-2.5-1.2b-thinking:free",
+    "name": "LiquidAI: LFM2.5-1.2B-Thinking",
+    "provider": "openrouter",
+    "description": "Lightweight on-device architecture with extended thinking capabilities for data extraction and RAG.",
+    "status": "free",
+    "strengths": [
+      "General"
+    ],
+    "providerColor": "#10A37F"
+  },
+  {
+    "id": "liquid/lfm-2.5-1.2b-instruct:free",
+    "name": "LiquidAI: LFM2.5-1.2B-Instruct",
+    "provider": "openrouter",
+    "description": "Fast, instruction-aligned edge framework for conversational assistance.",
+    "status": "free",
+    "strengths": [
+      "General"
+    ],
+    "providerColor": "#10A37F"
+  },
+  {
+    "id": "nex-agi/nex-n2-pro:free",
+    "name": "Nex AGI: Nex-N2-Pro",
+    "provider": "openrouter",
+    "description": "A 302B token agentic MoE model mapping planning, code debugging, and tool loops on top of Qwen3.5.",
+    "status": "free",
+    "strengths": [
+      "Agentic"
+    ],
+    "providerColor": "#10A37F"
+  },
+  {
+    "id": "venice/uncensored:free",
+    "name": "Venice: Uncensored",
+    "provider": "openrouter",
+    "description": "A 24B Mistral-based fine-tune developed to preserve steerability without mainstream safety/alignment layers.",
+    "status": "free",
+    "strengths": [
+      "General"
+    ],
+    "providerColor": "#10A37F"
+  },
+  {
+    "id": "nousresearch/hermes-3-llama-3.1-405b:free",
+    "name": "Nous: Hermes 3 405B Instruct",
+    "provider": "openrouter",
+    "description": "Frontier-level full parameter fine-tune of Llama 3.1 405B focusing on extreme user roleplay and advanced agent alignment.",
+    "status": "free",
+    "strengths": [
+      "Agentic"
+    ],
+    "providerColor": "#10A37F"
+  },
+  {
+    "id": "openrouter/free",
+    "name": "OpenRouter: free",
+    "provider": "openrouter",
+    "description": "An automated auto-routing endpoint that analyzes your request constraints (like tools or images) and distributes traffic dynamically among active free providers.",
+    "status": "free",
+    "strengths": [
+      "Auto-Routing"
+    ],
+    "providerColor": "#10A37F"
+  }
 ]
 
 export const mockConversations: Conversation[] = []

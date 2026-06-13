@@ -5,7 +5,8 @@ import { motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { useChatStore } from '@/lib/store'
 
-function formatContextWindow(value: number): string {
+function formatContextWindow(value?: number): string {
+  if (value === undefined) return 'Unknown'
   if (value >= 1000000) {
     return `${(value / 1000000).toFixed(value % 1000000 === 0 ? 0 : 1)}M`
   }
@@ -66,12 +67,14 @@ export function RightPanel() {
   const [temperature, setTemperature] = useState(0.7)
   const [maxTokens, setMaxTokens] = useState(4096)
 
+  const contextWindow = selectedModel.contextWindow ?? 131072
+
   // Auto-clamp max tokens when changing models if they exceed the context window
   useEffect(() => {
-    if (maxTokens > selectedModel.contextWindow) {
-      setMaxTokens(selectedModel.contextWindow)
+    if (maxTokens > contextWindow) {
+      setMaxTokens(contextWindow)
     }
-  }, [selectedModel, maxTokens])
+  }, [contextWindow, maxTokens])
 
   return (
     <div
@@ -131,15 +134,15 @@ export function RightPanel() {
         <div className="rounded-xl p-3 bg-[var(--nc-surface-2)] border border-[var(--nc-border)]">
           <div className="text-[10px] uppercase font-bold tracking-wider text-[var(--nc-text-muted)]">Parameters</div>
           <div className="mt-1 text-sm font-bold text-[var(--nc-text-primary)]">
-            {selectedModel.parameters}
+            {selectedModel.parameters ?? 'Unknown'}
           </div>
         </div>
       </div>
 
       {/* Visual Stats: Reasoning & Coding Circular Progress */}
       <div className="grid grid-cols-2 gap-3">
-        <CircularProgress value={selectedModel.reasoningScore} label="Reasoning" />
-        <CircularProgress value={selectedModel.codingScore} label="Coding" />
+        <CircularProgress value={selectedModel.reasoningScore ?? 0} label="Reasoning" />
+        <CircularProgress value={selectedModel.codingScore ?? 0} label="Coding" />
       </div>
 
       {/* Capabilities Progress Bars */}
@@ -152,7 +155,7 @@ export function RightPanel() {
         <div>
           <div className="mb-1 flex items-center justify-between text-[11px]">
             <span className="text-[var(--nc-text-secondary)] font-medium">Reasoning Level</span>
-            <span className="font-bold text-[var(--nc-text-primary)]">{selectedModel.reasoningScore}%</span>
+            <span className="font-bold text-[var(--nc-text-primary)]">{selectedModel.reasoningScore ?? 0}%</span>
           </div>
           <div className="h-1.5 w-full bg-[var(--nc-surface-3)] rounded-full overflow-hidden">
             <motion.div
@@ -161,7 +164,7 @@ export function RightPanel() {
                 background: 'linear-gradient(90deg, var(--nc-accent), var(--nc-info))',
               }}
               initial={{ width: '0%' }}
-              animate={{ width: `${selectedModel.reasoningScore}%` }}
+              animate={{ width: `${selectedModel.reasoningScore ?? 0}%` }}
               transition={{ delay: 0.1, duration: 0.8 }}
               key={`reasoning-${selectedModel.id}`}
             />
@@ -172,7 +175,7 @@ export function RightPanel() {
         <div>
           <div className="mb-1 flex items-center justify-between text-[11px]">
             <span className="text-[var(--nc-text-secondary)] font-medium">Coding Level</span>
-            <span className="font-bold text-[var(--nc-text-primary)]">{selectedModel.codingScore}%</span>
+            <span className="font-bold text-[var(--nc-text-primary)]">{selectedModel.codingScore ?? 0}%</span>
           </div>
           <div className="h-1.5 w-full bg-[var(--nc-surface-3)] rounded-full overflow-hidden">
             <motion.div
@@ -181,7 +184,7 @@ export function RightPanel() {
                 background: 'linear-gradient(90deg, var(--nc-info), var(--nc-success))',
               }}
               initial={{ width: '0%' }}
-              animate={{ width: `${selectedModel.codingScore}%` }}
+              animate={{ width: `${selectedModel.codingScore ?? 0}%` }}
               transition={{ delay: 0.2, duration: 0.8 }}
               key={`coding-${selectedModel.id}`}
             />
@@ -253,7 +256,7 @@ export function RightPanel() {
             id="max-tokens-slider"
             type="range"
             min={256}
-            max={selectedModel.contextWindow}
+            max={contextWindow}
             step={256}
             value={maxTokens}
             onChange={(e) => setMaxTokens(Number(e.target.value))}
