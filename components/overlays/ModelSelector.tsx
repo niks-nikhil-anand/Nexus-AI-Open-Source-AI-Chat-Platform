@@ -36,11 +36,34 @@ export default function ModelSelector({
     if (search.trim()) {
       const query = search.toLowerCase()
       result = result.filter(
-        (m) => m.name.toLowerCase().includes(query)
+        (m) => m.name.toLowerCase().includes(query) || m.company.toLowerCase().includes(query)
       )
     }
     return result
   }, [search, activeCategory])
+
+  const groupedModels = useMemo(() => {
+    const groups: Record<string, AIModel[]> = {}
+    for (const model of filteredModels) {
+      if (!groups[model.company]) {
+        groups[model.company] = []
+      }
+      groups[model.company].push(model)
+    }
+    const sortedGroups: Record<string, AIModel[]> = {}
+    Object.keys(groups).sort().forEach(key => {
+      sortedGroups[key] = groups[key]
+    })
+    return sortedGroups
+  }, [filteredModels])
+
+  const flatModels = useMemo(() => {
+    const result: AIModel[] = []
+    for (const company of Object.keys(groupedModels)) {
+      result.push(...groupedModels[company])
+    }
+    return result
+  }, [groupedModels])
 
   useEffect(() => {
     if (isOpen) {
@@ -70,19 +93,19 @@ export default function ModelSelector({
         case "ArrowDown":
           e.preventDefault()
           setHighlightIndex((prev) =>
-            prev < filteredModels.length - 1 ? prev + 1 : 0
+            prev < flatModels.length - 1 ? prev + 1 : 0
           )
           break
         case "ArrowUp":
           e.preventDefault()
           setHighlightIndex((prev) =>
-            prev > 0 ? prev - 1 : filteredModels.length - 1
+            prev > 0 ? prev - 1 : flatModels.length - 1
           )
           break
         case "Enter":
           e.preventDefault()
-          if (filteredModels[highlightIndex]) {
-            onSelect(filteredModels[highlightIndex])
+          if (flatModels[highlightIndex]) {
+            onSelect(flatModels[highlightIndex])
             onClose()
           }
           break
@@ -92,8 +115,10 @@ export default function ModelSelector({
           break
       }
     },
-    [filteredModels, highlightIndex, onSelect, onClose]
+    [flatModels, highlightIndex, onSelect, onClose]
   )
+
+  let runningIndex = 0
 
   return (
     <AnimatePresence>
@@ -167,35 +192,45 @@ export default function ModelSelector({
                 </button>
               </div>
 
-              {/* Model list */}
-              <div ref={listRef} className="overflow-y-auto flex-1 p-2 bg-[var(--nc-surface-1)]">
-                {filteredModels.length === 0 && (
+              {/* Model list grouped by company */}
+              <div ref={listRef} className="overflow-y-auto flex-1 p-2 bg-[var(--nc-surface-1)] relative">
+                {flatModels.length === 0 && (
                   <p className="px-3 py-6 text-center text-sm font-medium text-[var(--nc-text-muted)]">
                     No models found
                   </p>
                 )}
 
-                <div className="flex flex-col gap-1">
-                  {filteredModels.map((model, index) => {
-                    const isSelected = model.id === currentModelId
-                    const isHighlighted = index === highlightIndex
+                <div className="flex flex-col">
+                  {Object.entries(groupedModels).map(([company, models]) => (
+                    <div key={company} className="mb-4 last:mb-0">
+                      {/* Company Header (Sticky) */}
+                      <div className="sticky top-0 z-10 py-1.5 px-3 mb-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--nc-text-muted)] border-b border-[var(--nc-border)]/50 bg-[var(--nc-surface-1)]/95 backdrop-blur-md">
+                        {company}
+                      </div>
+                      
+                      {/* Models for this company */}
+                      <div className="flex flex-col gap-1">
+                        {models.map((model) => {
+                          const index = runningIndex++
+                          const isSelected = model.id === currentModelId
+                          const isHighlighted = index === highlightIndex
 
-                    return (
-                      <button
-                        key={model.id}
-                        data-index={index}
-                        onClick={() => {
-                          onSelect(model)
-                          onClose()
-                        }}
-                        className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-xl text-left transition-colors border group ${
-                          isSelected
-                            ? "bg-[var(--nc-accent-dim)] border-[var(--nc-accent)]/30"
-                            : isHighlighted
-                            ? "bg-[var(--nc-surface-2)] border-[var(--nc-border)]"
-                            : "bg-transparent border-transparent hover:bg-[var(--nc-surface-2)] hover:border-[var(--nc-border)]"
-                        }`}
-                      >
+                          return (
+                            <button
+                              key={model.id}
+                              data-index={index}
+                              onClick={() => {
+                                onSelect(model)
+                                onClose()
+                              }}
+                              className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-xl text-left transition-colors border group ${
+                                isSelected
+                                  ? "bg-[var(--nc-accent-dim)] border-[var(--nc-accent)]/30"
+                                  : isHighlighted
+                                  ? "bg-[var(--nc-surface-2)] border-[var(--nc-border)]"
+                                  : "bg-transparent border-transparent hover:bg-[var(--nc-surface-2)] hover:border-[var(--nc-border)]"
+                              }`}
+                            >
                               {/* Provider origin badge */}
                               <div className="mt-1.5 flex-shrink-0">
                                 <span
@@ -234,9 +269,13 @@ export default function ModelSelector({
                                     </span>
                                   )}
                                 </div>
-                              </div></button>
-                    )
-                  })}
+                              </div>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
