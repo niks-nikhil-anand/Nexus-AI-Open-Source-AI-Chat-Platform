@@ -22,9 +22,9 @@ const DEFAULT_MODEL = 'deepseek-ai/deepseek-v4-flash'
 import { aiModels } from '@/lib/ai-models'
 import { SYSTEM_PROMPT } from '@/lib/prompts'
 
-function resolveModel(model: unknown): string {
+function resolveModelInfo(model: unknown): { endpoint: string, provider: string } {
   if (typeof model !== 'string' || model.trim().length === 0) {
-    return DEFAULT_MODEL
+    return { endpoint: DEFAULT_MODEL, provider: 'nvidia' }
   }
 
   const normalizedModel = model.trim()
@@ -32,16 +32,14 @@ function resolveModel(model: unknown): string {
   // Use the alias from the constant aiModels if it matches
   const foundModel = aiModels.find(m => m.id === normalizedModel || m.endpoint === normalizedModel || m.alias === normalizedModel)
   
-  if (foundModel && foundModel.alias) {
-    return foundModel.alias
-  }
-  if (foundModel && foundModel.endpoint) {
-    return foundModel.endpoint
+  if (foundModel) {
+    return {
+      endpoint: foundModel.alias || foundModel.endpoint || normalizedModel,
+      provider: foundModel.provider || 'nvidia'
+    }
   }
 
-  // To support dynamic models fully, if the input is unrecognized but non-empty,
-  // we return it directly so that any NVIDIA API compatible model can be passed.
-  return normalizedModel
+  return { endpoint: normalizedModel, provider: 'nvidia' }
 }
 
 function isChatMessage(value: unknown): value is ChatMessage {
@@ -55,14 +53,8 @@ function isChatMessage(value: unknown): value is ChatMessage {
 }
 
 export async function POST(request: Request) {
-  const apiKey = process.env.NVIDIA_API_KEY
-
-  if (!apiKey) {
-    return NextResponse.json(
-      { error: 'Missing NVIDIA_API_KEY. Add it to your .env.local file and restart the dev server.' },
-      { status: 500 }
-    )
-  }
+  const nvidiaApiKey = process.env.NVIDIA_API_KEY
+  const openrouterApiKey = process.env.OPENROUTER_API_KEY
 
   // Verify auth token
   const cookieStore = await import('next/headers').then(m => m.cookies())
@@ -149,15 +141,30 @@ export async function POST(request: Request) {
     apiMessages.unshift({ role: 'system', content: SYSTEM_PROMPT });
   }
 
-  const upstreamResponse = await fetch(NVIDIA_CHAT_COMPLETIONS_URL, {
+  const modelInfo = resolveModelInfo(payload.model);
+  const apiUrl = modelInfo.provider === 'openrouter' ? 'https://openrouter.ai/api/v1/chat/completions' : NVIDIA_CHAT_COMPLETIONS_URL;
+  const activeApiKey = modelInfo.provider === 'openrouter' ? openrouterApiKey : nvidiaApiKey;
+
+  if (!activeApiKey) {
+    return NextResponse.json(
+      { error: `Missing API key for provider ${modelInfo.provider}. Add it to your .env.local file.` },
+      { status: 500 }
+    )
+  }
+
+  const upstreamResponse = await fetch(apiUrl, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${activeApiKey}`,
       Accept: streamRequested ? 'text/event-stream' : 'application/json',
       'Content-Type': 'application/json',
+      ...(modelInfo.provider === 'openrouter' ? {
+        'HTTP-Referer': 'http://localhost:3000',
+        'X-Title': 'Nexus AI'
+      } : {})
     },
     body: JSON.stringify({
-      model: resolveModel(payload.model),
+      model: modelInfo.endpoint,
       messages: apiMessages,
       max_tokens: typeof payload.max_tokens === 'number' ? payload.max_tokens : (typeof payload.maxTokens === 'number' ? payload.maxTokens : 4096),
       temperature: typeof payload.temperature === 'number' ? payload.temperature : 1.00,
@@ -165,7 +172,7 @@ export async function POST(request: Request) {
       frequency_penalty: 0,
       presence_penalty: 0,
       stream: streamRequested,
-      ...(payload.chat_template_kwargs ? { chat_template_kwargs: payload.chat_template_kwargs } : {}),
+      ...(payload.chat_template_kwargs && modelInfo.provider !== 'openrouter' ? { chat_template_kwargs: payload.chat_template_kwargs } : {}),
     }),
   })
 
@@ -175,7 +182,7 @@ export async function POST(request: Request) {
       {
         error:
           data.error?.message ??
-          `NVIDIA chat completion failed with status ${upstreamResponse.status}.`,
+          `${modelInfo.provider} chat completion failed with status ${upstreamResponse.status}.`,
       },
       { status: upstreamResponse.status }
     )
