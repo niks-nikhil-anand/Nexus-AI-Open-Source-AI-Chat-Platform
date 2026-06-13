@@ -128,7 +128,7 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
 
         {/* Message content */}
         <div
-          className="whitespace-pre-wrap break-words"
+          className={`${isUser ? 'whitespace-pre-wrap' : ''} break-words`}
           style={
             isUser
               ? {
