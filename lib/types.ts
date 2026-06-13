@@ -5,14 +5,18 @@ export type ModelProvider = 'nvidia' | 'openrouter'
 export interface AIModel {
   id: string
   name: string
+  company: string
+  size: string
   provider: ModelProvider
-  description: string
-  status: 'free' | 'paid'
+  endpoint: string
+  status: 'free' | 'paid' | string
+  badge: string
+  description?: string
+  strengths?: string[]
   contextWindow?: number
   parameters?: string
   reasoningScore?: number
   codingScore?: number
-  strengths?: string[]
   providerColor?: string
   isNew?: boolean
 }
