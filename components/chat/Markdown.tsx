@@ -1,6 +1,10 @@
 'use client'
 
 import React from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
+import 'highlight.js/styles/github-dark.css'
 
 interface MarkdownProps {
   content: string
@@ -8,262 +12,65 @@ interface MarkdownProps {
 }
 
 export function Markdown({ content, isStreaming = false }: MarkdownProps) {
-  // Split by horizontal rules: \n---\n, \n***\n, \n___\n
-  const sections = content.split(/(?:\r?\n\s*(?:---|___|\*\*\*)\s*(?:\r?\n|$))/)
-
-  if (sections.length <= 1) {
-    return <MarkdownSection content={content} isStreaming={isStreaming} />
-  }
+  // If streaming, append a blinking cursor character
+  const displayContent = content + (isStreaming ? ' ▍' : '')
 
   return (
-    <div className="space-y-4 w-full">
-      {sections.map((section, idx) => {
-        if (!section.trim()) return null
-        return (
-          <div
-            key={idx}
-            className="w-full bg-[var(--nc-surface-2)]/30 border border-[var(--nc-border)] rounded-2xl px-5 py-4 shadow-sm hover:border-[var(--nc-accent)]/20 transition-all duration-200"
-          >
-            <MarkdownSection
-              content={section}
-              isStreaming={isStreaming && idx === sections.length - 1}
+    <div className="markdown-body text-[15px] leading-[1.6] text-[var(--nc-text-primary)] break-words w-full">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeHighlight]}
+        components={{
+          p: ({ node, ...props }) => <p className="my-2 leading-[1.6]" {...props} />,
+          ul: ({ node, ...props }) => <ul className="list-disc pl-5 my-2" {...props} />,
+          ol: ({ node, ...props }) => <ol className="list-decimal pl-5 my-2" {...props} />,
+          li: ({ node, ...props }) => <li className="my-1 leading-relaxed" {...props} />,
+          h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
+          h2: ({ node, ...props }) => <h2 className="text-xl font-bold mt-4 mb-2" {...props} />,
+          h3: ({ node, ...props }) => <h3 className="text-lg font-bold mt-4 mb-2" {...props} />,
+          h4: ({ node, ...props }) => <h4 className="text-base font-bold mt-4 mb-2" {...props} />,
+          strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
+          em: ({ node, ...props }) => <em className="italic text-[var(--nc-text-secondary)]" {...props} />,
+          a: ({ node, ...props }) => (
+            <a
+              className="text-[var(--nc-accent)] hover:underline font-medium break-all"
+              target="_blank"
+              rel="noopener noreferrer"
+              {...props}
             />
-          </div>
-        )
-      })}
+          ),
+          table: ({ node, ...props }) => (
+            <div className="my-4 w-full overflow-x-auto rounded-xl border border-[var(--nc-border)] bg-[var(--nc-surface-2)]">
+              <table className="w-full text-left text-sm" {...props} />
+            </div>
+          ),
+          thead: ({ node, ...props }) => <thead className="bg-[var(--nc-surface-3)] border-b border-[var(--nc-border)]" {...props} />,
+          th: ({ node, ...props }) => <th className="px-4 py-3 font-semibold text-[var(--nc-text-primary)]" {...props} />,
+          td: ({ node, ...props }) => <td className="px-4 py-3 border-b border-[var(--nc-border)] last:border-0" {...props} />,
+          code({ node, inline, className, children, ...props }: any) {
+            const match = /language-(\w+)/.exec(className || '')
+            const isInline = inline !== undefined ? inline : (!match && !className?.includes('hljs'))
+            if (isInline) {
+              return (
+                <code className="bg-[var(--nc-surface-3)] px-1.5 py-0.5 rounded text-xs font-mono text-[var(--nc-accent)] border border-[var(--nc-border)]" {...props}>
+                  {children}
+                </code>
+              )
+            }
+            return (
+              <code className={`${className || ''} block p-4`} {...props}>
+                {children}
+              </code>
+            )
+          },
+          pre: ({ node, ...props }) => (
+            <pre className="my-4 overflow-x-auto rounded-xl border border-[var(--nc-border)] bg-[#0d1117] text-[13px] m-0" {...props} />
+          ),
+          hr: ({ node, ...props }) => <hr className="my-4 border-[var(--nc-border)]" {...props} />
+        }}
+      >
+        {displayContent}
+      </ReactMarkdown>
     </div>
   )
-}
-
-function MarkdownSection({ content, isStreaming = false }: MarkdownProps) {
-  const lines = content.split('\n')
-  const elements: React.ReactNode[] = []
-
-  let currentCodeBlock: string[] | null = null
-  let currentListType: 'ul' | 'ol' | null = null
-  let currentListItems: string[] = []
-  let currentParagraph: string[] = []
-
-  // Find the last index of a line that is non-empty to attach the streaming cursor
-  let lastNonEmptyLineIdx = -1
-  for (let i = lines.length - 1; i >= 0; i--) {
-    if (lines[i].trim() !== '') {
-      lastNonEmptyLineIdx = i
-      break
-    }
-  }
-
-  const flushList = (key: number) => {
-    if (!currentListType) return null
-    const items = [...currentListItems]
-    const type = currentListType
-    currentListType = null
-    currentListItems = []
-
-    if (type === 'ul') {
-      return (
-        <ul key={`ul-${key}`} className="list-disc pl-6 space-y-2 my-3 text-[var(--nc-text-primary)]">
-          {items.map((item, i) => (
-            <li key={i} className="leading-relaxed text-[15px]">
-              {parseInline(item, isStreaming && key === lastNonEmptyLineIdx && i === items.length - 1)}
-            </li>
-          ))}
-        </ul>
-      )
-    } else {
-      return (
-        <ol key={`ol-${key}`} className="list-decimal pl-6 space-y-2 my-3 text-[var(--nc-text-primary)]">
-          {items.map((item, i) => (
-            <li key={i} className="leading-relaxed text-[15px]">
-              {parseInline(item, isStreaming && key === lastNonEmptyLineIdx && i === items.length - 1)}
-            </li>
-          ))}
-        </ol>
-      )
-    }
-  }
-
-  const flushParagraph = (key: number) => {
-    if (currentParagraph.length === 0) return null
-    const text = currentParagraph.join(' ')
-    currentParagraph = []
-    return (
-      <p key={`p-${key}`} className="leading-[1.6] my-2 text-[var(--nc-text-primary)] text-[15px]">
-        {parseInline(text, isStreaming && key === lastNonEmptyLineIdx)}
-      </p>
-    )
-  }
-
-  for (let idx = 0; idx < lines.length; idx++) {
-    const line = lines[idx]
-    const trimmed = line.trim()
-
-    // 1. Code Block check
-    if (trimmed.startsWith('```')) {
-      if (currentCodeBlock !== null) {
-        // End of code block
-        const code = currentCodeBlock.join('\n')
-        currentCodeBlock = null
-        elements.push(
-          <pre key={`code-${idx}`} className="bg-[var(--nc-surface-2)] p-4 rounded-xl my-4 overflow-x-auto border border-[var(--nc-border)] font-mono text-xs text-[var(--nc-text-primary)]">
-            <code>{code}</code>
-          </pre>
-        )
-      } else {
-        // Start of code block
-        // Flush any pending text or list
-        const listEl = flushList(idx)
-        if (listEl) elements.push(listEl)
-        const pEl = flushParagraph(idx)
-        if (pEl) elements.push(pEl)
-        currentCodeBlock = []
-      }
-      continue
-    }
-
-    if (currentCodeBlock !== null) {
-      currentCodeBlock.push(line)
-      continue
-    }
-
-    // 2. Empty Line check
-    if (trimmed === '') {
-      const listEl = flushList(idx)
-      if (listEl) elements.push(listEl)
-      const pEl = flushParagraph(idx)
-      if (pEl) elements.push(pEl)
-      continue
-    }
-
-    // 3. Headers check
-    if (trimmed.startsWith('#')) {
-      const match = trimmed.match(/^(#{1,6})\s+(.*)$/)
-      if (match) {
-        const listEl = flushList(idx)
-        if (listEl) elements.push(listEl)
-        const pEl = flushParagraph(idx)
-        if (pEl) elements.push(pEl)
-
-        const level = match[1].length
-        const text = match[2]
-        const showCursorHere = isStreaming && idx === lastNonEmptyLineIdx
-        if (level === 1) {
-          elements.push(<h1 key={`h1-${idx}`} className="text-2xl font-bold text-[var(--nc-text-primary)] mt-6 mb-3">{parseInline(text, showCursorHere)}</h1>)
-        } else if (level === 2) {
-          elements.push(<h2 key={`h2-${idx}`} className="text-xl font-bold text-[var(--nc-text-primary)] mt-5 mb-2.5">{parseInline(text, showCursorHere)}</h2>)
-        } else if (level === 3) {
-          elements.push(<h3 key={`h3-${idx}`} className="text-lg font-bold text-[var(--nc-text-primary)] mt-4 mb-2">{parseInline(text, showCursorHere)}</h3>)
-        } else {
-          elements.push(<h4 key={`h4-${idx}`} className="text-base font-bold text-[var(--nc-text-primary)] mt-3 mb-2">{parseInline(text, showCursorHere)}</h4>)
-        }
-        continue
-      }
-    }
-
-    // 4. Unordered List check
-    const isPartialUl = trimmed.startsWith('- ') || trimmed.startsWith('* ') || (isStreaming && idx === lastNonEmptyLineIdx && (trimmed === '-' || trimmed === '*'))
-    if (isPartialUl) {
-      const pEl = flushParagraph(idx)
-      if (pEl) elements.push(pEl)
-
-      if (currentListType !== 'ul') {
-        const listEl = flushList(idx)
-        if (listEl) elements.push(listEl)
-        currentListType = 'ul'
-      }
-      currentListItems.push(trimmed.startsWith('- ') || trimmed.startsWith('* ') ? trimmed.slice(2) : '')
-      continue
-    }
-
-    // 5. Ordered List check
-    const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/)
-    const isPartialOl = isStreaming && idx === lastNonEmptyLineIdx && !!trimmed.match(/^\d+\.?$/)
-    if (olMatch || isPartialOl) {
-      const pEl = flushParagraph(idx)
-      if (pEl) elements.push(pEl)
-
-      if (currentListType !== 'ol') {
-        const listEl = flushList(idx)
-        if (listEl) elements.push(listEl)
-        currentListType = 'ol'
-      }
-      currentListItems.push(olMatch ? olMatch[2] : '')
-      continue
-    }
-
-    // 6. Regular Line (accumulate into paragraph)
-    if (currentListType) {
-      const listEl = flushList(idx)
-      if (listEl) elements.push(listEl)
-    }
-    currentParagraph.push(line)
-  }
-
-  // Flush remaining
-  const listEl = flushList(lines.length)
-  if (listEl) elements.push(listEl)
-  const pEl = flushParagraph(lines.length)
-  if (pEl) elements.push(pEl)
-
-  return <div className="space-y-1">{elements}</div>
-}
-
-function parseInline(text: string, showCursor?: boolean): React.ReactNode[] {
-  const inlineRegex = /(\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?\]\(.*?\)|https?:\/\/[^\s\)]+)/g
-  const splitParts = text.split(inlineRegex)
-
-  const nodes = splitParts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} className="font-semibold text-[var(--nc-text-primary)]">{part.slice(2, -2)}</strong>
-    }
-    if (part.startsWith('*') && part.endsWith('*')) {
-      return <em key={i} className="italic text-[var(--nc-text-secondary)]">{part.slice(1, -1)}</em>
-    }
-    if (part.startsWith('`') && part.endsWith('`')) {
-      return <code key={i} className="bg-[var(--nc-surface-3)] px-1.5 py-0.5 rounded text-xs font-mono text-[var(--nc-accent)] border border-[var(--nc-border)]">{part.slice(1, -1)}</code>
-    }
-    if (part.startsWith('[') && part.includes('](') && part.endsWith(')')) {
-      const match = part.match(/\[(.*?)\]\((.*?)\)/)
-      if (match) {
-        const [, linkText, url] = match
-        return (
-          <a
-            key={i}
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[var(--nc-accent)] hover:underline font-medium break-all"
-          >
-            {linkText}
-          </a>
-        )
-      }
-    }
-    if (part.startsWith('http://') || part.startsWith('https://')) {
-      return (
-        <a
-          key={i}
-          href={part}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[var(--nc-accent)] hover:underline font-medium break-all"
-        >
-          {part}
-        </a>
-      )
-    }
-    return part
-  })
-
-  if (showCursor) {
-    nodes.push(
-      <span
-        key="cursor"
-        className="ml-0.5 inline-block h-[15px] w-[2px] align-middle bg-[var(--nc-accent)] animate-pulse"
-        aria-hidden="true"
-      />
-    )
-  }
-
-  return nodes
 }
