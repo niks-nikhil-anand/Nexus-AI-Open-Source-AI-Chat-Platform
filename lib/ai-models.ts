@@ -32,30 +32,14 @@ export const aiModels: AIModel[] = [
   // ==============================================
   // OPENROUTER API MODELS (provider: 'openrouter')
   // ==============================================
-  { id: "or-nvidia-nemotron-3-ultra", name: "Nemotron 3 Ultra (free)", company: "NVIDIA", size: "550B MoE", endpoint: "nvidia/nemotron-3-ultra-550b-a55b:free", provider: "openrouter", status: "FREE", badge: "Reasoning" },
-  { id: "or-nex-n2-pro", name: "Nex-N2-Pro (free)", company: "Nex AGI", size: "397B MoE", endpoint: "nex-agi/nex-n2-pro:free", provider: "openrouter", status: "FREE", badge: "Agentic" },
-  { id: "or-nous-hermes-3-405b", name: "Hermes 3 Llama 3.1 405B (free)", company: "Nous", size: "405B", endpoint: "nousresearch/hermes-3-llama-3.1-405b:free", provider: "openrouter", status: "FREE", badge: "Roleplay" },
-  { id: "or-openai-gpt-oss-120b", name: "gpt-oss-120b (free)", company: "OpenAI", size: "117B MoE", endpoint: "openai/gpt-oss-120b:free", provider: "openrouter", status: "FREE", badge: "Reasoning" },
-  { id: "or-nvidia-nemotron-3-super", name: "Nemotron 3 Super (free)", company: "NVIDIA", size: "120B", endpoint: "nvidia/nemotron-3-super-120b-a12b:free", provider: "openrouter", status: "FREE", badge: "Fast" },
-  { id: "or-qwen-qwen3-coder-480b", name: "Qwen3 Coder 480B A35B (free)", company: "Qwen", size: "480B MoE", endpoint: "qwen/qwen3-coder:free", provider: "openrouter", status: "FREE", badge: "Coding" },
-  { id: "or-qwen-qwen3-next-80b", name: "Qwen3 Next 80B A3B Instruct (free)", company: "Qwen", size: "80B", endpoint: "qwen/qwen3-next-80b-a3b-instruct:free", provider: "openrouter", status: "FREE", badge: "Instruct" },
-  { id: "or-meta-llama-33-70b", name: "Llama 3.3 70B Instruct (free)", company: "Meta", size: "70B", endpoint: "meta-llama/llama-3.3-70b-instruct:free", provider: "openrouter", status: "FREE", badge: "Balanced" },
-  { id: "or-google-gemma-4-26b", name: "Gemma 4 26B A4B Instruct (free)", company: "Google", size: "26B MoE", endpoint: "google/gemma-4-26b-a4b-it:free", provider: "openrouter", status: "FREE", badge: "Reasoning" },
-  { id: "or-nvidia-nemotron-3-nano-30b", name: "Nemotron 3 Nano 30B A3B (free)", company: "NVIDIA", size: "30B MoE", endpoint: "nvidia/nemotron-3-nano-30b-a3b:free", provider: "openrouter", status: "FREE", badge: "Local" },
-  { id: "or-venice-dolphin-mistral", name: "Dolphin Mistral 24B Venice (free)", company: "Venice", size: "24B", endpoint: "cognitivecomputations/dolphin-mistral-24b-venice-edition:free", provider: "openrouter", status: "FREE", badge: "Uncensored" },
-  { id: "or-poolside-laguna-m1", name: "Laguna M.1 (free)", company: "Poolside", size: "M.1", endpoint: "poolside/laguna-m.1:free", provider: "openrouter", status: "FREE", badge: "Coding Agent" },
-  { id: "or-poolside-laguna-xs2", name: "Laguna XS.2 (free)", company: "Poolside", size: "XS.2", endpoint: "poolside/laguna-xs.2:free", provider: "openrouter", status: "FREE", badge: "Tool Calling" },
-  { id: "or-openai-gpt-oss-20b", name: "gpt-oss-20b (free)", company: "OpenAI", size: "21B MoE", endpoint: "openai/gpt-oss-20b:free", provider: "openrouter", status: "FREE", badge: "Low Latency" },
-  { id: "or-nvidia-nemotron-nano-9b", name: "Nemotron Nano 9B V2 (free)", company: "NVIDIA", size: "9B", endpoint: "nvidia/nemotron-nano-9b-v2:free", provider: "openrouter", status: "FREE", badge: "Reasoning" },
-  { id: "or-meta-llama-32-3b", name: "Llama 3.2 3B Instruct (free)", company: "Meta", size: "3B", endpoint: "meta-llama/llama-3.2-3b-instruct:free", provider: "openrouter", status: "FREE", badge: "Fast" },
-  { id: "or-liquid-lfm-thinking", name: "LFM2.5-1.2B-Thinking (free)", company: "LiquidAI", size: "1.2B", endpoint: "liquid/lfm-2.5-1.2b-thinking:free", provider: "openrouter", status: "FREE", badge: "Thinking" },
-  { id: "or-liquid-lfm-instruct", name: "LFM2.5-1.2B-Instruct (free)", company: "LiquidAI", size: "1.2B", endpoint: "liquid/lfm-2.5-1.2b-instruct:free", provider: "openrouter", status: "FREE", badge: "Fast Edge" },
-  { id: "or-nvidia-nemotron-35-safety", name: "Nemotron 3.5 Content Safety (free)", company: "NVIDIA", size: "4B", endpoint: "nvidia/nemotron-3.5-content-safety:free", provider: "openrouter", status: "FREE", badge: "Guardrail" },
-  { id: "or-deepseek-r1", name: "DeepSeek R1 (free)", company: "DeepSeek", size: "671B MoE", endpoint: "deepseek/deepseek-r1:free", provider: "openrouter", status: "FREE", badge: "Reasoning" },
-  { id: "or-deepseek-v4-flash", name: "DeepSeek V4 Flash (free)", company: "DeepSeek", size: "284B", endpoint: "deepseek/deepseek-v4-flash:free", provider: "openrouter", status: "FREE", badge: "General" },
-  { id: "or-arcee-trinity-large", name: "Trinity Large Preview (free)", company: "Arcee", size: "Large", endpoint: "arcee/trinity-large-preview:free", provider: "openrouter", status: "FREE", badge: "Frontier" },
-  { id: "or-arcee-trinity-mini", name: "Trinity Mini (free)", company: "Arcee", size: "Mini", endpoint: "arcee/trinity-mini:free", provider: "openrouter", status: "FREE", badge: "Fast" },
-  { id: "or-openrouter-free", name: "Free Router", company: "OpenRouter", size: "Dynamic", endpoint: "openrouter/free", provider: "openrouter", status: "FREE", badge: "Auto Router" }
+
+  
+  { "id": "or-nvidia-nemotron-3-ultra", "name": "Nemotron 3 Ultra (free)", "company": "NVIDIA", "size": "550B MoE", "endpoint": "nvidia/nemotron-3-ultra-550b-a55b:free", "provider": "openrouter", "status": "FREE", "badge": "Reasoning" },
+  { "id": "or-nex-agi-nex-n2-pro", "name": "Nex-N2-Pro (free)", "company": "Nex AGI", "size": "397B MoE", "endpoint": "nex-agi/nex-n2-pro:free", "provider": "openrouter", "status": "FREE", "badge": "Programming" },
+  { "id": "or-google-gemma-4-31b", "name": "Gemma 4 31B (free)", "company": "Google", "size": "30.7B", "endpoint": "google/gemma-4-31b-it:free", "provider": "openrouter", "status": "FREE", "badge": "Roleplay" },
+  { "id": "or-google-gemma-4-26b-a4b", "name": "Gemma 4 26B A4B (free)", "company": "Google", "size": "26B", "endpoint": "google/gemma-4-26b-a4b-it:free", "provider": "openrouter", "status": "FREE", "badge": "Thinking" },
+  { "id": "or-poolside-laguna-m-1", "name": "Poolside: Laguna M.1 (free)", "company": "Poolside", "size": "M", "endpoint": "poolside/laguna-m.1:free", "provider": "openrouter", "status": "FREE", "badge": "Programming" },
+  { "id": "or-nvidia-nemotron-3-nano-omni", "name": "Nemotron 3 Nano Omni (free)", "company": "NVIDIA", "size": "30B A3B MoE", "endpoint": "nvidia/nemotron-3-nano-omni:free", "provider": "openrouter", "status": "FREE", "badge": "Multimodal" }
 ];
 
 export const mockConversations: Conversation[] = []
