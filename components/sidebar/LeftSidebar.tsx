@@ -174,7 +174,7 @@ export function LeftSidebar() {
             <div className="flex items-center gap-1 px-2 py-1.5">
               <Pin size={10} className="text-[var(--nc-text-muted)]" />
               <span
-                className="text-[10px] uppercase text-[var(--nc-text-muted)] font-medium"
+                className="text-[10px] uppercase text-slate-600 dark:text-[var(--nc-text-muted)] font-bold"
                 style={{ letterSpacing: '0.08em' }}
               >
                 Pinned
@@ -200,7 +200,7 @@ export function LeftSidebar() {
           <div key={group.label} className="mb-3">
             <div className="px-2 py-1.5">
               <span
-                className="text-[10px] uppercase text-[var(--nc-text-muted)] font-medium"
+                className="text-[10px] uppercase text-slate-600 dark:text-[var(--nc-text-muted)] font-bold"
                 style={{ letterSpacing: '0.08em' }}
               >
                 {group.label}
