@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Check, Search } from "lucide-react"
-import { mockModels, PROVIDER_COLORS } from "@/lib/mock-data"
+import { Check, Search, Sparkles } from "lucide-react"
+import { mockModels } from "@/lib/mock-data"
 import { springs } from "@/lib/animations"
 import { AIModel } from "@/lib/types"
 import { useChatStore } from "@/lib/store"
@@ -15,6 +15,8 @@ interface InputModelSelectorProps {
   currentModelId: string
 }
 
+type Category = 'all' | 'nvidia' | 'openrouter'
+
 export function InputModelSelector({
   isOpen,
   onClose,
@@ -25,47 +27,30 @@ export function InputModelSelector({
   const { theme } = state
 
   const [search, setSearch] = useState("")
+  const [activeCategory, setActiveCategory] = useState<Category>('all')
   const [highlightIndex, setHighlightIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
-  // Filter models by search query (case-insensitive match on name or provider)
   const filteredModels = useMemo(() => {
-    if (!search.trim()) return mockModels
-    const query = search.toLowerCase()
-    return mockModels.filter(
-      (m) =>
-        m.name.toLowerCase().includes(query) ||
-        m.provider.toLowerCase().includes(query)
-    )
-  }, [search])
-
-  // Group filtered models by provider
-  const groupedModels = useMemo(() => {
-    const groups: Record<string, AIModel[]> = {}
-    for (const model of filteredModels) {
-      if (!groups[model.provider]) {
-        groups[model.provider] = []
-      }
-      groups[model.provider].push(model)
+    let result = mockModels
+    if (activeCategory !== 'all') {
+      result = result.filter(m => m.provider === activeCategory)
     }
-    return groups
-  }, [filteredModels])
-
-  // Flat list of visible models for keyboard navigation indexing
-  const flatModels = useMemo(() => {
-    const result: AIModel[] = []
-    for (const provider of Object.keys(groupedModels)) {
-      result.push(...groupedModels[provider])
+    if (search.trim()) {
+      const query = search.toLowerCase()
+      result = result.filter(
+        (m) => m.name.toLowerCase().includes(query)
+      )
     }
     return result
-  }, [groupedModels])
+  }, [search, activeCategory])
 
-  // Reset state when opened
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {
         setSearch("")
+        setActiveCategory('all')
         setHighlightIndex(0)
         inputRef.current?.focus()
       }, 50)
@@ -73,7 +58,6 @@ export function InputModelSelector({
     }
   }, [isOpen])
 
-  // Scroll highlighted item into view
   useEffect(() => {
     if (!listRef.current) return
     const highlighted = listRef.current.querySelector(
@@ -84,26 +68,25 @@ export function InputModelSelector({
     }
   }, [highlightIndex])
 
-  // Keyboard navigation handler
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       switch (e.key) {
         case "ArrowDown":
           e.preventDefault()
           setHighlightIndex((prev) =>
-            prev < flatModels.length - 1 ? prev + 1 : 0
+            prev < filteredModels.length - 1 ? prev + 1 : 0
           )
           break
         case "ArrowUp":
           e.preventDefault()
           setHighlightIndex((prev) =>
-            prev > 0 ? prev - 1 : flatModels.length - 1
+            prev > 0 ? prev - 1 : filteredModels.length - 1
           )
           break
         case "Enter":
           e.preventDefault()
-          if (flatModels[highlightIndex]) {
-            onSelect(flatModels[highlightIndex])
+          if (filteredModels[highlightIndex]) {
+            onSelect(filteredModels[highlightIndex])
             onClose()
           }
           break
@@ -113,7 +96,7 @@ export function InputModelSelector({
           break
       }
     },
-    [flatModels, highlightIndex, onSelect, onClose]
+    [filteredModels, highlightIndex, onSelect, onClose]
   )
 
   const slideUpVariants = {
@@ -121,28 +104,23 @@ export function InputModelSelector({
     visible: { opacity: 1, scale: 1, y: 0 },
   }
 
-  // Track a running index across groups for flat indexing
-  let runningIndex = 0
-
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop for outside click */}
           <div
             className="fixed inset-0 z-40 bg-transparent"
             onClick={onClose}
             aria-hidden="true"
           />
 
-          {/* Dropdown container - positioned ABOVE the input capsule */}
           <motion.div
             variants={slideUpVariants}
             initial="hidden"
             animate="visible"
             exit="hidden"
             transition={springs.popup}
-            className="absolute bottom-full right-0 z-50 mb-3 w-80 max-h-[380px] overflow-hidden rounded-2xl border shadow-2xl flex flex-col pointer-events-auto"
+            className="absolute bottom-full right-0 z-50 mb-3 w-[440px] max-h-[450px] h-[450px] overflow-hidden rounded-2xl border shadow-2xl flex flex-col pointer-events-auto"
             style={{
               backgroundColor: theme === 'dark' ? 'rgba(20, 19, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
               borderColor: 'var(--nc-border)',
@@ -153,8 +131,8 @@ export function InputModelSelector({
           >
             {/* Search input */}
             <div className="p-3 border-b border-[var(--nc-border)]">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--nc-surface-2)] border border-[var(--nc-border)]">
-                <Search className="w-3.5 h-3.5 text-[var(--nc-text-muted)]" />
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[var(--nc-surface-2)] border border-[var(--nc-border)] focus-within:border-[var(--nc-accent)] transition-colors">
+                <Search className="w-4 h-4 text-[var(--nc-text-muted)]" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -164,29 +142,56 @@ export function InputModelSelector({
                     setSearch(e.target.value)
                     setHighlightIndex(0)
                   }}
-                  className="flex-1 bg-transparent text-xs text-[var(--nc-text-primary)] placeholder:text-[var(--nc-text-muted)] outline-none"
+                  className="flex-1 bg-transparent text-sm text-[var(--nc-text-primary)] placeholder:text-[var(--nc-text-muted)] outline-none"
                 />
               </div>
             </div>
 
-            {/* Model list */}
-            <div ref={listRef} className="overflow-y-auto flex-1 p-2">
-              {Object.keys(groupedModels).length === 0 && (
-                <p className="px-3 py-4 text-center text-xs text-[var(--nc-text-muted)]">
-                  No models found
-                </p>
-              )}
+            <div className="flex flex-1 overflow-hidden">
+              {/* Sidebar Tabs */}
+              <div className="w-[140px] bg-[var(--nc-surface-2)]/30 border-r border-[var(--nc-border)] flex flex-col p-2 gap-1 overflow-y-auto">
+                <button
+                  onClick={() => { setActiveCategory('all'); setHighlightIndex(0); }}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                    activeCategory === 'all'
+                      ? 'bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] shadow-sm'
+                      : 'text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-2)]'
+                  }`}
+                >
+                  All Models
+                </button>
+                <button
+                  onClick={() => { setActiveCategory('nvidia'); setHighlightIndex(0); }}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-colors flex items-center justify-between ${
+                    activeCategory === 'nvidia'
+                      ? 'bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] shadow-sm'
+                      : 'text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-2)]'
+                  }`}
+                >
+                  Nvidia API
+                </button>
+                <button
+                  onClick={() => { setActiveCategory('openrouter'); setHighlightIndex(0); }}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                    activeCategory === 'openrouter'
+                      ? 'bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] shadow-sm'
+                      : 'text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-2)]'
+                  }`}
+                >
+                  OpenRouter API
+                </button>
+              </div>
 
-              {Object.entries(groupedModels).map(([provider, models]) => (
-                <div key={provider} className="mb-2 last:mb-0">
-                  {/* Provider group header */}
-                  <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--nc-text-muted)]">
-                    {provider}
-                  </div>
+              {/* Model list */}
+              <div ref={listRef} className="overflow-y-auto flex-1 p-2">
+                {filteredModels.length === 0 && (
+                  <p className="px-3 py-6 text-center text-sm font-medium text-[var(--nc-text-muted)]">
+                    No models found
+                  </p>
+                )}
 
-                  {/* Model rows */}
-                  {models.map((model) => {
-                    const index = runningIndex++
+                <div className="flex flex-col gap-1">
+                  {filteredModels.map((model, index) => {
                     const isSelected = model.id === currentModelId
                     const isHighlighted = index === highlightIndex
 
@@ -198,42 +203,53 @@ export function InputModelSelector({
                           onSelect(model)
                           onClose()
                         }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-colors ${
-                          isHighlighted
-                            ? "bg-[var(--nc-surface-3)]"
-                            : "hover:bg-[var(--nc-surface-2)]"
+                        className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-xl text-left transition-colors border group ${
+                          isSelected
+                            ? "bg-[var(--nc-accent-dim)] border-[var(--nc-accent)]/30"
+                            : isHighlighted
+                            ? "bg-[var(--nc-surface-3)] border-[var(--nc-border)]"
+                            : "bg-transparent border-transparent hover:bg-[var(--nc-surface-2)] hover:border-[var(--nc-border)]"
                         }`}
                       >
                         {/* Provider color dot */}
-                        <span
-                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                          style={{
-                            backgroundColor:
-                              PROVIDER_COLORS[
-                                model.provider as keyof typeof PROVIDER_COLORS
-                              ] || "var(--nc-text-muted)",
-                          }}
-                        />
+                        <div className="mt-1.5 flex-shrink-0">
+                          <span
+                            className="w-2.5 h-2.5 rounded-full block"
+                            style={{
+                              backgroundColor: model.providerColor || "var(--nc-text-muted)",
+                              boxShadow: `0 0 8px ${model.providerColor}40`
+                            }}
+                          />
+                        </div>
 
-                        {/* Model name */}
-                        <span className="flex-1 text-xs text-[var(--nc-text-primary)] truncate font-medium">
-                          {model.name}
-                        </span>
-
-                        {/* Parameters (right-aligned, muted) */}
-                        <span className="text-[10px] text-[var(--nc-text-muted)] flex-shrink-0">
-                          {model.parameters}
-                        </span>
-
-                        {/* Check icon if selected */}
-                        {isSelected && (
-                          <Check className="w-3.5 h-3.5 text-[var(--nc-accent)] flex-shrink-0" />
-                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-sm font-semibold text-[var(--nc-text-primary)] truncate">
+                              {model.name}
+                            </span>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-[var(--nc-accent)] flex-shrink-0 ml-auto" />
+                            )}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {model.strengths && model.strengths.length > 0 && (
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-[var(--nc-surface-3)] text-[var(--nc-text-secondary)]">
+                                <Sparkles className="w-3 h-3 text-[var(--nc-accent)]" />
+                                {model.strengths[0]}
+                              </span>
+                            )}
+                            {model.status && (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-zinc-800/50 text-zinc-400 border border-zinc-700/50 uppercase tracking-wider">
+                                {model.status}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </button>
                     )
                   })}
                 </div>
-              ))}
+              </div>
             </div>
           </motion.div>
         </>
