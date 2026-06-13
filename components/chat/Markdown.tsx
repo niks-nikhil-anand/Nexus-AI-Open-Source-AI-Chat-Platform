@@ -12,23 +12,22 @@ interface MarkdownProps {
 }
 
 export function Markdown({ content, isStreaming = false }: MarkdownProps) {
-  // If streaming, append a blinking cursor character
   const displayContent = content + (isStreaming ? ' ▍' : '')
 
   return (
-    <div className="markdown-body text-[15px] leading-[1.6] text-[var(--nc-text-primary)] break-words w-full">
+    <div className="markdown-body text-[15px] leading-normal text-[var(--nc-text-primary)] break-words w-full">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
         components={{
-          p: ({ node, ...props }) => <p className="my-2 leading-[1.6]" {...props} />,
-          ul: ({ node, ...props }) => <ul className="list-disc pl-5 my-2" {...props} />,
-          ol: ({ node, ...props }) => <ol className="list-decimal pl-5 my-2" {...props} />,
-          li: ({ node, ...props }) => <li className="my-1 leading-relaxed" {...props} />,
+          p: ({ node, ...props }) => <p className="mb-1 last:mb-0" {...props} />,
+          ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-3 last:mb-0 space-y-1.5" {...props} />,
+          ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-3 last:mb-0 space-y-1.5" {...props} />,
+          li: ({ node, ...props }) => <li className="leading-relaxed marker:text-[var(--nc-text-secondary)] [&>p]:inline [&>p]:m-0" {...props} />,
           h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
           h2: ({ node, ...props }) => <h2 className="text-xl font-bold mt-4 mb-2" {...props} />,
           h3: ({ node, ...props }) => <h3 className="text-lg font-bold mt-4 mb-2" {...props} />,
-          h4: ({ node, ...props }) => <h4 className="text-base font-bold mt-4 mb-2" {...props} />,
+          h4: ({ node, ...props }) => <h4 className="text-base font-bold mt-3 mb-1.5" {...props} />,
           strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
           em: ({ node, ...props }) => <em className="italic text-[var(--nc-text-secondary)]" {...props} />,
           a: ({ node, ...props }) => (
@@ -40,7 +39,7 @@ export function Markdown({ content, isStreaming = false }: MarkdownProps) {
             />
           ),
           table: ({ node, ...props }) => (
-            <div className="my-4 w-full overflow-x-auto rounded-xl border border-[var(--nc-border)] bg-[var(--nc-surface-2)]">
+            <div className="my-3 w-full overflow-x-auto rounded-xl border border-[var(--nc-border)] bg-[var(--nc-surface-2)]">
               <table className="w-full text-left text-sm" {...props} />
             </div>
           ),
@@ -64,7 +63,7 @@ export function Markdown({ content, isStreaming = false }: MarkdownProps) {
             )
           },
           pre: ({ node, ...props }) => (
-            <pre className="my-4 overflow-x-auto rounded-xl border border-[var(--nc-border)] bg-[#0d1117] text-[13px] m-0" {...props} />
+            <pre className="mt-1.5 mb-3 last:mb-0 overflow-x-auto rounded-xl border border-[var(--nc-border)] bg-[#0d1117] text-[13px] py-3" {...props} />
           ),
           hr: ({ node, ...props }) => <hr className="my-4 border-[var(--nc-border)]" {...props} />
         }}
