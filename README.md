@@ -78,18 +78,20 @@ Nexus AI is packed with features that make it the ultimate **Generative AI Platf
 
 ---
 
-## 🔌 API Architecture: How Nexus AI uses the NVIDIA API
+## 🔌 API Architecture: How Nexus AI uses the NVIDIA & OpenRouter Free APIs
 
-Nexus AI uses a highly efficient architectural trick to achieve multi-model support: **It uses the NVIDIA API as a unified model gateway.** 
+Nexus AI uses a highly efficient architectural trick to achieve multi-model support: **It uses the NVIDIA API and OpenRouter as unified model gateways.** 
 
 Here is exactly how it works under the hood (in `app/api/chat/route.ts`):
 
-1. **Local Model Metadata:** The list of models, their stats, and their UI colors are completely hardcoded in `lib/ai-models.ts`—it doesn't waste time fetching the catalogue from NVIDIA on every load.
-2. **Unified NVIDIA Inference Microservices (NIM):** Instead of writing custom API integration code for OpenAI, Google, Anthropic, and Mistral separately (which would require 4 different API keys and 4 different SDK setups), Nexus AI forwards **all** chat requests to a single endpoint: `https://integrate.api.nvidia.com/v1/chat/completions`.
-3. **Model Mapping / Aliasing:** Because NVIDIA hosts many open-weight and frontier models (like Llama, Gemma, Mistral, and DeepSeek) on their own cloud infrastructure, Nexus AI uses a `MODEL_ALIASES` dictionary to translate the user's selected UI model into the exact model string the NVIDIA API expects. For example, if a user clicks `gemini-2-5-pro` on the frontend, the backend maps it to `google/gemma-4-31b-it` and sends it to NVIDIA.
-4. **Single API Key Execution:** The app attaches a single `NVIDIA_API_KEY` as a Bearer token. NVIDIA executes the inference on their GPUs and streams the chunks back to the Next.js API route using the standard OpenAI-compatible SSE (Server-Sent Events) format.
+1. **Local Model Metadata:** The list of models, their stats, and their UI colors are completely hardcoded in `lib/ai-models.ts`—it doesn't waste time fetching the catalogues from NVIDIA or OpenRouter on every load. Models are clearly classified by their `provider` (`'nvidia'` or `'openrouter'`).
+2. **Unified Gateway Routing:** Instead of writing custom SDK integration code for each AI company, Nexus AI dynamically routes requests to one of two unified completion endpoints based on the selected model:
+   - `https://integrate.api.nvidia.com/v1/chat/completions` (NVIDIA platform)
+   - `https://openrouter.ai/api/v1/chat/completions` (OpenRouter platform)
+3. **Model Mapping / Aliasing:** The application uses a `resolveModelInfo` utility function to translate the user's selected UI model into the exact model string the target API expects (e.g., mapping `or-google-gemma-4-31b` to OpenRouter's `google/gemma-4-31b-it:free` endpoint).
+4. **Dynamic API Key Execution:** The Next.js API route automatically applies either the `NVIDIA_API_KEY` or `OPENROUTER_API_KEY` as a Bearer token depending on the provider. Both services stream generation chunks back to the client using the standard OpenAI-compatible SSE (Server-Sent Events) format.
 
-This allows the application to provide a massive catalogue of models without the headache of managing multiple provider SDKs or API keys!
+This allows the application to provide a massive catalogue of 100% free models without the headache of managing massive provider SDKs!
 
 ---
 
