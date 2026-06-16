@@ -32,17 +32,10 @@ export function WelcomeScreen() {
   }
 
   return (
-    <div className="relative flex flex-1 flex-col items-center justify-center px-6">
+    <div className="relative flex flex-1 flex-col items-center justify-center px-6 bg-devkit-bg">
       {/* Dot grid background */}
       <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(circle, var(--nc-text-muted) 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
-          backgroundPosition: 'center',
-          opacity: 0.04,
-        }}
+        className="pointer-events-none absolute inset-0 hero-bg-dots"
         aria-hidden="true"
       />
 
@@ -55,20 +48,20 @@ export function WelcomeScreen() {
           transition={{ ...springs.message, delay: 0 }}
           className="relative flex items-center justify-center"
         >
-          <div className="absolute inset-0 bg-[var(--nc-accent)] opacity-20 blur-2xl rounded-full scale-75" />
+          <div className="absolute inset-0 bg-devkit-accent opacity-20 blur-2xl rounded-full scale-75" />
           <Image
             src="/logo2.png"
             alt="NeuraChat Logo"
             width={108}
             height={108}
-            className="relative rounded-2xl object-contain shadow-2xl"
+            className="relative rounded-lg-devkit object-contain shadow-2xl border border-devkit-bg-muted"
             priority
           />
         </motion.div>
 
         {/* Heading */}
         <motion.h1
-          className="font-[var(--font-dm-sans)] text-[2.5rem] font-semibold text-[var(--nc-text-primary)]"
+          className="font-sans text-4xl sm:text-5xl font-extrabold tracking-tight text-devkit-text bg-gradient-to-r from-devkit-text via-[#a89ef9] to-devkit-accent bg-clip-text text-transparent"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...springs.message, delay: 0.05 }}
@@ -78,8 +71,7 @@ export function WelcomeScreen() {
 
         {/* Accent line */}
         <motion.div
-          className="h-px w-10"
-          style={{ backgroundColor: 'var(--nc-accent)' }}
+          className="h-[2px] w-12 rounded bg-gradient-to-r from-devkit-accent to-devkit-accent-secondary"
           initial={{ opacity: 0, scaleX: 0 }}
           animate={{ opacity: 1, scaleX: 1 }}
           transition={{ ...springs.message, delay: 0.1 }}
@@ -87,7 +79,7 @@ export function WelcomeScreen() {
 
         {/* Subtitle */}
         <motion.p
-          className="text-center text-[1.0625rem] text-[var(--nc-text-secondary)]"
+          className="text-center text-sm sm:text-base text-devkit-text-secondary max-w-md font-sans"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...springs.message, delay: 0.15 }}
@@ -97,7 +89,7 @@ export function WelcomeScreen() {
 
         {/* Model chips */}
         <motion.div
-          className="mt-4 flex flex-wrap justify-center gap-3"
+          className="mt-6 flex flex-wrap justify-center gap-3"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
@@ -107,15 +99,13 @@ export function WelcomeScreen() {
               key={model.id}
               type="button"
               onClick={() => handleModelClick(model.id)}
-              className="cursor-pointer rounded-[6px] px-3 py-2 text-sm font-medium transition-colors hover:bg-[var(--nc-accent-dim)]"
+              className="cursor-pointer rounded-devkit border border-devkit-bg-muted bg-devkit-bg-subtle/80 hover:bg-devkit-bg-subtle hover:border-devkit-accent text-devkit-text-secondary hover:text-devkit-text text-xs sm:text-sm font-semibold px-4 py-2.5 transition-all shadow-sm hover:shadow-md"
               style={{
-                backgroundColor: 'var(--nc-surface-3)',
-                color: 'var(--nc-text-secondary)',
                 animation: `welcomeFloat 3s ease-in-out ${idx * 0.3}s infinite`,
               }}
               variants={chipVariants}
               transition={springs.micro}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.03 }}
               aria-label={`Start conversation with ${model.name}`}
             >
               {model.name}
