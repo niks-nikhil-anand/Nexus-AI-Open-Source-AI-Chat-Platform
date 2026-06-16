@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, DM_Sans, Libre_Baskerville } from "next/font/google";
 import { ChatProvider } from "@/lib/store";
+import { NextAuthProvider } from "@/components/providers/SessionProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -59,7 +60,11 @@ export default function RootLayout({
     >
       <body className="min-h-screen flex flex-col antialiased bg-devkit-bg text-devkit-text">
         <div className="page-grid-bg" aria-hidden="true" />
-        <ChatProvider>{children}</ChatProvider>
+        <ChatProvider>
+          <NextAuthProvider>
+            {children}
+          </NextAuthProvider>
+        </ChatProvider>
       </body>
     </html>
   );
