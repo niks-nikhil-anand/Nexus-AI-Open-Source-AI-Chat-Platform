@@ -50,8 +50,8 @@ export function WelcomeScreen() {
         >
           <div className="absolute inset-0 bg-devkit-accent opacity-20 blur-2xl rounded-full scale-75" />
           <Image
-            src="/logo2.png"
-            alt="NeuraChat Logo"
+            src="/logo/logo.png"
+            alt="Nexus AI Logo"
             width={108}
             height={108}
             className="relative rounded-lg-devkit object-contain shadow-2xl border border-devkit-bg-muted"
@@ -66,7 +66,7 @@ export function WelcomeScreen() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...springs.message, delay: 0.05 }}
         >
-          NeuraChat
+          Nexus AI
         </motion.h1>
 
         {/* Accent line */}
