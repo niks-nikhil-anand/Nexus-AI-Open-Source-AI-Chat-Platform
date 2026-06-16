@@ -49,7 +49,7 @@ export default function RegisterPage() {
           setError("Registration succeeded but auto-login failed. Please sign in manually.");
           router.push("/login");
         } else {
-          router.push("/");
+          window.location.href = "/";
         }
       }
     } catch (err) {

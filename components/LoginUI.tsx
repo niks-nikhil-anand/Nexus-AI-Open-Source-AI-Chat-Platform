@@ -126,7 +126,7 @@ export default function LoginUI({
                 <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  Continue to dashboard
+                  Start chatting
                   <HugeiconsIcon icon={ArrowRight01Icon} size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                 </>
               )}
