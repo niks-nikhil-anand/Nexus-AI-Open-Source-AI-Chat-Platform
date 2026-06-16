@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     "Developer tools"
   ],
   icons: {
-    icon: "/logo2.png",
+    icon: "/logo/logo.png",
   },
 };
 
