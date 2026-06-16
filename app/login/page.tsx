@@ -33,7 +33,7 @@ export default function LoginPage() {
       if (res?.error) {
         setError(res.error === "CredentialsSignin" ? "Invalid email or password" : res.error);
       } else {
-        router.push("/");
+        window.location.href = "/";
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
