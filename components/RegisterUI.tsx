@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { 
   UserIcon,
@@ -156,11 +157,19 @@ export default function RegisterUI({
 
           {/* Social Logins */}
           <div className="grid grid-cols-2 gap-3 mb-2 relative z-10 my-10">
-            <button className="flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl border border-devkit-accent/20 bg-white/5 dark:bg-white/[0.03] hover:bg-white/10 dark:hover:bg-white/[0.08] hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 text-[13px] font-medium text-devkit-text group/social">
+            <button 
+              type="button"
+              onClick={() => signIn("google", { callbackUrl: "/" })}
+              className="flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl border border-devkit-accent/20 bg-white/5 dark:bg-white/[0.03] hover:bg-white/10 dark:hover:bg-white/[0.08] hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 text-[13px] font-medium text-devkit-text group/social cursor-pointer"
+            >
               <Image src="/icons/google.png" alt="Google" width={18} height={18} />
               Google
             </button>
-            <button className="flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl border border-devkit-accent/20 bg-white/5 dark:bg-white/[0.03] hover:bg-white/10 dark:hover:bg-white/[0.08] hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 text-[13px] font-medium text-devkit-text group/social">
+            <button 
+              type="button"
+              onClick={() => signIn("github", { callbackUrl: "/" })}
+              className="flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl border border-devkit-accent/20 bg-white/5 dark:bg-white/[0.03] hover:bg-white/10 dark:hover:bg-white/[0.08] hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 text-[13px] font-medium text-devkit-text group/social cursor-pointer"
+            >
               <Image src="/icons/github.png" alt="GitHub" width={18} height={18} className="dark:invert opacity-80 group-hover/social:opacity-100 transition-opacity" />
               GitHub
             </button>

@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
+import { signIn } from "next-auth/react";
 import RegisterUI from "@/components/RegisterUI";
 
 export default function RegisterPage() {
@@ -39,7 +38,19 @@ export default function RegisterPage() {
       if (!res.ok) {
         setError(data.error || "Registration failed.");
       } else {
-        router.push("/login");
+        // Auto sign in user after successful registration
+        const loginRes = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (loginRes?.error) {
+          setError("Registration succeeded but auto-login failed. Please sign in manually.");
+          router.push("/login");
+        } else {
+          router.push("/");
+        }
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
