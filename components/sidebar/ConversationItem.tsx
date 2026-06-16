@@ -1,6 +1,7 @@
 'use client'
 
-import { Pin, Trash2 } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { PinIcon, Delete02Icon } from '@hugeicons/core-free-icons'
 import type { Conversation } from '@/lib/types'
 
 interface ConversationItemProps {
@@ -22,12 +23,12 @@ export function ConversationItem({
     <button
       onClick={onSelect}
       className={`
-        group relative flex w-full items-center rounded-[6px] px-3 py-2 text-left text-sm
-        transition-colors duration-150
+        group relative flex w-full items-center rounded-devkit px-3 py-2 text-left text-sm
+        transition-all duration-200 cursor-pointer
         ${
           isActive
-            ? 'bg-[var(--nc-accent-dim)] text-[var(--nc-text-primary)] border-l-2 border-[var(--nc-accent)]'
-            : 'bg-transparent text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)]'
+            ? 'bg-devkit-accent/10 text-devkit-accent border-l-2 border-devkit-accent font-medium'
+            : 'bg-transparent text-devkit-text-secondary hover:bg-devkit-bg-muted/60 hover:text-devkit-text'
         }
       `}
     >
@@ -36,7 +37,7 @@ export function ConversationItem({
       </span>
 
       {/* Action icons: visible on hover */}
-      <span className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ml-2 shrink-0">
+      <span className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 ml-2 shrink-0">
         <span
           role="button"
           tabIndex={0}
@@ -50,9 +51,10 @@ export function ConversationItem({
               onPin()
             }
           }}
-          className="p-0.5 rounded hover:bg-[var(--nc-surface-2)] text-[var(--nc-text-muted)] hover:text-[var(--nc-text-primary)]"
+          className="p-1 rounded-devkit hover:bg-devkit-bg-muted text-devkit-text-tertiary hover:text-devkit-text transition-colors"
+          title={conversation.isPinned ? "Unpin chat" : "Pin chat"}
         >
-          <Pin size={14} />
+          <HugeiconsIcon icon={PinIcon} size={14} className={conversation.isPinned ? "text-devkit-accent" : ""} />
         </span>
         <span
           role="button"
@@ -67,11 +69,13 @@ export function ConversationItem({
               onDelete()
             }
           }}
-          className="p-0.5 rounded hover:bg-[var(--nc-surface-2)] text-[var(--nc-text-muted)] hover:text-[var(--nc-error)]"
+          className="p-1 rounded-devkit hover:bg-devkit-bg-muted text-devkit-text-tertiary hover:text-devkit-coral transition-colors"
+          title="Delete chat"
         >
-          <Trash2 size={14} />
+          <HugeiconsIcon icon={Delete02Icon} size={14} />
         </span>
       </span>
     </button>
   )
 }
+
