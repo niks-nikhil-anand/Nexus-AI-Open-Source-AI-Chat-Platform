@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import LoginUI from "@/components/LoginUI";
 
 export default function LoginPage() {
@@ -23,18 +24,14 @@ export default function LoginPage() {
     }
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Login failed.");
+      if (res?.error) {
+        setError(res.error === "CredentialsSignin" ? "Invalid email or password" : res.error);
       } else {
         router.push("/");
       }
