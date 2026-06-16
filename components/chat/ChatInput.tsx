@@ -1,10 +1,12 @@
 'use client'
 
 import { useRef, useEffect, useState, useCallback } from 'react'
-import { Plus, ChevronDown, Mic, ArrowUp, Square, Settings2, Brain, Loader2 } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Add01Icon, ChevronDownIcon, Mic01Icon, ArrowUp01Icon, StopIcon, Settings02Icon, Brain01Icon } from '@hugeicons/core-free-icons'
 import { useChatStore } from '@/lib/store'
 import { InputModelSelector } from './InputModelSelector'
 import { ParameterPopover } from './ParameterPopover'
+import { cn } from '@/lib/utils'
 
 const MAX_HEIGHT = 200
 
@@ -52,10 +54,10 @@ function ThinkingTimer({
     const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 
     return (
-      <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all border h-[32px] bg-zinc-900/80 border-zinc-800 animate-in fade-in duration-300 shadow-md">
-        <Loader2 size={13} className="text-zinc-400 animate-spin" />
-        <span className="text-zinc-400 font-sans hidden sm:inline">Thinking</span>
-        <span className="font-mono text-purple-400 bg-purple-950/40 border border-purple-900/30 px-1.5 py-0.5 rounded ml-1">
+      <div className="flex items-center gap-1.5 rounded-devkit px-3 py-1.5 text-[11px] font-bold transition-all border h-[32px] bg-purple-500/10 border-purple-500/30 text-purple-400 shadow-[0_0_12px_rgba(168,158,249,0.15)] animate-pulse">
+        <HugeiconsIcon icon={Brain01Icon} size={13} className="animate-bounce" />
+        <span className="font-sans hidden sm:inline">Thinking</span>
+        <span className="font-mono text-purple-400 bg-purple-500/20 border border-purple-500/30 px-1.5 py-0.5 rounded ml-1">
           {formattedTime}
         </span>
       </div>
@@ -67,14 +69,14 @@ function ThinkingTimer({
     <button
       type="button"
       onClick={onToggleThinking}
-      className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer border h-[32px] ${
+      className={`flex items-center gap-1.5 rounded-devkit px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer border h-[32px] ${
         isThinkingModeEnabled
-          ? 'bg-[var(--nc-accent-dim)] text-[var(--nc-accent)] border-[var(--nc-accent)]/30 shadow-[0_0_12px_rgba(124,106,255,0.2)]'
-          : 'bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)]'
+          ? 'bg-purple-500/10 text-purple-400 border-purple-500/30 shadow-[0_0_12px_rgba(168,158,249,0.15)] animate-pulse'
+          : 'bg-devkit-bg border-devkit-bg-muted text-devkit-text-secondary hover:border-devkit-accent/40 hover:text-devkit-text'
       }`}
       title="Toggle Deep Thinking Mode"
     >
-      <Brain size={13} className={isThinkingModeEnabled ? "text-[var(--nc-accent)]" : "opacity-70"} />
+      <HugeiconsIcon icon={Brain01Icon} size={13} className={isThinkingModeEnabled ? "text-purple-400" : "opacity-70"} />
       <span className="hidden sm:inline">Thinking</span>
     </button>
   )
@@ -147,20 +149,12 @@ export function ChatInput() {
 
   return (
     <div
-      className="relative flex flex-col justify-between w-full shadow-2xl transition-all duration-200 z-20 border border-solid"
-      style={{
-        backgroundColor: state.theme === 'dark' ? '#121212' : '#FFFFFF',
-        borderColor: isFocused
-          ? 'var(--nc-accent)'
-          : state.theme === 'dark' ? '#262626' : '#E5E7EB',
-        borderRadius: '24px',
-        padding: '16px 16px 12px 16px',
-        boxShadow: isFocused 
-          ? 'var(--nc-accent-glow)' 
-          : state.theme === 'dark' 
-            ? '0 10px 30px -10px rgba(0, 0, 0, 0.3)' 
-            : '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02)',
-      }}
+      className={cn(
+        "relative flex flex-col justify-between w-full shadow-lg transition-all duration-300 z-20 border border-devkit-bg-muted bg-devkit-bg-subtle/85 backdrop-blur-md rounded-lg-devkit p-4 pb-3",
+        isFocused 
+          ? "border-devkit-accent/40 shadow-[0_0_20px_rgba(124,111,247,0.15)] bg-devkit-bg-subtle" 
+          : "hover:border-devkit-accent/20"
+      )}
     >
       {/* Top Row: Auto-growing Textarea */}
       <div className="w-full">
@@ -174,11 +168,9 @@ export function ChatInput() {
           placeholder="What's on your mind?"
           rows={1}
           aria-label="Message input"
-          className="w-full resize-none bg-transparent outline-none text-[15px] leading-relaxed placeholder-[#8E8E93]"
+          className="w-full resize-none bg-transparent outline-none text-[15px] leading-relaxed text-devkit-text placeholder-devkit-text-tertiary font-sans"
           style={{
-            fontFamily: 'var(--font-sans), Inter, sans-serif',
-            color: state.theme === 'dark' ? '#FFFFFF' : 'var(--nc-text-primary)',
-            caretColor: state.theme === 'dark' ? '#FFFFFF' : 'var(--nc-accent)',
+            caretColor: 'var(--devkit-accent)',
             minHeight: '28px',
             overflowY: 'hidden',
           }}
@@ -191,10 +183,10 @@ export function ChatInput() {
         <div>
           <button
             type="button"
-            className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)] active:scale-90 transition-all cursor-pointer border border-[var(--nc-border)]"
+            className="flex h-[32px] w-[32px] items-center justify-center rounded-devkit bg-devkit-bg border border-devkit-bg-muted text-devkit-text-secondary hover:border-devkit-accent/40 hover:text-devkit-text active:scale-90 transition-all cursor-pointer shadow-sm"
             title="Attach files"
           >
-            <Plus size={16} />
+            <HugeiconsIcon icon={Add01Icon} size={16} />
           </button>
         </div>
 
@@ -206,13 +198,13 @@ export function ChatInput() {
             <button
               type="button"
               onClick={() => setModelDropdownOpen(prev => !prev)}
-              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold bg-[var(--nc-surface-2)] hover:bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] border border-[var(--nc-border)] active:scale-95 transition-all cursor-pointer h-[32px]"
+              className="flex items-center gap-1.5 rounded-devkit px-3 text-[11px] font-semibold bg-devkit-bg border border-devkit-bg-muted text-devkit-text hover:border-devkit-accent/40 active:scale-95 transition-all cursor-pointer h-[32px] shadow-sm"
             >
               <span className="text-xs leading-none">
                 {providerEmojis[state.selectedModel.provider] || '🤖'}
               </span>
               <span className="max-w-[100px] truncate">{state.selectedModel.name}</span>
-              <ChevronDown size={11} className="opacity-60 ml-0.5" />
+              <HugeiconsIcon icon={ChevronDownIcon} size={11} className="opacity-60 ml-0.5" />
             </button>
 
             {/* Upwards floating selector dropdown */}
@@ -238,14 +230,15 @@ export function ChatInput() {
             <button
               type="button"
               onClick={() => setParameterPopoverOpen(prev => !prev)}
-              className={`flex h-[32px] w-[32px] items-center justify-center rounded-full transition-all cursor-pointer border ${
+              className={cn(
+                "flex h-[32px] w-[32px] items-center justify-center rounded-devkit transition-all cursor-pointer border shadow-sm",
                 parameterPopoverOpen 
-                  ? 'bg-[var(--nc-accent-dim)] text-[var(--nc-accent)] border-[var(--nc-accent)]/30' 
-                  : 'bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] border-[var(--nc-border)] hover:bg-[var(--nc-surface-3)] hover:text-[var(--nc-text-primary)]'
-              }`}
+                  ? "bg-devkit-accent border-devkit-accent text-white" 
+                  : "bg-devkit-bg border-devkit-bg-muted text-devkit-text-secondary hover:border-devkit-accent/40 hover:text-devkit-text"
+              )}
               title="Inference Settings"
             >
-              <Settings2 size={14} className={parameterPopoverOpen ? 'rotate-90 transition-transform' : 'transition-transform'} />
+              <HugeiconsIcon icon={Settings02Icon} size={14} className={parameterPopoverOpen ? 'rotate-90 transition-transform duration-300' : 'transition-transform duration-300'} />
             </button>
             <ParameterPopover
               isOpen={parameterPopoverOpen}
@@ -258,27 +251,27 @@ export function ChatInput() {
             <button
               type="button"
               onClick={stopGeneration}
-              className="flex h-[32px] w-[32px] items-center justify-center rounded-full transition-all duration-200 shadow-md cursor-pointer bg-red-500 text-white hover:bg-red-600 active:scale-90"
+              className="flex h-[32px] w-[32px] items-center justify-center rounded-devkit transition-all duration-200 shadow-md cursor-pointer bg-devkit-coral hover:bg-devkit-coral/90 text-white active:scale-90"
               title="Stop generating"
             >
-              <Square size={13} fill="currentColor" />
+              <HugeiconsIcon icon={StopIcon} size={14} />
             </button>
           ) : hasText ? (
             <button
               type="button"
               onClick={handleSend}
-              className="flex h-[32px] w-[32px] items-center justify-center rounded-full transition-all duration-200 shadow-md cursor-pointer bg-[var(--nc-text-primary)] text-[var(--nc-void)] hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black active:scale-90"
+              className="flex h-[32px] w-[32px] items-center justify-center rounded-devkit transition-all duration-200 shadow-md cursor-pointer bg-devkit-accent hover:bg-[#8d82f8] text-white active:scale-90 animate-cta-shimmer"
               title="Send message"
             >
-              <ArrowUp size={15} strokeWidth={2.5} />
+              <HugeiconsIcon icon={ArrowUp01Icon} size={14} className="stroke-[2.5]" />
             </button>
           ) : (
             <button
               type="button"
-              className="flex h-[32px] w-[32px] items-center justify-center rounded-full transition-all duration-200 shadow-sm cursor-pointer bg-[var(--nc-surface-2)] text-[var(--nc-text-secondary)] hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black active:scale-90 border border-[var(--nc-border)]"
+              className="flex h-[32px] w-[32px] items-center justify-center rounded-devkit transition-all duration-200 shadow-sm cursor-pointer bg-devkit-bg border border-devkit-bg-muted text-devkit-text-secondary hover:border-devkit-accent/40 hover:text-devkit-text active:scale-90"
               title="Voice input"
             >
-              <Mic size={15} />
+              <HugeiconsIcon icon={Mic01Icon} size={14} />
             </button>
           )}
         </div>
