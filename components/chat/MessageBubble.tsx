@@ -2,13 +2,16 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, RefreshCw, ChevronDown, Clock } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { CopyIcon, RefreshIcon, ChevronDownIcon, Clock01Icon } from '@hugeicons/core-free-icons'
 import { StreamingIndicator } from './StreamingIndicator'
 import type { Message } from '@/lib/types'
 import { useChatStore } from '@/lib/store'
 import { aiModels } from '@/lib/ai-models'
 import { Markdown } from './Markdown'
 import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
+
 interface MessageBubbleProps {
   message: Message
   isLatest: boolean
@@ -64,7 +67,7 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
         {/* Hover toolbar - top right */}
         {!isStreaming && isHovered && (
           <motion.div
-            className="absolute top-0 right-0 flex items-center gap-1 bg-[var(--nc-void)] border border-[var(--nc-border)] rounded-lg shadow-sm p-0.5 z-10"
+            className="absolute top-0 right-0 flex items-center gap-1 bg-devkit-bg-subtle/95 backdrop-blur border border-devkit-bg-muted rounded-devkit shadow-md p-1 z-10"
             initial={{ opacity: 0, y: 2 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.15 }}
@@ -72,20 +75,18 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
             <button
               type="button"
               onClick={handleCopy}
-              className="flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-[var(--nc-surface-3)]"
-              style={{ color: 'var(--nc-text-muted)' }}
+              className="flex items-center justify-center rounded-devkit p-1.5 transition-all text-devkit-text-secondary hover:bg-devkit-bg-muted hover:text-devkit-text cursor-pointer"
               aria-label="Copy message"
             >
-              <Copy className="h-3.5 w-3.5" />
+              <HugeiconsIcon icon={CopyIcon} size={14} />
             </button>
             {!isUser && (
               <button
                 type="button"
-                className="flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-[var(--nc-surface-3)]"
-                style={{ color: 'var(--nc-text-muted)' }}
+                className="flex items-center justify-center rounded-devkit p-1.5 transition-all text-devkit-text-secondary hover:bg-devkit-bg-muted hover:text-devkit-text cursor-pointer"
                 aria-label="Regenerate response"
               >
-                <RefreshCw className="h-3.5 w-3.5" />
+                <HugeiconsIcon icon={RefreshIcon} size={14} />
               </button>
             )}
           </motion.div>
@@ -97,14 +98,15 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
             <button
               type="button"
               onClick={() => setIsThoughtProcessOpen((prev) => !prev)}
-              className="flex items-center gap-1.5 text-[11px] font-medium text-[var(--nc-text-muted)] hover:text-[var(--nc-text-secondary)] transition-colors"
+              className="flex items-center gap-1.5 text-[11px] font-semibold text-devkit-text-secondary hover:text-devkit-text bg-devkit-bg-subtle hover:bg-devkit-bg-muted border border-devkit-bg-muted rounded-devkit px-3 py-1.5 transition-all cursor-pointer shadow-sm"
             >
-              <Clock size={12} />
+              <HugeiconsIcon icon={Clock01Icon} size={12} />
               <span>Thought Process</span>
-              <span className="font-mono bg-[var(--nc-surface-2)] px-1.5 py-0.5 rounded-sm border border-[var(--nc-border)]">
+              <span className="font-mono bg-devkit-bg text-devkit-accent border border-devkit-bg-muted px-1.5 py-0.5 rounded-sm">
                 {(message.timeToFirstTokenMs / 1000).toFixed(1)}s
               </span>
-              <ChevronDown
+              <HugeiconsIcon
+                icon={ChevronDownIcon}
                 size={12}
                 className={`transition-transform duration-200 ${isThoughtProcessOpen ? 'rotate-180' : ''}`}
               />
@@ -117,7 +119,7 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="mt-2 text-sm text-[var(--nc-text-secondary)] bg-[var(--nc-surface-2)] p-3 rounded-lg border border-[var(--nc-border)] italic">
+                  <div className="mt-2 text-xs text-devkit-text-secondary bg-devkit-bg-subtle p-4 rounded-lg-devkit border border-devkit-bg-muted italic shadow-inner">
                     The model spent {(message.timeToFirstTokenMs / 1000).toFixed(1)} seconds thinking before generating this response.
                   </div>
                 </motion.div>
@@ -128,24 +130,12 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
 
         {/* Message content */}
         <div
-          className={`${isUser ? 'whitespace-pre-wrap' : ''} break-words`}
-          style={
+          className={cn(
+            'break-words text-[15px] font-sans leading-relaxed transition-colors duration-300',
             isUser
-              ? {
-                  backgroundColor: 'var(--nc-user-bubble)',
-                  color: 'var(--nc-user-bubble-text)', // properly contrasted text
-                  fontSize: 15,
-                  padding: '8px 14px',
-                  borderRadius: '16px 16px 4px 16px',
-                  boxShadow: state.theme === 'dark' ? 'none' : 'var(--shadow-sm)',
-                }
-              : {
-                  backgroundColor: 'transparent',
-                  color: '#E2E8F0', // vibrant slate/zinc tone for AI responses
-                  fontSize: 15,
-                  padding: '2px 0',
-                }
-          }
+              ? 'whitespace-pre-wrap bg-devkit-accent/10 border border-devkit-accent/20 text-devkit-text rounded-[18px_18px_4px_18px] px-4.5 py-3 shadow-sm'
+              : 'bg-transparent text-devkit-text py-1 w-full'
+          )}
         >
           {isUser ? (
             message.content
@@ -169,11 +159,13 @@ export function MessageBubble({ message, isLatest }: MessageBubbleProps) {
 
         {/* Subtle, low-contrast metadata footer row */}
         <div 
-          className="mt-0.5 flex items-center gap-2 text-[11px] text-neutral-600 dark:text-neutral-400 select-none"
-          style={{ justifyContent: isUser ? 'flex-end' : 'flex-start' }}
+          className={cn(
+            "mt-2 flex items-center gap-2 text-[10px] text-devkit-text-tertiary select-none font-mono",
+            isUser ? "justify-end" : "justify-start"
+          )}
         >
           <span 
-            className="inline-flex items-center gap-1 font-medium text-[var(--nc-text-secondary)]"
+            className="inline-flex items-center gap-1.5 bg-devkit-bg-subtle border border-devkit-bg-muted rounded-devkit px-2 py-0.5 text-[10px] text-devkit-text-secondary font-medium font-sans"
           >
             <span>{modelEmoji}</span>
             <span>{model.name}</span>
