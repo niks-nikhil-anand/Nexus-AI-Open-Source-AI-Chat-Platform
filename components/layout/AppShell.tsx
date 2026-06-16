@@ -33,7 +33,7 @@ export function AppShell({ children }: AppShellProps) {
       </motion.aside>
 
       {/* Main Area */}
-      <main className="flex-1 flex flex-col min-w-0 h-full bg-[var(--nc-void)]">
+      <main className="flex-1 flex flex-col min-w-0 h-full bg-devkit-bg">
         {children}
       </main>
 
