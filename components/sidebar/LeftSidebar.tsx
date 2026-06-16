@@ -91,7 +91,7 @@ export function LeftSidebar() {
             </div>
             <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-devkit-teal border-2 border-devkit-bg-subtle animate-pulse" />
             <div className="absolute left-12 top-1/2 -translate-y-1/2 opacity-0 pointer-events-none group-hover/avatar:opacity-100 transition-opacity bg-devkit-bg text-[10px] text-devkit-text px-2 py-1 rounded-devkit border border-devkit-bg-muted whitespace-nowrap shadow-lg z-50 font-mono">
-              {user?.email || 'user@neurachat.ai'}
+              {user?.email || 'user@nexus.ai'}
             </div>
           </div>
 
@@ -132,15 +132,15 @@ export function LeftSidebar() {
         <div className="flex items-center gap-2">
           <div className="relative w-[28px] h-[28px] shrink-0">
             <Image
-              src="/logo2.png"
-              alt="NeuraChat Logo"
+              src="/logo/logo.png"
+              alt="Nexus AI Logo"
               fill
               sizes="28px"
               className="object-contain rounded-md"
             />
           </div>
           <span className="font-display text-sm font-normal tracking-tight text-devkit-text">
-            NeuraChat
+            Nexus AI
           </span>
         </div>
         <button
@@ -242,7 +242,7 @@ export function LeftSidebar() {
           </div>
           <div className="flex flex-col min-w-0">
             <span className="text-xs font-bold text-devkit-text leading-none truncate group-hover/profile:text-devkit-accent transition-colors">{user?.name || 'User Account'}</span>
-            <span className="text-[10px] text-devkit-text-secondary leading-none mt-1.5 truncate">{user?.email || 'user@neurachat.ai'}</span>
+            <span className="text-[10px] text-devkit-text-secondary leading-none mt-1.5 truncate">{user?.email || 'user@nexus.ai'}</span>
           </div>
         </div>
 
