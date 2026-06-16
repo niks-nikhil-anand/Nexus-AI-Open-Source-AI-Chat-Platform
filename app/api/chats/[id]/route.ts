@@ -1,22 +1,11 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { jwtVerify } from "jose";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../../auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
 
-const secret = new TextEncoder().encode(
-  process.env.JWT_SECRET || "fallback_secret_key_for_development_only"
-);
-
 async function getUserId() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("authToken")?.value;
-  if (!token) return null;
-  try {
-    const { payload } = await jwtVerify(token, secret);
-    return payload.userId as string;
-  } catch {
-    return null;
-  }
+  const session = await getServerSession(authOptions);
+  return (session?.user as any)?.id || null;
 }
 
 export async function GET(
