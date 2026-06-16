@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useSession, signOut } from 'next-auth/react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Cancel01Icon, Sun01Icon, Moon01Icon, Download01Icon, Delete02Icon, KeyboardIcon } from '@hugeicons/core-free-icons'
 import { useChatStore } from '@/lib/store'
@@ -20,6 +21,8 @@ const SHORTCUTS = [
 export function SettingsPanel() {
   const { state, dispatch } = useChatStore()
   const { settingsOpen, theme, selectedModel, conversations } = state
+  const { data: session } = useSession()
+  const user = session?.user
 
   const handleClose = useCallback(() => {
     dispatch({ type: 'TOGGLE_SETTINGS' })
@@ -106,6 +109,42 @@ export function SettingsPanel() {
 
             {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6 custom-scrollbar">
+              {/* Account Section */}
+              {user && (
+                <>
+                  <section>
+                    <SectionHeader icon={<span className="h-4 w-4 text-center text-xs">👤</span>} title="Account" />
+                    <div className="mt-3 bg-devkit-bg-subtle/50 border border-devkit-bg-muted/80 rounded-2xl p-4 flex flex-col gap-4 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          {user.image ? (
+                            <img src={user.image} alt={user.name || "Avatar"} className="h-12 w-12 rounded-full border border-devkit-accent object-cover" />
+                          ) : (
+                            <div className="h-12 w-12 rounded-full bg-devkit-accent flex items-center justify-center text-sm text-white font-bold select-none uppercase shadow-inner">
+                              {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                            </div>
+                          )}
+                          <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-devkit-teal border-2 border-devkit-bg-subtle" />
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm font-bold text-devkit-text truncate leading-tight">{user.name || 'User Account'}</span>
+                          <span className="text-xs text-devkit-text-secondary truncate mt-1">{user.email}</span>
+                        </div>
+                      </div>
+                      
+                      <button
+                        type="button"
+                        onClick={() => signOut({ callbackUrl: "/login" })}
+                        className="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold text-white bg-devkit-coral hover:bg-devkit-coral/95 transition-all duration-300 shadow-sm cursor-pointer border border-devkit-coral/20 hover:-translate-y-0.5"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  </section>
+                  <Divider />
+                </>
+              )}
+
               {/* Appearance Section */}
               <section>
                 <SectionHeader icon={<HugeiconsIcon icon={Sun01Icon} size={14} />} title="Appearance" />

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import {
   Add01Icon,
@@ -20,20 +21,11 @@ export function LeftSidebar() {
   const { state, dispatch } = useChatStore()
   const { conversations, activeConversationId, theme, leftSidebarOpen } = state
   const [mounted, setMounted] = useState(false)
-  const [user, setUser] = useState<{name: string, email: string} | null>(null)
+  const { data: session } = useSession()
+  const user = session?.user
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0)
-    
-    fetch('/api/auth/me')
-      .then(res => res.json())
-      .then(data => {
-        if (data.user) {
-          setUser(data.user)
-        }
-      })
-      .catch(console.error)
-      
     return () => clearTimeout(timer)
   }, [])
 
@@ -86,9 +78,13 @@ export function LeftSidebar() {
         <div className="mt-auto flex flex-col items-center">
           {/* User Profile Avatar */}
           <div className="relative group/avatar cursor-pointer mb-5">
-            <div className="h-9 w-9 rounded-full bg-devkit-accent flex items-center justify-center text-xs text-white font-bold select-none uppercase shadow-inner">
-              {user?.name?.charAt(0) || 'U'}
-            </div>
+            {user?.image ? (
+              <img src={user.image} alt={user.name || "Avatar"} className="h-9 w-9 rounded-full border border-devkit-accent object-cover" />
+            ) : (
+              <div className="h-9 w-9 rounded-full bg-devkit-accent flex items-center justify-center text-xs text-white font-bold select-none uppercase shadow-inner">
+                {user?.name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+              </div>
+            )}
             <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-devkit-teal border-2 border-devkit-bg-subtle animate-pulse" />
             <div className="absolute left-12 top-1/2 -translate-y-1/2 opacity-0 pointer-events-none group-hover/avatar:opacity-100 transition-opacity bg-devkit-bg text-[10px] text-devkit-text px-2 py-1 rounded-devkit border border-devkit-bg-muted whitespace-nowrap shadow-lg z-50 font-mono">
               {user?.email || 'user@nexus.ai'}
@@ -234,9 +230,13 @@ export function LeftSidebar() {
         {/* User profile card widget */}
         <div className="flex items-center gap-3 p-3 rounded-lg-devkit bg-devkit-bg border border-devkit-bg-muted shadow-sm hover:border-devkit-accent/30 transition-all duration-300 group/profile">
           <div className="relative flex-shrink-0">
-            <div className="h-9 w-9 rounded-full bg-devkit-accent flex items-center justify-center text-xs text-white font-bold select-none uppercase shadow-inner">
-              {user?.name?.charAt(0) || 'U'}
-            </div>
+            {user?.image ? (
+              <img src={user.image} alt={user.name || "Avatar"} className="h-9 w-9 rounded-full border border-devkit-accent object-cover" />
+            ) : (
+              <div className="h-9 w-9 rounded-full bg-devkit-accent flex items-center justify-center text-xs text-white font-bold select-none uppercase shadow-inner">
+                {user?.name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+              </div>
+            )}
             {/* Active status indicator dot - DevKit Teal */}
             <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-devkit-teal border-2 border-devkit-bg animate-pulse" />
           </div>
