@@ -21,7 +21,7 @@ export function StreamingIndicator({ stage }: StreamingIndicatorProps) {
             style={{
               width: 6,
               height: 6,
-              backgroundColor: 'var(--nc-accent)',
+              backgroundColor: 'var(--devkit-accent)',
               opacity: 0.7,
             }}
             animate={{ y: [0, -5, 0] }}
@@ -35,8 +35,8 @@ export function StreamingIndicator({ stage }: StreamingIndicatorProps) {
         ))}
       </div>
       <span
-        className="text-xs"
-        style={{ color: 'var(--nc-text-muted)' }}
+        className="text-xs font-sans"
+        style={{ color: 'var(--devkit-text-secondary)' }}
       >
         {label}
       </span>
