@@ -2,10 +2,12 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Check, Search, Cpu } from "lucide-react"
+import { HugeiconsIcon } from '@hugeicons/react'
+import { CheckIcon, Search01Icon, CpuIcon } from '@hugeicons/core-free-icons'
 import { aiModels } from "@/lib/ai-models"
 import { dropdownVariants, springs } from "@/lib/animations"
 import { AIModel } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
 interface ModelSelectorProps {
   isOpen: boolean
@@ -125,7 +127,7 @@ export default function ModelSelector({
       {isOpen && (
         <>
           <div
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -136,14 +138,18 @@ export default function ModelSelector({
             animate="visible"
             exit="hidden"
             transition={springs.popup}
-            className="absolute top-full left-4 z-50 mt-2 w-[480px] max-h-[550px] h-[550px] overflow-hidden rounded-2xl bg-[var(--nc-surface-1)]/95 backdrop-blur-xl border border-[var(--nc-border)] shadow-[0_12px_40px_-10px_rgba(0,0,0,0.5)] flex flex-col"
+            className="absolute top-full left-4 z-50 mt-2 w-[480px] max-h-[550px] h-[550px] overflow-hidden rounded-lg-devkit border border-devkit-bg-muted bg-devkit-bg/95 backdrop-blur-md shadow-2xl flex flex-col pointer-events-auto"
+            style={{
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+            }}
             onKeyDown={handleKeyDown}
           >
 
             {/* Search input */}
-            <div className="p-3 border-b border-[var(--nc-border)] shrink-0">
-              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[var(--nc-surface-2)] border border-[var(--nc-border)] focus-within:border-[var(--nc-accent)] transition-colors">
-                <Search className="w-4 h-4 text-[var(--nc-text-muted)]" />
+            <div className="p-3 border-b border-devkit-bg-muted shrink-0">
+              <div className="flex items-center gap-2 px-3 py-2 rounded-devkit bg-devkit-bg-subtle border border-devkit-bg-muted focus-within:border-devkit-accent/40 transition-colors">
+                <HugeiconsIcon icon={Search01Icon} size={14} className="text-devkit-text-tertiary" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -153,40 +159,40 @@ export default function ModelSelector({
                     setSearch(e.target.value)
                     setHighlightIndex(0)
                   }}
-                  className="flex-1 bg-transparent text-sm text-[var(--nc-text-primary)] placeholder:text-[var(--nc-text-muted)] outline-none"
+                  className="flex-1 bg-transparent text-sm text-devkit-text placeholder:text-devkit-text-tertiary outline-none font-sans"
                 />
               </div>
             </div>
 
             <div className="flex flex-1 overflow-hidden">
               {/* Sidebar Tabs */}
-              <div className="w-[140px] bg-[var(--nc-surface-2)]/30 border-r border-[var(--nc-border)] flex flex-col p-2 gap-1 overflow-y-auto shrink-0">
+              <div className="w-[140px] bg-devkit-bg-subtle/30 border-r border-devkit-bg-muted flex flex-col p-2 gap-1 overflow-y-auto shrink-0">
                 <button
                   onClick={() => { setActiveCategory('all'); setHighlightIndex(0); }}
-                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                  className={`px-3 py-2.5 rounded-devkit text-xs font-semibold text-left transition-colors cursor-pointer ${
                     activeCategory === 'all'
-                      ? 'bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] shadow-sm'
-                      : 'text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-2)]'
+                      ? 'bg-devkit-bg-muted border border-devkit-bg-muted/30 text-devkit-text shadow-sm'
+                      : 'text-devkit-text-secondary hover:text-devkit-text hover:bg-devkit-bg-subtle'
                   }`}
                 >
                   All Models
                 </button>
                 <button
                   onClick={() => { setActiveCategory('nvidia'); setHighlightIndex(0); }}
-                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-colors flex items-center justify-between ${
+                  className={`px-3 py-2.5 rounded-devkit text-xs font-semibold text-left transition-colors cursor-pointer flex items-center justify-between ${
                     activeCategory === 'nvidia'
-                      ? 'bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] shadow-sm'
-                      : 'text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-2)]'
+                      ? 'bg-devkit-bg-muted border border-devkit-bg-muted/30 text-devkit-text shadow-sm'
+                      : 'text-devkit-text-secondary hover:text-devkit-text hover:bg-devkit-bg-subtle'
                   }`}
                 >
                   Nvidia API
                 </button>
                 <button
                   onClick={() => { setActiveCategory('openrouter'); setHighlightIndex(0); }}
-                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-colors ${
+                  className={`px-3 py-2.5 rounded-devkit text-xs font-semibold text-left transition-colors cursor-pointer ${
                     activeCategory === 'openrouter'
-                      ? 'bg-[var(--nc-surface-3)] text-[var(--nc-text-primary)] shadow-sm'
-                      : 'text-[var(--nc-text-secondary)] hover:text-[var(--nc-text-primary)] hover:bg-[var(--nc-surface-2)]'
+                      ? 'bg-devkit-bg-muted border border-devkit-bg-muted/30 text-devkit-text shadow-sm'
+                      : 'text-devkit-text-secondary hover:text-devkit-text hover:bg-devkit-bg-subtle'
                   }`}
                 >
                   OpenRouter API
@@ -194,11 +200,11 @@ export default function ModelSelector({
               </div>
 
               {/* Model list grouped by company */}
-              <div ref={listRef} className="overflow-y-auto flex-1 p-3 bg-[var(--nc-surface-1)] relative scroll-smooth">
+              <div ref={listRef} className="overflow-y-auto flex-1 p-3 bg-devkit-bg relative scroll-smooth custom-scrollbar">
                 {flatModels.length === 0 && (
-                  <div className="flex flex-col items-center justify-center h-full text-[var(--nc-text-muted)]">
-                    <Search className="w-8 h-8 mb-3 opacity-20" />
-                    <p className="text-sm font-medium">No models found</p>
+                  <div className="flex flex-col items-center justify-center h-full text-devkit-text-tertiary">
+                    <HugeiconsIcon icon={Search01Icon} size={32} className="mb-3 opacity-20" />
+                    <p className="text-sm font-medium font-sans">No models found</p>
                   </div>
                 )}
 
@@ -207,10 +213,10 @@ export default function ModelSelector({
                     <div key={company} className="flex flex-col">
                       {/* Company Header */}
                       <div className="flex items-center gap-2 mb-2 px-1">
-                        <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--nc-text-muted)]">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-devkit-text-tertiary font-mono">
                           {company}
                         </span>
-                        <div className="flex-1 h-px bg-[var(--nc-border)]/50" />
+                        <div className="flex-1 h-px bg-devkit-bg-muted/50" />
                       </div>
                       
                       {/* Models for this company */}
@@ -228,22 +234,22 @@ export default function ModelSelector({
                                 onSelect(model)
                                 onClose()
                               }}
-                              className={`relative w-full flex items-center justify-between p-3 rounded-xl text-left transition-all duration-200 border group ${
+                              className={`relative w-full flex items-center justify-between p-3 rounded-devkit text-left transition-all duration-200 border group cursor-pointer ${
                                 isSelected
-                                  ? "bg-[var(--nc-accent)]/10 border-[var(--nc-accent)]/30 shadow-[0_0_15px_rgba(var(--nc-accent-rgb),0.15)]"
+                                  ? "bg-devkit-accent/10 border-devkit-accent/30 shadow-[0_0_15px_rgba(124,111,247,0.15)]"
                                   : isHighlighted
-                                  ? "bg-[var(--nc-surface-2)] border-[var(--nc-border)]"
-                                  : "bg-transparent border-transparent hover:bg-[var(--nc-surface-2)] hover:border-[var(--nc-border)]"
+                                  ? "bg-devkit-bg-subtle border-devkit-bg-muted text-devkit-text"
+                                  : "bg-transparent border-transparent text-devkit-text hover:bg-devkit-bg-subtle hover:border-devkit-bg-muted"
                               }`}
                             >
                               <div className="flex items-start gap-3 min-w-0">
                                 {/* Provider origin badge */}
                                 <div className="mt-1 flex-shrink-0">
                                   <span
-                                    className={`flex items-center justify-center w-6 h-6 rounded-md text-[10px] font-bold border ${
+                                    className={`flex items-center justify-center w-6 h-6 rounded-md text-[10px] font-mono font-bold border ${
                                       model.provider === 'nvidia'
-                                        ? 'bg-green-500/10 text-green-600 dark:text-green-500 border-green-500/20'
-                                        : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-500 border-emerald-500/20'
+                                        ? 'bg-[#2dd4a7]/10 text-[#2dd4a7] border-[#2dd4a7]/20'
+                                        : 'bg-[#7c6ff7]/10 text-[#7c6ff7] border-[#7c6ff7]/20'
                                     }`}
                                   >
                                     {model.provider === 'nvidia' ? 'NV' : 'OR'}
@@ -251,8 +257,8 @@ export default function ModelSelector({
                                 </div>
 
                                 <div className="flex flex-col gap-1 min-w-0">
-                                  <span className={`text-[15px] font-bold truncate transition-colors ${
-                                    isSelected ? 'text-[var(--nc-accent)] dark:text-[var(--nc-text-primary)]' : 'text-[var(--nc-text-primary)]'
+                                  <span className={`text-[14px] font-bold truncate transition-colors ${
+                                    isSelected ? 'text-devkit-accent' : 'text-devkit-text group-hover:text-devkit-accent'
                                   }`}>
                                     {model.name}
                                   </span>
@@ -260,15 +266,15 @@ export default function ModelSelector({
                                   <div className="flex flex-wrap items-center gap-1.5">
                                     {/* Parameter Size Pill */}
                                     {model.size && (
-                                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50">
-                                        <Cpu className="w-3 h-3 opacity-70" />
+                                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-semibold bg-devkit-bg-muted text-devkit-text-secondary border border-devkit-bg-muted/40 font-mono">
+                                        <HugeiconsIcon icon={CpuIcon} size={10} className="opacity-70" />
                                         {model.size}
                                       </span>
                                     )}
                                     
                                     {/* Feature Badge Pill */}
                                     {model.badge && (
-                                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20">
+                                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-semibold bg-devkit-accent/10 text-devkit-accent border border-devkit-accent/20 font-mono">
                                         {model.badge}
                                       </span>
                                     )}
@@ -279,8 +285,8 @@ export default function ModelSelector({
                               {/* Selected Checkmark */}
                               {isSelected && (
                                 <div className="flex-shrink-0 ml-3">
-                                  <div className="flex items-center justify-center w-6 h-6 rounded-full bg-[var(--nc-accent)] text-white shadow-[0_0_10px_rgba(var(--nc-accent-rgb),0.5)]">
-                                    <Check className="w-3.5 h-3.5" />
+                                  <div className="flex items-center justify-center w-6 h-6 rounded-full bg-devkit-accent text-white shadow-[0_0_10px_rgba(124,111,247,0.5)]">
+                                    <HugeiconsIcon icon={CheckIcon} size={12} />
                                   </div>
                                 </div>
                               )}
@@ -295,9 +301,9 @@ export default function ModelSelector({
             </div>
 
             {/* Footer Text */}
-            <div className="p-3 border-t border-[var(--nc-border)] shrink-0 bg-[var(--nc-surface-2)]/50 text-center">
-              <span className="text-[11px] font-medium text-[var(--nc-text-muted)]">
-                All models are currently <span className="text-[var(--nc-text-secondary)] font-bold">FREE</span> for use
+            <div className="p-3 border-t border-devkit-bg-muted shrink-0 bg-devkit-bg-subtle/50 text-center">
+              <span className="text-[10px] font-medium text-devkit-text-tertiary font-sans">
+                All models are currently <span className="text-devkit-accent font-bold">FREE</span> for use
               </span>
             </div>
           </motion.div>
