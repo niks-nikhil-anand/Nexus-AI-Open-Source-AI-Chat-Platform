@@ -51,7 +51,7 @@ export function SettingsPanel() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'neurachat-conversations.json'
+    a.download = 'nexusai-conversations.json'
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -202,8 +202,8 @@ export function SettingsPanel() {
                         }}
                       >
                         <span
-                          className="inline-block h-2 w-2 rounded-full shrink-0"
-                          style={{ backgroundColor: model.providerColor }}
+                           className="inline-block h-2 w-2 rounded-full shrink-0"
+                           style={{ backgroundColor: model.providerColor }}
                         />
                         <span className="truncate">{model.name}</span>
                         <span
@@ -311,7 +311,7 @@ export function SettingsPanel() {
                 <SectionHeader icon={<span className="h-4 w-4 text-center">ℹ️</span>} title="About" />
                 <div className="mt-3 space-y-1">
                   <p className="text-sm" style={{ color: 'var(--nc-text-primary)' }}>
-                    NeuraChat v0.1.0
+                    Nexus AI v0.1.0
                   </p>
                   <p className="text-xs" style={{ color: 'var(--nc-text-muted)' }}>
                     Built with Next.js, React, Framer Motion
