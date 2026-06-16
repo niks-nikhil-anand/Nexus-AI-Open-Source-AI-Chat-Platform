@@ -30,8 +30,18 @@ const libreBaskerville = Libre_Baskerville({
 });
 
 export const metadata: Metadata = {
-  title: "NeuralChat",
-  description: "Multi-model AI chat platform",
+  title: "Nexus AI - Devkit Market",
+  description: "Nexus AI is a powerful multi-model AI chat platform offering unlimited tokens and free access to cutting-edge models. Join the Devkit Market to start shipping vision today.",
+  keywords: [
+    "Nexus AI",
+    "Devkit Market",
+    "Multi-model AI",
+    "AI Chat",
+    "Unlimited tokens",
+    "Free AI",
+    "Vision AI",
+    "Developer tools"
+  ],
   icons: {
     icon: "/logo2.png",
   },
