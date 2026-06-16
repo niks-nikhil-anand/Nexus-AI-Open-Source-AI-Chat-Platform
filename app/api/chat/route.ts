@@ -57,20 +57,14 @@ export async function POST(request: Request) {
   const openrouterApiKey = process.env.OPENROUTER_API_KEY
 
   // Verify auth token
-  const cookieStore = await import('next/headers').then(m => m.cookies())
-  const token = cookieStore.get('authToken')?.value
   let userId: string | null = null
-  if (token) {
-    try {
-      const { jwtVerify } = await import('jose')
-      const secret = new TextEncoder().encode(
-        process.env.JWT_SECRET || "fallback_secret_key_for_development_only"
-      )
-      const { payload } = await jwtVerify(token, secret)
-      userId = payload.userId as string
-    } catch {
-      // Ignored
-    }
+  try {
+    const { getServerSession } = await import('next-auth/next')
+    const { authOptions } = await import('../auth/[...nextauth]/route')
+    const session = await getServerSession(authOptions)
+    userId = (session?.user as any)?.id || null
+  } catch (err) {
+    console.error("Error getting session in chat API:", err)
   }
 
   if (!userId) {
