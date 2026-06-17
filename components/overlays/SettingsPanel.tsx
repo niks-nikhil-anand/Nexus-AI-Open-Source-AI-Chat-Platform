@@ -131,14 +131,6 @@ export function SettingsPanel() {
                           <span className="text-xs text-devkit-text-secondary truncate mt-1">{user.email}</span>
                         </div>
                       </div>
-                      
-                      <button
-                        type="button"
-                        onClick={() => signOut({ callbackUrl: "/login" })}
-                        className="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold text-white bg-devkit-coral hover:bg-devkit-coral/95 transition-all duration-300 shadow-sm cursor-pointer border border-devkit-coral/20 hover:-translate-y-0.5"
-                      >
-                        Sign Out
-                      </button>
                     </div>
                   </section>
                   <Divider />
@@ -192,46 +184,7 @@ export function SettingsPanel() {
                 </div>
               </section>
 
-              <Divider />
 
-              {/* Models Section */}
-              <section>
-                <SectionHeader icon={<span className="h-4 w-4 text-center text-xs">⚡</span>} title="Models" />
-                <div className="mt-3">
-                  <label className="text-xs font-semibold text-devkit-text-secondary mb-2 block">
-                    Default Model
-                  </label>
-                  <div className="flex flex-col gap-1.5">
-                    {aiModels.map((model) => {
-                      const isSelected = selectedModel.id === model.id
-                      return (
-                        <button
-                          key={model.id}
-                          type="button"
-                          onClick={() => handleModelSelect(model)}
-                          className={cn(
-                            "flex w-full items-center gap-2.5 rounded-devkit px-3 py-2.5 text-xs text-devkit-text transition-all duration-200 cursor-pointer border",
-                            isSelected
-                              ? "bg-devkit-accent/10 border-devkit-accent/30 font-bold shadow-sm"
-                              : "bg-devkit-bg-subtle border-transparent hover:border-devkit-bg-muted hover:bg-devkit-bg-muted"
-                          )}
-                        >
-                          <span
-                            className="inline-block h-2 w-2 rounded-full shrink-0"
-                            style={{ backgroundColor: model.providerColor || 'var(--devkit-accent)' }}
-                          />
-                          <span className="truncate">{model.name}</span>
-                          <span className="ml-auto text-[9px] font-mono font-bold bg-devkit-bg-muted text-devkit-text-secondary border border-devkit-bg-muted/40 rounded px-1.5 py-0.5 uppercase tracking-wider">
-                            {model.provider}
-                          </span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              </section>
-
-              <Divider />
 
               {/* Chat Section */}
               <section>
@@ -313,6 +266,21 @@ export function SettingsPanel() {
                   </p>
                 </div>
               </section>
+
+              {user && (
+                <>
+                  <Divider />
+                  <section>
+                    <button
+                      type="button"
+                      onClick={() => signOut({ callbackUrl: "/login" })}
+                      className="flex w-full items-center justify-center gap-2 rounded-devkit px-4 py-2.5 text-xs font-semibold text-white bg-red-500 hover:bg-red-600 transition-all duration-300 shadow-sm cursor-pointer"
+                    >
+                      Sign Out
+                    </button>
+                  </section>
+                </>
+              )}
             </div>
           </motion.aside>
         </>
